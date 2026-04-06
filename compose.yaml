@@ -1,0 +1,69 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: uv run manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /app
+        - action: sync+restart
+          path: uv.lock
+          target: /app/uv.lock
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOST=database
+      - AWS_S3_ENDPOINT_URL=http://storage:3900
+      - CELERY_BROKER_URL=redis://cache:6379/0
+    restart: on-failure
+  database:
+    image: postgres:18.3@sha256:a9abf4275f9e99bff8e6aed712b3b7dfec9cac1341bba01c1ffdfce9ff9fc34a
+    environment:
+      POSTGRES_DB: lulzcasz_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    restart: on-failure
+  storage:
+    image: dxflrs/garage:v2.2.0@sha256:45a61ce3f7c9c24fc23d9ed2b09b27ed560ab87b34605d175d5c588f539c24e4
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+    ports:
+      - "3900:3900"
+      - "3901:3901"
+      - "3902:3902"
+      - "3903:3903"
+    restart: on-failure
+  cache:
+    image: redis:8.6.2@sha256:009cc37796fbdbe1b631b4cc0582bed167e5e403ed8bcd06f77eb6cb5aeb6f93
+    ports:
+      - 6379:6379
+    command: redis-server
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: uv run celery -A lulzcasz_dev worker --loglevel=INFO --concurrency=2
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./
+          target: /app
+        - action: sync+restart
+          path: uv.lock
+          target: /app/uv.lock
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOST=database
+      - CELERY_BROKER_URL=redis://cache:6379/0
+      - AWS_S3_ENDPOINT_URL=http://storage:3900
+    restart: on-failure

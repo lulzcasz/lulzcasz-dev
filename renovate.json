@@ -1,0 +1,55 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "docker:pinDigests",
+    ":semanticCommitTypeAll(build)"
+  ],
+  "timezone": "America/Sao_Paulo",
+  "ignoreUnstable": true,
+  "minimumReleaseAge": null,
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "packageRules": [
+    {
+      "description": "Force all major updates to have their own individual PR",
+      "matchUpdateTypes": ["major"],
+      "groupName": null
+    },
+    {
+      "description": "Group 1: Backend Python Dependencies",
+      "matchManagers": ["poetry", "pip_setup", "pip_requirements", "pep621", "pyenv"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "python-dependencies"
+    },
+    {
+      "description": "Group 2: Infrastructure Docker Images",
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "docker-infrastructure"
+    },
+    {
+      "description": "Group 3: Frontend CDN Assets (Bootstrap, FontAwesome, etc.)",
+      "matchManagers": ["custom.regex"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "frontend-dependencies"
+    },
+    {
+      "description": "Force Python language updates into their own separate PR",
+      "matchPackageNames": ["python"],
+      "groupName": null
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "ADD\\s+https://cdn\\.jsdelivr\\.net/npm/(?<depName>@[^/]+/[^@/]+|[^@/]+)@(?<currentValue>[^/]+)/"
+      ],
+      "datasourceTemplate": "npm"
+    }
+  ]
+}

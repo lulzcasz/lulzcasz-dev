@@ -1,0 +1,56 @@
+{% extends 'blog/base.html' %}
+
+{% load image_utils %}
+{% block title %}
+  <title>{{ title }}</title>
+{% endblock title %}
+
+{% block main %}
+  <main class="container flex-fill bg-body-tertiary pt-3">
+    <div class="row">
+      <div class="col-xxl-8">
+        {% for article in page_obj %}
+          <a href="{% url 'article-detail' article_slug=article.slug %}" class="text-decoration-none text-reset">
+            <div class="card mb-3 border border-0 rounded-4">
+              <div class="row g-0 align-items-center">
+                <div class="col-lg-5">
+                  <img
+                    src="{{ article.cover|variant:'small' }}"
+                    class="img-fluid rounded-start-4"
+                    alt="{{ article.title }}"
+                    style="aspect-ratio: 191/100; object-fit: cover;"
+                  >
+                </div>
+                <div class="col-lg-7">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text">{{ article.description }}</p>
+                    <p class="card-text"><small class="text-body-secondary">{{ article.created_at | date }}</small></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+
+        <div class="pagination pb-3">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+              <a href="?pagina=1">&laquo; primeira</a>
+              <a href="?pagina={{ page_obj.previous_page_number }}">anterior</a>
+            {% endif %}
+            <span class="current">
+              Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+              <a href="?pagina={{ page_obj.next_page_number }}">próxima</a>
+              <a href="?pagina={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+      <div class="col-xxl-4">
+        </div>
+    </div>
+  </main>
+{% endblock main %}

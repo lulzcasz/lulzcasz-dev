@@ -1,0 +1,11 @@
+/* Optional: Custom scrollbar styling for a cleaner look on the right column */
+.scrollable-col::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollable-col::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 4px;
+}
+.scrollable-col::-webkit-scrollbar-track {
+    background-color: #f8f9fa;
+}

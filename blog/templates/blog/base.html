@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+  <script src="{% static 'blog/js/script.js' %}"></script>
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+  <body data-prismjs-copy="Copiar"
+	data-prismjs-copy-error="Erro ao copiar, use Ctrl+C"
+	data-prismjs-copy-success="Copiado!" style="background-color: #121212" class="d-flex flex-column min-vh-100" data-bs-theme="dark">
+    <header>
+      {% include 'blog/includes/_navbar.html' %}
+    </header>
+    {% block main %}{% endblock %}
+    <footer style="background-color: #1E1E1E;">
+      <div class="p-5 text-white">
+        <div class="container py-5 text-center">   
+          <p>lulzcasz © 2026 Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+{% endblock body %}
