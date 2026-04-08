@@ -2,63 +2,55 @@
 {% load static %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'about/css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'about/css/styles.css' %}">
 {% endblock extra_head %}
 
 {% block body %}
-<body>
-    <div id="fullscreenOverlay" class="fullscreen-overlay" onclick="closeFullscreen()">
-    <span class="close-btn" onclick="closeFullscreen()">&times;</span>
-    <img id="overlayImage" src="" alt="Imagem em tela cheia">
-</div>
-    <div class="container-fluid vh-100 overflow-hidden">
-        <div class="row h-100">
-            <div class="col-12 col-md-4 h-100 bg-light p-5 d-flex flex-column border-end">
-                <div class="text-center mb-4">
-                    <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="rounded-5 mb-3 shadow-sm" style="width: 256px; height: 256px; object-fit: cover;">
-                    <h2 class="fw-bold">{{ profile.name }}</h2>
-                    <p class="text-muted">{{ profile.subtitle }}</p>
-                </div>
-                <hr>
-                <div class="my-4 text-center">
-                    <p>{{ profile.bio }}</p>
-                </div>
-                <div class="mt-auto">
-                    {% for link in links %}
-                        <a target="_blank" href="{{ link.link }}" style="background-color: {{ link.bg_color }}; color: {{ link.color }};" class="btn w-100 mb-2">{{ link.name }}</a>
-                    {% endfor link %}
-                </div>
-            </div>
 
-            <div class="col-12 col-md-8 h-100 p-5 overflow-y-auto scrollable-col bg-white">
-                
-                <div id="right-column-content">
-                    
-                    <h1 class="mb-4 fw-bold">Meus Projetos</h1>
-                    <div class="list-group">
-                        {% for highlight_article in highlight_articles %}
-                            
-                            <a style="cursor: pointer;" href="{% url 'article-detail' article_slug=highlight_article.article.slug %}"
-                               
-                               class="list-group-item list-group-item-action mb-4 rounded border shadow-sm p-4">
-                                
-                                <div class="d-flex w-100 justify-content-between mb-2">
-                                    <h4 class="mb-1">{{ highlight_article.article.title }}</h4>
-                                </div>
-                                <p class="mb-3">{{ highlight_article.article.description }}</p>
-                                
-                                {% for technology in highlight_article.article.technologies.all %}
-                                <span style="font-size: 16px; color: {{ technology.color }}; background-color: {{ technology.bg_color }};" class="badge">{{ technology.name }}</span>
-                                {% endfor technology %}
-                            </a>
-                            
-                        {% endfor article %}
-                    </div>
-                    
-                </div>
-            </div>
+<body>
+  </div>
+  <div class="container-fluid vh-100 overflow-hidden">
+    <div class="row h-100">
+      <div class="col-12 col-md-4 h-100 bg-light p-5 d-flex flex-column border-end">
+        <div class="text-center mb-4">
+          <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="rounded-5 mb-3 shadow-sm"
+            style="width: 256px; height: 256px; object-fit: cover;">
+          <h2 class="fw-bold">{{ profile.name }}</h2>
+          <p class="text-muted">{{ profile.subtitle }}</p>
         </div>
+        <hr>
+        <div class="my-4 text-center">
+          <p>{{ profile.bio }}</p>
+        </div>
+        <div class="mt-auto">
+          {% for link in links %}
+          <a target="_blank" href="{{ link.link }}"
+            style="background-color: {{ link.bg_color }}; color: {{ link.color }};" class="btn w-100 mb-2">{{ link.name
+            }}</a>
+          {% endfor link %}
+        </div>
+      </div>
+      <div class="col-12 col-md-8 h-100 p-5 overflow-y-auto scrollable-col bg-white">
+        <div id="right-column-content">
+          <h1 class="mb-4 fw-bold">Meus Projetos</h1>
+          <div class="list-group">
+            {% for highlight_article in highlight_articles %}
+            <a style="cursor: pointer;" href="{% url 'article-detail' article_slug=highlight_article.article.slug %}"
+              class="list-group-item list-group-item-action mb-4 rounded border shadow-sm p-4">
+              <div class="d-flex w-100 justify-content-between mb-2">
+                <h4 class="mb-1">{{ highlight_article.article.title }}</h4>
+              </div>
+              <p class="mb-3">{{ highlight_article.article.description }}</p>
+              {% for technology in highlight_article.article.technologies.all %}
+              <span style="font-size: 16px; color: {{ technology.color }}; background-color: {{ technology.bg_color }};"
+                class="badge">{{ technology.name }}</span>
+              {% endfor technology %}
+            </a>
+            {% endfor article %}
+          </div>
+        </div>
+      </div>
     </div>
-    
-    </body>
+  </div>
+</body>
 {% endblock body %}
