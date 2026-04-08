@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'DeliusUnicase';
+  src: url('../fonts/DeliusUnicase-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.navbar-brand {
+    font-family: 'DeliusUnicase' !important;
+    font-weight: bold;
+}
+
 img {
     max-width: 100%; 
 }

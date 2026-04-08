@@ -12,14 +12,6 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     width: 1000px;
 }
 
-
-@font-face {
-  font-family: 'DeliusUnicase';
-  src: url('../fonts/DeliusUnicase-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 @font-face {
   font-family: 'CascadiaCode';
   src: url('../fonts/CascadiaCode.ttf') format('truetype');
@@ -32,11 +24,6 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
   src: url('../fonts/Inter.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-}
-
-.navbar-brand {
-    font-family: 'DeliusUnicase' !important;
-    font-weight: bold;
 }
 
 .card {
@@ -166,4 +153,9 @@ img.zoomable {
 
 .dropdown-item {
     cursor: pointer;
+}
+
+a, a:hover, a:focus, a:active {
+    text-decoration: none !important;
+    color: inherit !important;
 }

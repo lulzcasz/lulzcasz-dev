@@ -3,16 +3,13 @@
 {% load static %}
 
 {% block extra_head %}
-  <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
-  <script src="{% static 'blog/js/script.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'about/css/styles.css' %}">
 {% endblock %}
 
 {% block title %}{% endblock %}
 
 {% block body %}
-  <body data-prismjs-copy="Copiar"
-	data-prismjs-copy-error="Erro ao copiar, use Ctrl+C"
-	data-prismjs-copy-success="Copiado!" style="background-color: #121212" class="d-flex flex-column min-vh-100" data-bs-theme="dark">
+  <body style="background-color: #121212" class="d-flex flex-column min-vh-100" data-bs-theme="dark">
     <header>
       {% include 'includes/_navbar.html' %}
     </header>
