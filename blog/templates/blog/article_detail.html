@@ -17,8 +17,7 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="{% url 'article-detail' article_slug=article.slug %}">
   
-  {# 3. Ensure images have full domain (use absolute_uri if your storage doesn't provide it) #}
-  <meta property="og:image" content="{{ request.schememarcad }}://{{ request.get_host }}{{ article.cover.url }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ article.cover.url }}">
   <meta property="og:image:width" content="1280"/>
   <meta property="og:image:height" content="720"/>
   <meta property="og:site_name" content="lulzcasz">
@@ -55,6 +54,21 @@
             {{ article.content|safe }}
           </div>
         </div>
+        {% if profile %}
+          <a href="{% url 'about' %}" class="text-decoration-none text-reset">
+            <div class="card mt-1 mb-4 border-0 rounded-4 text-light" style="background-color: #1E1E1E;">
+              <div class="card-body p-4 d-flex flex-column flex-sm-row align-items-center gap-4">
+                {% if profile.avatar %}
+                  <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="rounded-circle object-fit-cover shadow-sm" style="width: 80px; height: 80px;">
+                {% endif %}
+                <div class="text-center text-sm-start">
+                  <h4 class="fw-bold mb-1 text-light">{{ profile.name }}</h4>
+                  <p class="text-secondary mb-0" style="font-size: 0.95rem;">{{ profile.subtitle }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endif %}
       </div>
       <div class="col-xl-3 mt-3" style="position: sticky; top: 1rem; height: fit-content;">
         <div>

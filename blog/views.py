@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from blog.tasks.image import process_image
+from about.models import Profile
+
 
 @login_required
 def tinymce_upload_image(request):
@@ -46,10 +48,13 @@ def index(request):
 
 
 def article_detail(request, article_slug):
-    article = get_object_or_404(Article, slug=article_slug, status=Article.Status.PUBLISHED)
+    article = get_object_or_404(
+        Article, slug=article_slug, status=Article.Status.PUBLISHED
+    )
+    profile = Profile.objects.first()
 
     return render(
-        request, "blog/article_detail.html", {"article": article},
+        request, "blog/article_detail.html", {"article": article, "profile": profile},
     )
 
 
