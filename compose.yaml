@@ -23,7 +23,7 @@ services:
       - CELERY_BROKER_URL=redis://cache:6379/0
     restart: on-failure
   database:
-    image: postgres:18.3@sha256:a9abf4275f9e99bff8e6aed712b3b7dfec9cac1341bba01c1ffdfce9ff9fc34a
+    image: postgres:18.3@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
     environment:
       POSTGRES_DB: lulzcasz_dev
       POSTGRES_USER: postgres
@@ -32,7 +32,7 @@ services:
       - 5432:5432
     restart: on-failure
   storage:
-    image: dxflrs/garage:v2.2.0@sha256:45a61ce3f7c9c24fc23d9ed2b09b27ed560ab87b34605d175d5c588f539c24e4
+    image: dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
     volumes:
       - ./garage.toml:/etc/garage.toml:ro
     ports:
@@ -42,7 +42,7 @@ services:
       - "3903:3903"
     restart: on-failure
   cache:
-    image: redis:8.6.2@sha256:009cc37796fbdbe1b631b4cc0582bed167e5e403ed8bcd06f77eb6cb5aeb6f93
+    image: redis:8.6.2@sha256:1f073813b641755b70b0200da64131bbeeb4ec5b633ca67772229b49820caafa
     ports:
       - 6379:6379
     command: redis-server
