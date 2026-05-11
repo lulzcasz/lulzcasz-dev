@@ -23,7 +23,7 @@ services:
       - CELERY_BROKER_URL=redis://cache:6379/0
     restart: on-failure
   database:
-    image: postgres:18.3@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
+    image: postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db
     environment:
       POSTGRES_DB: lulzcasz_dev
       POSTGRES_USER: postgres
@@ -42,7 +42,7 @@ services:
       - "3903:3903"
     restart: on-failure
   cache:
-    image: redis:8.6.2@sha256:1f073813b641755b70b0200da64131bbeeb4ec5b633ca67772229b49820caafa
+    image: redis:8.6.3@sha256:0c341492924cad6f5483f9133e43bd6c51ecdecbcadfac5b51657393b6a7936c
     ports:
       - 6379:6379
     command: redis-server
