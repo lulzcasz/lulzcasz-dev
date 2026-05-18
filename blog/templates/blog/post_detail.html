@@ -3,35 +3,35 @@
 {% load image_utils %}
 {% load static %}
 {% block title %}
-  <title>{{ article.title }}</title>
+  <title>{{ post.title }}</title>
 {% endblock title %}
 
 {% block meta_tags %}
-  <meta name="description" content="{{ article.description }}">
+  <meta name="description" content="{{ post.description }}">
   <meta name="keywords" content="{{ meta_keywords }}">
   
-  <link rel="canonical" href="{% url 'article-detail' article_slug=article.slug %}">
+  <link rel="canonical" href="{% url 'post-detail' post_slug=post.slug %}">
   
-  <meta property="og:title" content="{{ article.title }}">
-  <meta property="og:description" content="{{ article.description }}">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="{% url 'article-detail' article_slug=article.slug %}">
+  <meta property="og:title" content="{{ post.title }}">
+  <meta property="og:description" content="{{ post.description }}">
+  <meta property="og:type" content="post">
+  <meta property="og:url" content="{% url 'post-detail' post_slug=post.slug %}">
   
-  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ article.cover.url }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.cover.url }}">
   <meta property="og:image:width" content="1280"/>
   <meta property="og:image:height" content="720"/>
   <meta property="og:site_name" content="lulzcasz">
   
-  <meta property="article:published_time" content="{{ article.published_at|date:'c' }}" />
-  <meta property="article:modified_time" content="{{ article.updated_at|date:'c' }}" />
-  <meta property="article:section" content="{{ article.verbose_name|title }}" />
+  <meta property="post:published_time" content="{{ post.published_at|date:'c' }}" />
+  <meta property="post:modified_time" content="{{ post.updated_at|date:'c' }}" />
+  <meta property="post:section" content="{{ post.verbose_name|title }}" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="{{ article.title }}" />
-  <meta name="twitter:description" content="{{ article.description }}" />
-  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ article.cover.url }}" />
+  <meta name="twitter:title" content="{{ post.title }}" />
+  <meta name="twitter:description" content="{{ post.description }}" />
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.cover.url }}" />
   
-  {% for tag in article.tags.all %}
-    <meta property="article:tag" content="{{ tag.name }}" />
+  {% for tag in post.tags.all %}
+    <meta property="post:tag" content="{{ tag.name }}" />
   {% endfor %}
 {% endblock meta_tags %}
 
@@ -39,19 +39,19 @@
   <main class="container flex-fill">
     <div class="row">
       <div class="col-xl-9">
-        <h1 class="pb-2 pt-2">{{ article.title }}</h1>
-        <p>{{ article.description }}</p>
-        <p class="pb-2">{{ article.created_at | date }}</p>
+        <h1 class="pb-2 pt-2">{{ post.title }}</h1>
+        <p>{{ post.description }}</p>
+        <p class="pb-2">{{ post.created_at | date }}</p>
         <div class="pb-3">
-          <img src="{{ article.cover|variant:'large' }}">
+          <img src="{{ post.cover|variant:'large' }}">
           <div id="fullscreenOverlay" class="fullscreen-overlay" onclick="closeFullscreen()">
             <span class="close-btn">&times;</span>
             <img id="overlayImage" src="" alt="Fullscreen Image">
           </div>
         </div>
         <div class="pt-3">
-          <div class="article-content">
-            {{ article.content|safe }}
+          <div class="post-content">
+            {{ post.content|safe }}
           </div>
         </div>
         {% if profile %}
@@ -72,16 +72,16 @@
       </div>
       <div class="col-xl-3 mt-3" style="position: sticky; top: 1rem; height: fit-content;">
         <div>
-          {% if article.get_related_articles %}
-            {% for related_article in article.get_related_articles %}
+          {% if post.get_related_posts %}
+            {% for related_post in post.get_related_posts %}
             <div class="pb-3">
-              <a href="{% url 'article-detail' article_slug=related_article.slug %}" class="text-decoration-none text-reset">
+              <a href="{% url 'post-detail' post_slug=related_post.slug %}" class="text-decoration-none text-reset">
                 <div class="card border-0 rounded-4">
                   <div style="position: relative;"> 
                     <img 
-                      src="{{ related_article.cover|variant:'small' }}" 
+                      src="{{ related_post.cover|variant:'small' }}" 
                       class="card-img-top rounded-top-4" 
-                      alt="{{ related_article.title }}"
+                      alt="{{ related_post.title }}"
                       style="aspect-ratio: 191/100; object-fit: cover;"
                     >
                     <span class="badge rounded-3" style="
@@ -91,11 +91,11 @@
                       font-size: 0.75em;
                       z-index: 10;
                     ">
-                      {{ related_article.article_format.name }} 
+                      {{ related_post.post_format.name }} 
                     </span>
                   </div>
                   <div class="card-body bg-body-tertiary rounded-bottom-4" style="background-color: #1E1E1E !important;">
-                    <h5 class="card-title">{{ related_article.title }}</h5>
+                    <h5 class="card-title">{{ related_post.title }}</h5>
                   </div>
                 </div>
               </a>
@@ -106,18 +106,18 @@
         <div class="pb-3">
           <hr class="pb-2">
           <div class="d-flex justify-content-center flex-wrap gap-2">
-            {% if article.article_format %}
-              <a href="{% url 'articles-by-format' format_slug=article.article_format.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
-                {{ article.article_format.name }}
+            {% if post.post_format %}
+              <a href="{% url 'posts-by-format' format_slug=post.post_format.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
+                {{ post.post_format.name }}
               </a>
             {% endif %}
-            {% if article.category %}
-              <a href="{% url 'articles-by-category' category_slug=article.category.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
-                {{ article.category.name }}
+            {% if post.category %}
+              <a href="{% url 'posts-by-category' category_slug=post.category.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
+                {{ post.category.name }}
               </a>
             {% endif %}
-            {% for tag in article.tags.all %}
-              <a href="{% url 'articles-by-tag' tag_slug=tag.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
+            {% for tag in post.tags.all %}
+              <a href="{% url 'posts-by-tag' tag_slug=tag.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
                 {{ tag.name }}
               </a>
             {% endfor %}

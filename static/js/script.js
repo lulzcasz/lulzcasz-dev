@@ -1,6 +1,5 @@
 document.addEventListener("click", function(event) {
-    // Check if the clicked element is an IMG and is inside .article-content
-    if (event.target.tagName === 'IMG' && event.target.closest('.article-content')) {
+    if (event.target.tagName === 'IMG' && event.target.closest('.post-content')) {
         const fullResUrl = event.target.dataset.original || event.target.src;
         openFullscreen(fullResUrl);
     }

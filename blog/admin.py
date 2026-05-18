@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Format, Category, Tag, Article
+from blog.models import Format, Category, Tag, Post
 from django.utils.html import format_html
 
 
@@ -14,8 +14,8 @@ class CategoryTagAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
 
 
-@admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'status', 'category', 'is_featured', 'published_at')
     list_editable = ('status', 'is_featured')
     list_filter = ('status', 'category', 'is_featured', 'created_at')
@@ -30,7 +30,7 @@ class ArticleAdmin(admin.ModelAdmin):
             'fields': ('title', 'slug', 'description', 'content')
         }),
         ("Mídia & Organização", {
-            'fields': ('cover', 'article_format', 'category', 'tags')
+            'fields': ('cover', 'post_format', 'category', 'tags')
         }),
         ("Status & Datas", {
             'fields': ('status', 'is_featured', 'published_at', 'updated_at'),

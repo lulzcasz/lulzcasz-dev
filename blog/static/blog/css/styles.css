@@ -122,12 +122,12 @@ pre[class*=language-] {
   cursor: pointer;
 }
 
-.article-content img {
+.post-content img {
     cursor: zoom-in;
     transition: transform 0.2s;
 }
 
-.article-content img:hover {
+.post-content img:hover {
     opacity: 0.95;
 }
 
