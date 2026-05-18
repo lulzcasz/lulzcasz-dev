@@ -7,16 +7,16 @@ from django.core.files.base import ContentFile
 
 @shared_task(bind=True)
 def process_image(self, relative_path):
-    try:
-        input_source = default_storage.path(relative_path)
-    except NotImplementedError:
-        input_source = default_storage.url(relative_path)
-
     directory = os.path.dirname(relative_path)
 
-    temp_file = tempfile.NamedTemporaryFile(suffix='.avif', delete=False)
-    temp_file.close()
-    temp_output_path = temp_file.name
+    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_in:
+        with default_storage.open(relative_path, 'rb') as storage_file:
+            temp_in.write(storage_file.read())
+        temp_input_path = temp_in.name
+
+    temp_file_out = tempfile.NamedTemporaryFile(suffix='.avif', delete=False)
+    temp_file_out.close()
+    temp_output_path = temp_file_out.name
 
     try:
         final_storage_path = os.path.join(directory, 'avatar.avif')
@@ -25,7 +25,7 @@ def process_image(self, relative_path):
 
         cmd = [
             'ffmpeg', '-y',
-            '-i', input_source,
+            '-i', temp_input_path,
             '-vf', avatar_vf,
             '-pix_fmt', 'yuv420p',
             '-c:v', 'libaom-av1',
@@ -47,6 +47,8 @@ def process_image(self, relative_path):
         raise e
     
     finally:
+        if os.path.exists(temp_input_path):
+            os.remove(temp_input_path)
         if os.path.exists(temp_output_path):
             os.remove(temp_output_path)
 
