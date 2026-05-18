@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from about.models import Link, Profile
-from about.models import HighlightArticle
+from about.models import HighlightPost
 
 
 def index(request):
@@ -10,6 +10,6 @@ def index(request):
         {
             "links": Link.objects.all(),
             "profile": Profile.objects.first(),
-            "highlight_articles": HighlightArticle.objects.all(),
+            "highlight_posts": HighlightPost.objects.all(),
         },
     )

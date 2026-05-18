@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const contentContainer = document.querySelector('.article-content');
+    const contentContainer = document.querySelector('.post-content');
 
     if (contentContainer) {
         contentContainer.addEventListener('click', function(event) {

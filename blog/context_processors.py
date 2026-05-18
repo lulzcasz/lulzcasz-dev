@@ -1,4 +1,4 @@
-from blog.models import Format, Category, Article
+from blog.models import Format, Category, Post
 
 def explore_items(request):
     return {

@@ -2,23 +2,23 @@ from django.urls import path
 from blog.views import (
     tinymce_upload_image,
     index,
-    articles,
-    article_detail,
-    articles_by_format,
-    articles_by_category,
-    articles_by_tag,
+    posts,
+    post_detail,
+    posts_by_format,
+    posts_by_category,
+    posts_by_tag,
 )
 
 urlpatterns = [
     path('', index, name="home"),
-    path('todos-os-artigos/', articles, name="all-articles"),
+    path('todos-os-posts/', posts, name="all-posts"),
     path(
         'tinymce/upload-image/', tinymce_upload_image, name='tinymce-upload-image',
     ),
-    path('<slug:article_slug>/', article_detail, name='article-detail'),
-    path('formatos/<str:format_slug>/', articles_by_format, name='articles-by-format'),
+    path('<slug:post_slug>/', post_detail, name='post-detail'),
+    path('formatos/<str:format_slug>/', posts_by_format, name='posts-by-format'),
     path(
-        'categorias/<slug:category_slug>/', articles_by_category, name='articles-by-category'
+        'categorias/<slug:category_slug>/', posts_by_category, name='posts-by-category'
     ),
-    path('tags/<slug:tag_slug>/', articles_by_tag, name='articles-by-tag'),
+    path('tags/<slug:tag_slug>/', posts_by_tag, name='posts-by-tag'),
 ]

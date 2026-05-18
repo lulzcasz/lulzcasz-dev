@@ -17,7 +17,7 @@
           <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="exploreDropdown" style="background-color: #1E1E1E; border: 1px solid #333;">
           {% for format in formats %}
             <li>
-              <a class="dropdown-item" href="{% url 'articles-by-format' format_slug=format.slug %}">
+              <a class="dropdown-item" href="{% url 'posts-by-format' format_slug=format.slug %}">
                 {{ format.plural_name }}
               </a>
             </li>
@@ -26,7 +26,7 @@
             <li><hr class="dropdown-divider" style="border-top: 1px solid #444;"></li>
             
             {% for category in categories %}
-              <li><a class="dropdown-item" href="{% url 'articles-by-category' category_slug=category.slug %}">{{ category.name }}</a></li>
+              <li><a class="dropdown-item" href="{% url 'posts-by-category' category_slug=category.slug %}">{{ category.name }}</a></li>
             {% endfor %}
           </ul>
         </li>

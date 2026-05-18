@@ -7,7 +7,7 @@ from django.db.models import (
     CASCADE,
     PositiveSmallIntegerField,
 )
-from blog.models import Article
+from blog.models import Post
 from about.utils.upload_to import profile_avatar_path
 
 
@@ -50,14 +50,14 @@ class Profile(Model):
         return self.name
 
 
-class HighlightArticle(Model):
-    article = OneToOneField(Article, CASCADE, verbose_name='artigo')
+class HighlightPost(Model):
+    post = OneToOneField(Post, CASCADE, verbose_name='post')
     order = PositiveSmallIntegerField('ordem', default=0)
 
     class Meta:
-        verbose_name = 'artigo em destaque'
-        verbose_name_plural = 'artigos em destaque'
-        ordering = ['order', '-article__published_at']
+        verbose_name = 'post em destaque'
+        verbose_name_plural = 'posts em destaque'
+        ordering = ['order', '-post__published_at']
 
     def __str__(self):
-        return self.article.title 
+        return self.post.title 

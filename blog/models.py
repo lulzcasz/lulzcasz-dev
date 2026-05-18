@@ -15,7 +15,7 @@ from django.db.models import (
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
-from blog.utils import article_image_path
+from blog.utils import post_image_path
 from tinymce.models import HTMLField
 from bs4 import BeautifulSoup
 import os
@@ -63,24 +63,24 @@ class Tag(TaxonomyBase):
     pass
 
 
-class Article(Model):
+class Post(Model):
     class Status(TextChoices):
         DRAFT = "draft", "Rascunho"
         PUBLISHED = "published", "Publicado"
 
-    article_format = ForeignKey(
+    post_format = ForeignKey(
         Format,
         SET_NULL,
         null=True,
         blank=True,
         max_length=11,
-        related_name='articles',
+        related_name='posts',
         verbose_name='formato',
     )
     title = CharField("título", max_length=60, unique=True)
     slug = SlugField(max_length=60, unique=True, blank=True)
     description = CharField("descrição", max_length=145, blank=True)
-    cover = ImageField("capa", upload_to=article_image_path, blank=True)
+    cover = ImageField("capa", upload_to=post_image_path, blank=True)
     content = HTMLField("conteúdo", blank=True)
     created_at = DateTimeField("criado em", auto_now_add=True)
     updated_at = DateTimeField("atualizado em", auto_now=True)
@@ -92,9 +92,9 @@ class Article(Model):
         null=True,
         blank=True,
         verbose_name='categoria',
-        related_name='articles',
+        related_name='posts',
     )
-    tags = ManyToManyField(Tag, blank=True, related_name='articles')
+    tags = ManyToManyField(Tag, blank=True, related_name='posts')
     is_featured = BooleanField(default=False, verbose_name="é destaque")
 
     def save(self, *args, **kwargs):
@@ -108,7 +108,7 @@ class Article(Model):
 
         if self.cover:
             if self.pk:
-                if Article.objects.get(pk=self.pk).cover != self.cover:
+                if Post.objects.get(pk=self.pk).cover != self.cover:
                     self._cover_changed = True
             else:
                 self._cover_changed = True
@@ -157,14 +157,14 @@ class Article(Model):
 
         super().save(*args, **kwargs)
         
-    def get_related_articles(self):
+    def get_related_posts(self):
         tag_ids = list(self.tags.values_list("id", flat=True))
 
         if not tag_ids:
-            return Article.objects.none()
+            return Post.objects.none()
 
         return (
-            Article.objects.filter(
+            Post.objects.filter(
                 status=self.Status.PUBLISHED,
                 tags__in=tag_ids,
             )
@@ -178,7 +178,7 @@ class Article(Model):
         return self.title
 
     class Meta:
-        verbose_name = 'artigo'
+        verbose_name = 'post'
 
     def get_absolute_url(self):
-        return reverse("article-detail", kwargs={"article_slug": self.slug})
+        return reverse("post-detail", kwargs={"post_slug": self.slug})

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from blog.models import Format, Category, Tag, Article
+from blog.models import Format, Category, Tag, Post
 from blog.utils import paginate_queryset
 import os
 from uuid import uuid4
@@ -33,75 +33,75 @@ def tinymce_upload_image(request):
 
 
 def index(request):
-    last_articles = Article.objects.filter(
-        status=Article.Status.PUBLISHED
+    last_posts = Post.objects.filter(
+        status=Post.Status.PUBLISHED
     ).order_by("-published_at")[:3]
 
-    featured_articles = Article.objects.filter(
-        status=Article.Status.PUBLISHED, 
+    featured_posts = Post.objects.filter(
+        status=Post.Status.PUBLISHED, 
         is_featured=True
     )[:3]
 
-    ctx = {"featured_articles": featured_articles, "last_articles": last_articles}
+    ctx = {"featured_posts": featured_posts, "last_posts": last_posts}
 
     return render(request, "blog/index.html", ctx)
 
 
-def article_detail(request, article_slug):
-    article = get_object_or_404(
-        Article, slug=article_slug, status=Article.Status.PUBLISHED
+def post_detail(request, post_slug):
+    post = get_object_or_404(
+        Post, slug=post_slug, status=Post.Status.PUBLISHED
     )
     profile = Profile.objects.first()
 
     return render(
-        request, "blog/article_detail.html", {"article": article, "profile": profile},
+        request, "blog/post_detail.html", {"post": post, "profile": profile},
     )
 
 
-def articles(request):
-    all_posts = Article.objects.filter(
-        status=Article.Status.PUBLISHED
+def posts(request):
+    all_posts = Post.objects.filter(
+        status=Post.Status.PUBLISHED
     ).order_by("-published_at")
 
     page_obj = paginate_queryset(request, all_posts)
 
     return render(
         request,
-        "blog/article_list.html",
+        "blog/post_list.html",
         {
             "page_obj": page_obj, 
-            "title": "Todos os Artigos"
+            "title": "Todos os Posts"
         },
     )
 
-def articles_by_format(request, format_slug):
-    article_format = get_object_or_404(Format, slug=format_slug)
+def posts_by_format(request, format_slug):
+    post_format = get_object_or_404(Format, slug=format_slug)
 
-    articles_qs = Article.objects.filter(
-        article_format=article_format, 
-        status=Article.Status.PUBLISHED
+    posts_qs = Post.objects.filter(
+        post_format=post_format, 
+        status=Post.Status.PUBLISHED
     ).order_by("-published_at")
 
-    page_obj = paginate_queryset(request, articles_qs)
+    page_obj = paginate_queryset(request, posts_qs)
 
     context = {
         "page_obj": page_obj,
-        "title": f"Formato: {article_format.name}",
-        "current_format": article_format,
+        "title": f"Formato: {post_format.name}",
+        "current_format": post_format,
     }
 
-    return render(request, "blog/article_list.html", context)
+    return render(request, "blog/post_list.html", context)
 
 
-def articles_by_category(request, category_slug):
+def posts_by_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
 
-    articles_qs = Article.objects.filter(
+    posts_qs = Post.objects.filter(
         category=category, 
-        status=Article.Status.PUBLISHED
+        status=Post.Status.PUBLISHED
     ).order_by("-published_at")
 
-    page_obj = paginate_queryset(request, articles_qs)
+    page_obj = paginate_queryset(request, posts_qs)
 
     context = {
         "page_obj": page_obj,
@@ -109,18 +109,18 @@ def articles_by_category(request, category_slug):
         "current_category": category,
     }
 
-    return render(request, "blog/article_list.html", context)
+    return render(request, "blog/post_list.html", context)
 
 
-def articles_by_tag(request, tag_slug):
+def posts_by_tag(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
 
-    articles_qs = Article.objects.filter(
+    posts_qs = Post.objects.filter(
         tags=tag, 
-        status=Article.Status.PUBLISHED
+        status=Post.Status.PUBLISHED
     ).order_by("-published_at")
 
-    page_obj = paginate_queryset(request, articles_qs)
+    page_obj = paginate_queryset(request, posts_qs)
 
     context = {
         "page_obj": page_obj,
@@ -128,4 +128,4 @@ def articles_by_tag(request, tag_slug):
         "current_tag": tag,
     }
 
-    return render(request, "blog/article_list.html", context)
+    return render(request, "blog/post_list.html", context)

@@ -47,14 +47,14 @@
             </div>
             
             <div class="portfolio-list d-flex flex-column gap-4">
-                {% for highlight in highlight_articles %}
-                <a href="{{ highlight.article.get_absolute_url }}" class="article-card-horizontal">
+                {% for highlight in highlight_posts %}
+                <a href="{{ highlight.post.get_absolute_url }}" class="post-card-horizontal">
                     <div class="row g-0">
                         
-                        {% if highlight.article.cover %}
+                        {% if highlight.post.cover %}
                         <div class="col-md-5 col-xl-4 border-bottom border-md-bottom-0 border-md-end border-secondary">
                             <div class="img-side-container">
-                                <img src="{{ highlight.article.cover|variant:'medium' }}" alt="{{ highlight.article.title }}">
+                                <img src="{{ highlight.post.cover|variant:'medium' }}" alt="{{ highlight.post.title }}">
                             </div>
                         </div>
                         {% endif %}
@@ -64,25 +64,25 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="d-flex gap-2">
                                         <span class="badge format-badge rounded-2">
-                                            {{ highlight.article.article_format.name }}
+                                            {{ highlight.post.post_format.name }}
                                         </span>
                                         <span class="text-uppercase fw-bold text-secondary" style="font-size: 0.65rem; letter-spacing: 1px;">
-                                            {{ highlight.article.category.name|default:"Geral" }}
+                                            {{ highlight.post.category.name|default:"Geral" }}
                                         </span>
                                     </div>
                                     <small class="text-muted" style="font-size: 0.75rem;">
-                                        {{ highlight.article.published_at|date:"M Y" }}
+                                        {{ highlight.post.published_at|date:"M Y" }}
                                     </small>
                                 </div>
                                 
-                                <h4 class="fw-bold mb-2 text-white">{{ highlight.article.title }}</h4>
+                                <h4 class="fw-bold mb-2 text-white">{{ highlight.post.title }}</h4>
                                 
                                 <p class="line-clamp-2 mb-4 text-secondary" style="font-size: 0.95rem; line-height: 1.6;">
-                                    {{ highlight.article.description }}
+                                    {{ highlight.post.description }}
                                 </p>
                                 
                                 <div class="mt-auto d-flex flex-wrap gap-2">
-                                    {% for tag in highlight.article.tags.all %}
+                                    {% for tag in highlight.post.tags.all %}
                                     <span class="badge rounded-pill tag-badge-custom fw-medium">
                                         {{ tag.name }}
                                     </span>
