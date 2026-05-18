@@ -11,8 +11,6 @@ domain_alias := "media.localhost"
 access_key := "GK06482d2e182023a5782e72e6"
 secret_key := "da5f822da7f6919ab3113b3e8dd53e1333a9895beb7599b7393dc05e47fcb826"
 
-# -- Variáveis do Rclone --
-# Agora aponta para a pasta 'media' dentro do diretório atual do projeto
 mount_dir := "media" 
 s3_endpoint := "http://127.0.0.1:3900"
 s3_region := "garage"
