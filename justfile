@@ -56,6 +56,7 @@ s3-mount:
 		--s3-region={{s3_region}} \
 		--s3-force-path-style=true \
 		--vfs-cache-mode=writes \
+		--dir-cache-time=5s \
 		--no-modtime \
 		--daemon
 
