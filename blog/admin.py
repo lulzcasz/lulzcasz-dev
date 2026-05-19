@@ -5,8 +5,8 @@ from django.utils.html import format_html
 
 @admin.register(Format)
 class FormatAdmin(admin.ModelAdmin):
-    list_display = ('name', 'plural_name', 'slug')
-    fields = ('name', 'plural_name', 'slug')
+    list_display = ('name', 'slug')
+    fields = ('name', 'slug')
 
 
 @admin.register(Category, Tag)

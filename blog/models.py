@@ -33,25 +33,15 @@ class TaxonomyBase(Model):
     def __str__(self):
         return self.name
 
-    @property
-    def slug_source(self):
-        return self.name
-
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.slug_source)
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
 
 class Format(TaxonomyBase):
-    plural_name = CharField("nome plural", max_length=32, unique=True)
-
     class Meta:
         verbose_name = 'formato'
-
-    @property
-    def slug_source(self):
-        return self.plural_name
 
 
 class Category(TaxonomyBase):

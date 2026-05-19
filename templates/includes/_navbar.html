@@ -18,7 +18,7 @@
           {% for format in formats %}
             <li>
               <a class="dropdown-item" href="{% url 'posts-by-format' format_slug=format.slug %}">
-                {{ format.plural_name }}
+                {{ format.name }}
               </a>
             </li>
           {% endfor %}
