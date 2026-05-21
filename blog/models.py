@@ -17,10 +17,6 @@ from django.utils import timezone
 from django.utils.text import slugify
 from blog.utils import post_image_path
 from tinymce.models import HTMLField
-from bs4 import BeautifulSoup
-import os
-from django.core.files.storage import default_storage
-from urllib.parse import urlparse
 
 
 class TaxonomyBase(Model):
@@ -102,48 +98,6 @@ class Post(Model):
                     self._cover_changed = True
             else:
                 self._cover_changed = True
-            
-        if self.content:
-            soup = BeautifulSoup(self.content, 'html.parser')
-            images = soup.find_all('img')
-            
-            modified = False
-            for img in images:
-                src = img.get('src')
-                if not src: 
-                    continue
-
-                if 'raw.' in src:
-                    try:
-                        parsed = urlparse(src)
-                        path = parsed.path
-                        
-                        if 'images/' in path:
-                            start_index = path.find('images/')
-                            relative_raw_path = path[start_index:] 
-                            
-                            directory = os.path.dirname(relative_raw_path)
-                            relative_avif_path = os.path.join(directory, 'processed.avif')
-
-                            if default_storage.exists(relative_avif_path):
-                                path_part, _ = src.rsplit('/', 1)
-                                new_src = f"{path_part}/processed.avif"
-
-                                img['data-original'] = src
-                                
-                                existing_classes = img.get('class', [])
-                                if 'zoomable' not in existing_classes:
-                                    img['class'] = existing_classes + ['zoomable']
-
-                                img['src'] = new_src
-                                
-                                modified = True
-
-                    except Exception as e:
-                        continue
-            
-            if modified:
-                self.content = str(soup)
 
         super().save(*args, **kwargs)
         
