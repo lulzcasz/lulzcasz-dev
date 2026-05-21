@@ -1,24 +1,8 @@
-document.addEventListener("click", function(event) {
-    if (event.target.tagName === 'IMG' && event.target.closest('.post-content')) {
-        const fullResUrl = event.target.dataset.original || event.target.src;
-        openFullscreen(fullResUrl);
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof mediumZoom !== 'undefined') {
+        mediumZoom('.zoomable', {
+            margin: 24,
+            background: '#000000ee' 
+        });
     }
 });
-
-function openFullscreen(imageUrl) {
-    var overlay = document.getElementById('fullscreenOverlay');
-    var img = document.getElementById('overlayImage');
-    
-    if (overlay && img) {
-        img.src = imageUrl;
-        overlay.style.display = "flex";
-    }
-}
-
-function closeFullscreen() {
-    var overlay = document.getElementById('fullscreenOverlay');
-    if (overlay) {
-        overlay.style.display = "none";
-        document.getElementById('overlayImage').src = '';
-    }
-}
