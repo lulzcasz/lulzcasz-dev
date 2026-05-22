@@ -1,6 +1,6 @@
 FROM mwader/static-ffmpeg:8.1.1@sha256:735f84b905e00d5c618b667f0b053f83b1096f5fc404c607e6134bf2275a0e0a AS ffmpeg
 
-FROM ghcr.io/astral-sh/uv:0.11.15-debian@sha256:07e422d3b9ced1c7ce694628d114a65b010eb1688bd52dba2b673ed3589ff45f AS base 
+FROM ghcr.io/astral-sh/uv:0.11.16-debian@sha256:5fdbe68e9f29a8a8b1085a1fbb7273c534079f4bb173c9bf66e9f4ae3174a1ec AS base 
 
 COPY --from=ffmpeg /ffmpeg /usr/local/bin/
 COPY --from=ffmpeg /ffprobe /usr/local/bin/
