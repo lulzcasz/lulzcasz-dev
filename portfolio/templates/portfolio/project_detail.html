@@ -1,0 +1,130 @@
+{% extends 'blog/base.html' %}
+
+{% load image_utils %}
+{% load static %}
+
+{% block title %}
+  <title>{{ project.title }}</title>
+{% endblock title %}
+
+{% block meta_tags %}
+  <meta name="description" content="{{ project.description }}">
+  <meta name="keywords" content="{{ meta_keywords }}">
+  
+  <link rel="canonical" href="{% url 'project-detail' project_slug=project.slug %}">
+  
+  <meta property="og:title" content="{{ project.title }}">
+  <meta property="og:description" content="{{ project.description }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{% url 'project-detail' project_slug=project.slug %}">
+  
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ project.cover.url }}">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:site_name" content="lulzcasz">
+  
+  <meta property="article:published_time" content="{{ project.published_at|date:'c' }}">
+  <meta property="article:modified_time" content="{{ project.updated_at|date:'c' }}">
+  <meta property="article:section" content="Projeto">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ project.title }}">
+  <meta name="twitter:description" content="{{ project.description }}">
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ project.cover.url }}">
+  
+  {% for tech in project.technologies.all %}
+    <meta property="article:tag" content="{{ tech.name }}">
+  {% endfor %}
+{% endblock meta_tags %}
+
+{% block main %}
+  <main class="container flex-fill">
+    <div class="row">
+      <div class="col-xl-9">
+        <h1 class="pb-2 pt-2">{{ project.title }}</h1>
+        <p>{{ project.description }}</p>
+        <p class="pb-2 text-secondary">{{ project.created_at | date }}</p>
+        
+        {% if project.repository or project.live %}
+          <div class="d-flex gap-2 pb-3">
+            {% if project.repository %}
+              <a href="{{ project.repository }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                Repositório
+              </a>
+            {% endif %}
+            {% if project.live %}
+              <a href="{{ project.live }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                Ao Vivo
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="pb-3">
+          <img src="{{ project.cover|variant:'large' }}" alt="{{ project.title }}" class="img-fluid rounded">
+        </div>
+        
+        <div class="pt-3">
+          <div class="post-content">
+            {{ project.content|optimize_content_images }}
+          </div>
+        </div>
+        
+        {% if profile %}
+          <a href="{% url 'home' %}" class="text-decoration-none text-reset">
+            <div class="card mt-1 mb-4 border-0 rounded-4 text-light" style="background-color: #1E1E1E;">
+              <div class="card-body p-4 d-flex flex-column flex-sm-row align-items-center gap-4">
+                {% if profile.avatar %}
+                  <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="rounded-circle object-fit-cover shadow-sm" style="width: 80px; height: 80px;">
+                {% endif %}
+                <div class="text-center text-sm-start">
+                  <h4 class="fw-bold mb-1 text-light">{{ profile.name }}</h4>
+                  <p class="text-secondary mb-0" style="font-size: 0.95rem;">{{ profile.subtitle }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endif %}
+      </div>
+      
+      <div class="col-xl-3 mt-3" style="position: sticky; top: 1rem; height: fit-content;">
+        <div>
+          {% if project.get_related_projects %}
+            {% for related_project in project.get_related_projects %}
+              <div class="pb-3">
+                <a href="{% url 'project-detail' project_slug=related_project.slug %}" class="text-decoration-none text-reset">
+                  <div class="card border-0 rounded-4">
+                    <div style="position: relative;"> 
+                      <img 
+                        src="{{ related_project.cover|variant:'small' }}" 
+                        class="card-img-top rounded-top-4" 
+                        alt="{{ related_project.title }}"
+                        style="aspect-ratio: 191/100; object-fit: cover;"
+                      >
+                    </div>
+                    <div class="card-body bg-body-tertiary rounded-bottom-4" style="background-color: #1E1E1E !important;">
+                      <h5 class="card-title">{{ related_project.title }}</h5>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        
+        <div class="pb-3">
+          <hr class="pb-2">
+          <div class="d-flex justify-content-center flex-wrap gap-2">
+            {% for tech in project.technologies.all %}
+              <a href="{% url 'projects-by-technology' tech_slug=tech.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
+                {{ tech.name }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script>
+{% endblock main %}

@@ -1,0 +1,102 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+{% load image_utils %}
+
+{% block title %}
+<title>Sobre | {{ profile.name }}</title>
+{% endblock %}
+
+{% block main %}
+<main class="flex-fill">
+
+  <section class="hero-section py-5">
+    <div class="container">
+      <div class="row align-items-center text-center text-lg-start">
+        <div class="col-lg-5 col-xl-4 mb-4 mb-lg-0">
+          {% if profile.avatar %}
+          <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="rounded-circle mb-4 about-avatar">
+          {% endif %}
+
+          <h1 class="fw-bold display-5 mb-2 text-white">{{ profile.name }}</h1>
+          <p class="lead mb-4 text-secondary">{{ profile.subtitle }}</p>
+
+          <div class="links-container justify-content-center justify-content-lg-start">
+            {% for link in links %}
+            <a href="{{ link.link }}" target="_blank" 
+               class="btn rounded-pill px-4 fw-bold shadow-sm text-decoration-none" 
+               style="background-color: {{ link.bg_color }}; color: {{ link.color }}; border: none;">
+              {{ link.name }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="col-lg-7 col-xl-8">
+          <div class="ps-lg-5">
+            <p class="bio-text mb-0">{{ profile.bio }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between mb-5 border-bottom border-secondary pb-3">
+        <h2 class="fw-bold m-0 text-white">O que eu ando construindo</h2>
+      </div>
+
+      <div class="portfolio-list d-flex flex-column gap-4">
+        {% for project in projects %}
+        <a href="{{ project.get_absolute_url }}" class="post-card-horizontal">
+          <div class="row g-0">
+
+            {% if project.cover %}
+            <div class="col-md-5 col-xl-4 border-bottom border-md-bottom-0 border-md-end border-secondary">
+              <div class="img-side-container">
+                <img src="{{ project.cover|variant:'medium' }}" alt="{{ project.title }}">
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="col-md-7 col-xl-8">
+              <div class="p-4 h-100 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div class="d-flex gap-2">
+                    <span class="badge format-badge rounded-2">
+                      {{ project.post_format.name }}
+                    </span>
+                    <span class="text-uppercase fw-bold text-secondary" style="font-size: 0.65rem; letter-spacing: 1px;">
+                      {{ highlight.post.category.name|default:"Geral" }}
+                    </span>
+                  </div>
+                </div>
+
+                <h4 class="fw-bold mb-2 text-white">{{ project.title }}</h4>
+
+                <p class="line-clamp-2 mb-4 text-secondary" style="font-size: 0.95rem; line-height: 1.6;">
+                  {{ project.description }}
+                </p>
+
+                <div class="mt-auto d-flex flex-wrap gap-2">
+                  {% for tech in project.technologies.all %}
+                  <span class="badge rounded-pill tag-badge-custom fw-medium">
+                    {{ tech.name }}
+                  </span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% empty %}
+        <div class="text-center py-5">
+          <p class="text-muted">Nenhum registro encontrado.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+</main>
+{% endblock main %}

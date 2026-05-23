@@ -10,6 +10,7 @@ dependencies = [
     "django==5.2.14",
     "django-htmx==1.27.0",
     "django-storages[s3]==1.14.6",
+    "django-taggit==6.1.0",
     "django-tinymce==5.0.0",
     "gunicorn==26.0.0",
     "pillow==12.2.0",
