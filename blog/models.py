@@ -4,9 +4,9 @@ from django.urls import reverse
 from taggit.managers import TaggableManager
 
 
-class Format(TaxonomyBase):
+class Genre(TaxonomyBase):
     class Meta:
-        verbose_name = "formato"
+        verbose_name = "gênero"
 
 
 class Category(TaxonomyBase):
@@ -15,13 +15,13 @@ class Category(TaxonomyBase):
 
 
 class Post(ContentBase):
-    post_format = ForeignKey(
-        Format,
+    post_genre = ForeignKey(
+        Genre,
         SET_NULL,
         null=True,
         blank=True,
         related_name="posts",
-        verbose_name="formato",
+        verbose_name="gênero",
     )
     category = ForeignKey(
         Category,

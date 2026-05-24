@@ -87,7 +87,7 @@
                       font-size: 0.75em;
                       z-index: 10;
                     ">
-                      {{ related_post.post_format.name }} 
+                      {{ related_post.post_genre.name }} 
                     </span>
                   </div>
                   <div class="card-body bg-body-tertiary rounded-bottom-4" style="background-color: #1E1E1E !important;">
@@ -102,9 +102,9 @@
         <div class="pb-3">
           <hr class="pb-2">
           <div class="d-flex justify-content-center flex-wrap gap-2">
-            {% if post.post_format %}
-              <a href="{% url 'posts-by-format' format_slug=post.post_format.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
-                {{ post.post_format.name }}
+            {% if post.post_genre %}
+              <a href="{% url 'posts-by-genre' genre_slug=post.post_genre.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
+                {{ post.post_genre.name }}
               </a>
             {% endif %}
             {% if post.category %}

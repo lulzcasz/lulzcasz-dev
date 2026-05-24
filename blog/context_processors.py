@@ -1,7 +1,7 @@
-from blog.models import Format, Category, Post
+from blog.models import Genre, Category, Post
 
 def explore_items(request):
     return {
-        'formats': Format.objects.all(), 
+        'genres': Genre.objects.all(), 
         'categories': Category.objects.all(),
     }

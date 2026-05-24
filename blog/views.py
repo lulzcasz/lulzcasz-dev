@@ -1,4 +1,4 @@
-from blog.models import Category, Format, Post
+from blog.models import Category, Genre, Post
 from common.utils import paginate_queryset
 from django.shortcuts import get_object_or_404, render
 from portfolio.models import Profile
@@ -38,10 +38,10 @@ def posts(request):
     )
 
 
-def posts_by_format(request, format_slug):
-    post_format = get_object_or_404(Format, slug=format_slug)
+def posts_by_genre(request, genre_slug):
+    post_genre = get_object_or_404(Genre, slug=genre_slug)
 
-    posts_qs = Post.objects.filter(post_format=post_format, is_published=True).order_by(
+    posts_qs = Post.objects.filter(post_genre=post_genre, is_published=True).order_by(
         "-published_at"
     )
 
@@ -49,8 +49,8 @@ def posts_by_format(request, format_slug):
 
     context = {
         "page_obj": page_obj,
-        "title": f"Formato: {post_format.name}",
-        "current_format": post_format,
+        "title": f"Gênero: {post_genre.name}",
+        "current_genre": post_genre,
     }
 
     return render(request, "blog/post_list.html", context)
