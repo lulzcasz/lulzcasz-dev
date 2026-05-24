@@ -21,13 +21,13 @@
       
       <a href="/blog/" class="text-secondary text-decoration-none fw-bold me-2">Tudo</a>
       
-      {% for format in formats %}
-        <a href="{% url 'posts-by-format' format_slug=format.slug %}" class="text-light text-decoration-none opacity-75 text-hover-white">
-          {{ format.name }}
+      {% for genre in genres %}
+        <a href="{% url 'posts-by-genre' genre_slug=genre.slug %}" class="text-light text-decoration-none opacity-75 text-hover-white">
+          {{ genre.name }}
         </a>
       {% endfor %}
 
-      {% if formats and categories %}
+      {% if genres and categories %}
         <div style="border-left: 1px solid #444; height: 15px;"></div>
       {% endif %}
 

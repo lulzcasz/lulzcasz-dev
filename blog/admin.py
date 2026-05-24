@@ -1,9 +1,9 @@
 from django.contrib import admin
-from blog.models import Format, Category, Post
+from blog.models import Genre, Category, Post
 
 
-@admin.register(Format)
-class FormatAdmin(admin.ModelAdmin):
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
     pass
 
 
