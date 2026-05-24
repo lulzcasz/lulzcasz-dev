@@ -9,12 +9,21 @@
   "separateMultipleMajor": true,
   "packageRules": [
     {
+      "description": "Group ALL minor and patch updates by their group names globally",
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "Force ALL major updates to separate into individual package branches",
+      "matchUpdateTypes": ["major"],
+      "groupName": null
+    },
+    {
       "matchManagers": ["pep621"],
-      "groupName": "python dependencies",
       "rangeStrategy": "bump",
       "matchDepNames": [
         "!python"
-      ]
+      ],
+      "groupName": "python dependencies"
     },
     {
       "matchDepNames": ["python"],
@@ -30,7 +39,6 @@
     },
     {
       "matchManagers": ["custom.regex"],
-      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "frontend dependencies"
     }
   ],
