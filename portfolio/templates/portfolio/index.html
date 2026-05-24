@@ -62,14 +62,6 @@
             <div class="col-md-7 col-xl-8">
               <div class="p-4 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div class="d-flex gap-2">
-                    <span class="badge format-badge rounded-2">
-                      {{ project.post_format.name }}
-                    </span>
-                    <span class="text-uppercase fw-bold text-secondary" style="font-size: 0.65rem; letter-spacing: 1px;">
-                      {{ highlight.post.category.name|default:"Geral" }}
-                    </span>
-                  </div>
                 </div>
 
                 <h4 class="fw-bold mb-2 text-white">{{ project.title }}</h4>
@@ -77,14 +69,14 @@
                 <p class="line-clamp-2 mb-4 text-secondary" style="font-size: 0.95rem; line-height: 1.6;">
                   {{ project.description }}
                 </p>
-
-                <div class="mt-auto d-flex flex-wrap gap-2">
-                  {% for tech in project.technologies.all %}
-                  <span class="badge rounded-pill tag-badge-custom fw-medium">
-                    {{ tech.name }}
-                  </span>
-                  {% endfor %}
-                </div>
+<div class="mt-auto d-flex flex-wrap gap-2">
+  {% for tech in project.technologies.all %}
+  <span class="badge rounded-pill fw-medium" 
+        style="background-color: {{ tech.color }}; color: {{ tech.text_color }}; padding: 0.5em 0.9em; font-size: 0.75rem;">
+    {{ tech.name }}
+  </span>
+  {% endfor %}
+</div>
               </div>
             </div>
           </div>

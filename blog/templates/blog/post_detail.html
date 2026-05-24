@@ -112,6 +112,11 @@
                 {{ post.category.name }}
               </a>
             {% endif %}
+            {% for tech in post.technologies.all %}
+              <a href="#" class="btn btn-sm btn-dark rounded-pill px-3">
+                {{ tech.name }}
+              </a>
+            {% endfor %}
             {% for tag in post.tags.all %}
               <a href="{% url 'posts-by-tag' tag_slug=tag.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
                 {{ tag.name }}

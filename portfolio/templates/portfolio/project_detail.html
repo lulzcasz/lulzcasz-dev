@@ -115,11 +115,7 @@
         <div class="pb-3">
           <hr class="pb-2">
           <div class="d-flex justify-content-center flex-wrap gap-2">
-            {% for tech in project.technologies.all %}
-              <a href="{% url 'projects-by-technology' tech_slug=tech.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
-                {{ tech.name }}
-              </a>
-            {% endfor %}
+
           </div>
         </div>
       </div>

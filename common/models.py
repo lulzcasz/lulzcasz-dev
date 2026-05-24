@@ -1,11 +1,33 @@
-from django.db.models import Model, CharField, SlugField
-from django.utils.text import slugify
-from django.db.models import (
-    Model, CharField, SlugField, ImageField, BooleanField, DateTimeField
-)
-from tinymce.models import HTMLField
 from common.utils import post_image_path
+from django.db.models import (
+    BooleanField,
+    CharField,
+    DateTimeField,
+    ImageField,
+    Model,
+    SlugField,
+)
 from django.utils import timezone
+from django.utils.text import slugify
+from tinymce.models import HTMLField
+
+
+class ColorMixin(Model):
+    color = CharField("cor", max_length=7)
+
+    @property
+    def text_color(self):
+        hex_color = self.color.lstrip("#")
+
+        if len(hex_color) == 6:
+            r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+            luminance = 0.299 * r + 0.587 * g + 0.114 * b
+            return "#000000" if luminance > 128 else "#ffffff"
+
+        return "#ffffff"
+
+    class Meta:
+        abstract = True
 
 
 class TaxonomyBase(Model):
@@ -64,8 +86,6 @@ class ContentBase(Model):
         return self.title
 
 
-class Technology(TaxonomyBase):
-    color = CharField("cor", max_length=7)
-    
+class Technology(ColorMixin, TaxonomyBase):
     class Meta(TaxonomyBase.Meta):
-        verbose_name = 'tecnologia'
+        verbose_name = "tecnologia"

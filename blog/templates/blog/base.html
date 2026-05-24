@@ -15,6 +15,31 @@
 	data-prismjs-copy-success="Copiado!" style="background-color: #121212" class="d-flex flex-column min-vh-100" data-bs-theme="dark">
     <header>
       {% include 'includes/_navbar.html' %}
+      <div style="background-color: #1a1a1a; border-bottom: 1px solid #333;" class="py-2 mb-4">
+  <div class="container-fluid">
+    <div class="d-flex flex-wrap gap-3 justify-content-start align-items-center" style="font-size: 0.9rem;">
+      
+      <a href="/blog/" class="text-secondary text-decoration-none fw-bold me-2">Tudo</a>
+      
+      {% for format in formats %}
+        <a href="{% url 'posts-by-format' format_slug=format.slug %}" class="text-light text-decoration-none opacity-75 text-hover-white">
+          {{ format.name }}
+        </a>
+      {% endfor %}
+
+      {% if formats and categories %}
+        <div style="border-left: 1px solid #444; height: 15px;"></div>
+      {% endif %}
+
+      {% for category in categories %}
+        <a href="{% url 'posts-by-category' category_slug=category.slug %}" class="text-light text-decoration-none opacity-75 text-hover-white">
+          {{ category.name }}
+        </a>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
     </header>
     {% block main %}{% endblock %}
     <footer style="background-color: #1E1E1E;">
