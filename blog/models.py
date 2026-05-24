@@ -1,23 +1,17 @@
-from django.db.models import (
-    Count,
-    Q,
-    ManyToManyField,
-    ForeignKey,
-    SET_NULL,
-)
+from common.models import ContentBase, TaxonomyBase, Technology
+from django.db.models import SET_NULL, Count, ForeignKey, ManyToManyField, Q
 from django.urls import reverse
 from taggit.managers import TaggableManager
-from common.models import TaxonomyBase, ContentBase
 
 
 class Format(TaxonomyBase):
     class Meta:
-        verbose_name = 'formato'
+        verbose_name = "formato"
 
 
 class Category(TaxonomyBase):
     class Meta:
-        verbose_name = 'categoria'
+        verbose_name = "categoria"
 
 
 class Post(ContentBase):
@@ -26,21 +20,25 @@ class Post(ContentBase):
         SET_NULL,
         null=True,
         blank=True,
-        related_name='posts',
-        verbose_name='formato',
+        related_name="posts",
+        verbose_name="formato",
     )
     category = ForeignKey(
-        Category, SET_NULL,
+        Category,
+        SET_NULL,
         null=True,
         blank=True,
-        verbose_name='categoria',
-        related_name='posts',
+        verbose_name="categoria",
+        related_name="posts",
+    )
+    technologies = ManyToManyField(
+        Technology, blank=True, related_name="posts", verbose_name="tecnologias"
     )
     tags = TaggableManager(blank=True)
 
     class Meta:
-        verbose_name = 'post'
-        
+        verbose_name = "post"
+
     def get_related_posts(self):
         tag_ids = list(self.tags.values_list("id", flat=True))
 
@@ -49,7 +47,8 @@ class Post(ContentBase):
 
         return (
             Post.objects.filter(
-                is_published=True, tags__in=tag_ids,
+                is_published=True,
+                tags__in=tag_ids,
             )
             .exclude(pk=self.pk)
             .annotate(shared_tag_count=Count("tags", filter=Q(tags__in=tag_ids)))
