@@ -2,6 +2,7 @@ from common.models import ContentBase, TaxonomyBase, Technology
 from django.db.models import SET_NULL, Count, ForeignKey, ManyToManyField, Q
 from django.urls import reverse
 from taggit.managers import TaggableManager
+from products.models import Product
 
 
 class Genre(TaxonomyBase):
@@ -35,6 +36,7 @@ class Post(ContentBase):
         Technology, blank=True, related_name="posts", verbose_name="tecnologias"
     )
     tags = TaggableManager(blank=True)
+    products = ManyToManyField(Product, verbose_name="produtos", blank=True)
 
     class Meta:
         verbose_name = "post"

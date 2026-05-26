@@ -38,7 +38,7 @@
 {% block main %}
   <main class="container flex-fill">
     <div class="row">
-      <div class="col-xl-9">
+      <div class="col-xl-8">
         <h1 class="pb-2 pt-2">{{ post.title }}</h1>
         <p>{{ post.description }}</p>
         <p class="pb-2">{{ post.created_at | date }}</p>
@@ -66,8 +66,51 @@
           </a>
         {% endif %}
       </div>
-      <div class="col-xl-3 mt-3" style="position: sticky; top: 1rem; height: fit-content;">
+      <div class="col-xl-4 mt-3" style="position: sticky; top: 1rem; height: fit-content;">
         <div>
+
+
+{% if post.products.exists %}
+<div class="mb-4">            
+  <div class="d-flex flex-column gap-2"> 
+    {% for product in post.products.all %}
+      
+      <div class="card border-0 rounded-4 w-100" style="background-color: #1E1E1E;">
+        <div class="d-flex flex-row p-2 align-items-center"> 
+          
+          <div class="d-flex align-items-center justify-content-center p-2" style="width: 128px; height: 128px; min-width: 128px;">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+            {% endif %}
+          </div>
+          
+          <div class="d-flex flex-column ms-3 flex-grow-1">
+            
+            <h6 class="card-title text-light mb-2" style="font-size: 1.1rem; font-weight: 500;">{{ product.name }}</h6>
+            
+            <div class="d-flex flex-row gap-2">
+              {% for link in product.links.all %}
+                <a href="{{ link.url }}" target="_blank" rel="nofollow noopener" title="Comprar na {{ link.store.name }}" class="bg-dark rounded-circle d-flex justify-content-center align-items-center shadow-sm text-decoration-none" style="width: 48px; height: 48px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                  {% if link.store.logo %}
+                      <img src="{{ link.store.logo.url }}" alt="{{ link.store.name }}" style="width: 24px; height: 24px; object-fit: contain;">
+                  {% else %}
+                      <i class="fa-solid fa-cart-shopping text-secondary" style="font-size: 16px;"></i>
+                  {% endif %}
+                </a>
+              {% endfor %}
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+          
+
           {% if post.get_related_posts %}
             {% for related_post in post.get_related_posts %}
             <div class="pb-3">
