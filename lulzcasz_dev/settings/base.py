@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django_htmx",
     'taggit',
     'common',
+    'products',
     'blog',
     'portfolio',
 ]
