@@ -1,7 +1,8 @@
 from django.db.models import (
-    CASCADE, FileField, ForeignKey, ImageField, Model, URLField, CharField,
+    CASCADE, FileField, ForeignKey, ImageField, Model, URLField, CharField, UUIDField
 )
 from products.utils.upload_to import store_logo_path, product_image_path
+from uuid import uuid4
 
 
 class Store(Model):
@@ -16,6 +17,7 @@ class Store(Model):
 
 
 class Product(Model):
+    uuid = UUIDField(default=uuid4, editable=False, unique=True)
     name = CharField('nome', max_length=32, unique=True)
     image = ImageField("imagem", upload_to=product_image_path)
 
