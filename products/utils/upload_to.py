@@ -11,4 +11,4 @@ def store_logo_path(instance, filename):
 
 
 def product_image_path(instance, filename):
-    return f'images/products/{now().strftime("%Y/%m/%d")}/{uuid4()}/raw{splitext(filename)[1]}'
+    return f'images/products/{instance.uuid}/{uuid4()}/raw{splitext(filename)[1]}'
