@@ -19,7 +19,7 @@ def process_image(self, relative_path):
     temp_output_path = temp_file_out.name
 
     try:
-        final_storage_path = os.path.join(directory, 'avatar.avif')
+        final_storage_path = os.path.join(directory, 'processed.avif')
 
         avatar_vf = "crop='min(iw,ih)':'min(iw,ih)',scale=256:256"
 
