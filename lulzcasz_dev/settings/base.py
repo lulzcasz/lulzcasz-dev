@@ -66,6 +66,8 @@ TINYMCE_EXTRA_MEDIA = {
     ],
 }
 
+TAGGIT_CASE_INSENSITIVE = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
