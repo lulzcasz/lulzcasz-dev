@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 
 
 def post_image_path(instance, filename):
-    return f'images/covers/{now().strftime("%Y/%m/%d")}/{uuid4()}/raw{splitext(filename)[1]}'
+    return f'images/covers/{instance.uuid}/{uuid4()}/raw{splitext(filename)[1]}'
 
 
 def paginate_queryset(request, queryset, per_page=4):

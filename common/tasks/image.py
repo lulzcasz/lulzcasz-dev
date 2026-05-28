@@ -23,9 +23,9 @@ def process_image(self, relative_path, kind):
 
         if kind == 'cover':
             versions = {
-                'small': (400, 210, 6),
-                'medium': (600, 315, 10),
-                'large': (1200, 630, 16),
+                'small': (512, 288, 6),
+                'medium': (896, 504, 10),
+                'large': (1280, 720, 16),
             }
 
             for suffix, (width, height, crf) in versions.items():

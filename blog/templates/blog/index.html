@@ -19,7 +19,7 @@
           <a href="{% url 'post-detail' post_slug=featured_posts.0.slug %}" class="text-decoration-none text-reset">
             <div class="card border-0 rounded-4">
               <img
-                src="{{ featured_posts.0.cover|variant:'medium' }}"
+                src="{{ featured_posts.0.cover|variant:'small' }}"
                 class="card-img-top rounded-top-4"
                 alt="{{ featured_posts.0.title }}"
                 style="aspect-ratio: 191/100; object-fit: cover;"

@@ -6,10 +6,12 @@ from django.db.models import (
     ImageField,
     Model,
     SlugField,
+    UUIDField,
 )
 from django.utils import timezone
 from django.utils.text import slugify
 from tinymce.models import HTMLField
+from uuid import uuid4
 
 
 class ColorMixin(Model):
@@ -47,6 +49,7 @@ class TaxonomyBase(Model):
 
 
 class ContentBase(Model):
+    uuid = UUIDField(default=uuid4, editable=False, unique=True)
     title = CharField("título", max_length=60, unique=True)
     slug = SlugField(max_length=60, unique=True, blank=True)
     description = CharField("descrição", max_length=145, blank=True)
