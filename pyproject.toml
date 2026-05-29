@@ -24,7 +24,7 @@ package = false
 
 [dependency-groups]
 dev = [
-    "ipython==9.13.0",
+    "ipython==9.14.0",
     "psycopg[binary]==3.3.4",
     "rust-just==1.51.0",
 ]
