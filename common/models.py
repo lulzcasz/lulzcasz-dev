@@ -1,4 +1,4 @@
-from common.utils import post_image_path
+from common.utils.upload_to import post_image_path
 from django.db.models import (
     BooleanField,
     CharField,
