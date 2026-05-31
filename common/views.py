@@ -1,22 +1,28 @@
 import os
-from uuid import uuid4
+import uuid
 from django.utils import timezone
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from common.tasks.image import process_image
 
-
 @login_required
 def tinymce_upload_image(request):
     if request.method == 'POST' and request.FILES.get('file'):
         upload = request.FILES['file']
+        raw_post_uuid = request.POST.get('post_uuid')
 
-        date_path = timezone.now().strftime('%Y/%m/%d')
-        token = str(uuid4())
+        try:
+            valid_uuid = str(uuid.UUID(raw_post_uuid))
+            folder_path = f"images/content/{valid_uuid}"
+        except (ValueError, TypeError):
+            date_path = timezone.now().strftime('%Y/%m/%d')
+            folder_path = f"images/content/unassigned/{date_path}"
+
+        image_token = str(uuid.uuid4())
         _, ext = os.path.splitext(upload.name)
-
-        relative_path = f"images/content/{date_path}/{token}/raw{ext}"
+        
+        relative_path = f"{folder_path}/{image_token}/raw{ext}"
 
         saved_path = default_storage.save(relative_path, upload)
         file_url = default_storage.url(saved_path)

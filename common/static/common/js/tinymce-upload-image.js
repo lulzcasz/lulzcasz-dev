@@ -14,10 +14,9 @@ function upload_image(blobInfo, progress) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.withCredentials = false;
-
         const url = `/tinymce/upload-image/`;
+        
         xhr.open('POST', url);
-
         xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
 
         xhr.upload.onprogress = (e) => {
@@ -29,19 +28,16 @@ function upload_image(blobInfo, progress) {
                 reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
                 return;
             }
-
             if (xhr.status < 200 || xhr.status >= 300) {
                 reject('HTTP Error: ' + xhr.status);
                 return;
             }
 
             const json = JSON.parse(xhr.responseText);
-
             if (!json || typeof json.location != 'string') {
                 reject('Invalid JSON: ' + xhr.responseText);
                 return;
             }
-
             resolve(json.location);
         };
 
@@ -51,6 +47,24 @@ function upload_image(blobInfo, progress) {
 
         const formData = new FormData();
         formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+        let postUuid = null;
+
+        const adminUuidField = document.querySelector('.field-uuid .readonly');
+        if (adminUuidField) {
+            postUuid = adminUuidField.innerText.trim();
+        }
+
+        else {
+            const uuidInput = document.querySelector('input[name="uuid"]');
+            if (uuidInput) postUuid = uuidInput.value;
+        }
+
+        if (postUuid) {
+            formData.append('post_uuid', postUuid);
+        }
+
+        console.log(postUuid);
 
         xhr.send(formData);
     });
