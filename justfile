@@ -2,7 +2,7 @@ export UV_ENV_FILE := ".env"
 
 compose := "docker compose"
 manage := "uv run manage.py"
-garage := "docker compose exec storage /garage"
+garage := "docker compose exec garage /garage"
 
 bucket_name := "lulzcasz-dev"
 key_name := "test-key"

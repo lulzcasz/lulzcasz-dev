@@ -1,5 +1,5 @@
 services:
-  web:
+  django:
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,11 +18,12 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=database
-      - AWS_S3_ENDPOINT_URL=http://storage:3900
-      - CELERY_BROKER_URL=redis://cache:6379/0
+      - DATABASE_HOST=postgresql
+      - AWS_S3_ENDPOINT_URL=http://garage:3900
+      - CELERY_BROKER_URL=redis://redis:6379/0
     restart: on-failure
-  database:
+
+  postgresql:
     image: postgres:18.4@sha256:8ff36f3c66371cba71d20ceedccfc3de9669a68737607888c4ef0af93abe8e39
     environment:
       POSTGRES_DB: lulzcasz_dev
@@ -31,22 +32,26 @@ services:
     ports:
       - 5432:5432
     restart: on-failure
-  storage:
+
+  garage:
     image: dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
-    volumes:
-      - ./garage.toml:/etc/garage.toml:ro
+    configs:
+      - source: garage_config
+        target: /etc/garage.toml
     ports:
       - "3900:3900"
       - "3901:3901"
       - "3902:3902"
       - "3903:3903"
     restart: on-failure
-  cache:
+
+  redis:
     image: redis:8.8.0@sha256:aa049e689e141a4358ad1d4562dc49c88a89fbab711fd8fcc33f684c80b26301
     ports:
       - 6379:6379
     command: redis-server
-  worker:
+
+  celery:
     build:
       context: .
       dockerfile: Dockerfile
@@ -63,7 +68,38 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=database
-      - CELERY_BROKER_URL=redis://cache:6379/0
-      - AWS_S3_ENDPOINT_URL=http://storage:3900
+      - DATABASE_HOST=postgresql
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - AWS_S3_ENDPOINT_URL=http://garage:3900
     restart: on-failure
+
+configs:
+  garage_config:
+    content: |
+      metadata_dir = "/tmp/meta"
+      data_dir = "/tmp/data"
+      db_engine = "sqlite"
+
+      replication_factor = 1
+
+      rpc_bind_addr = "[::]:3901"
+      rpc_public_addr = "127.0.0.1:3901"
+      rpc_secret = "13556022166d5123c3bffa8182d39763d45a2f2427cbee65c5961d0cfe6e9c32"
+
+      [s3_api]
+      s3_region = "garage"
+      api_bind_addr = "[::]:3900"
+      root_domain = ".s3.localhost"
+
+      [s3_web]
+      bind_addr = "[::]:3902"
+      root_domain = ".web.localhost"
+      index = "index.html"
+
+      [k2v_api]
+      api_bind_addr = "[::]:3904"
+
+      [admin]
+      api_bind_addr = "[::]:3903"
+      admin_token = "3V889khJexVenGA+zYNzJ3XJno7xfTceJNPlTlAOsYE="
+      metrics_token = "nal/3iUaamhGw1OVyh7SA4HJsQEf5CDejVeI+LPO1Mk="
