@@ -1,5 +1,5 @@
 from blog.models import Category, Genre, Post
-from common.utils import paginate_queryset
+from common.utils.paginate import paginate_queryset
 from django.shortcuts import get_object_or_404, render
 from portfolio.models import Profile
 from taggit.models import Tag
