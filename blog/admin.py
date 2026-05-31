@@ -14,4 +14,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ('uuid', 'created_at', 'updated_at')

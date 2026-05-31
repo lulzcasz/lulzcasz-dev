@@ -14,4 +14,4 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ('uuid', 'created_at', 'updated_at')
