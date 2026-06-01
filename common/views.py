@@ -14,7 +14,7 @@ def tinymce_upload_image(request):
 
         try:
             valid_uuid = str(uuid.UUID(raw_post_uuid))
-            folder_path = f"images/content/{valid_uuid}"
+            folder_path = f"publications/{valid_uuid}/content"
         except (ValueError, TypeError):
             date_path = timezone.now().strftime('%Y/%m/%d')
             folder_path = f"images/content/unassigned/{date_path}"
