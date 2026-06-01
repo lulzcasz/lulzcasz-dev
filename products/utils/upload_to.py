@@ -7,8 +7,8 @@ from django.utils.text import slugify
 def store_logo_path(instance, filename):
     _, ext = splitext(filename)
 
-    return f'images/stores/{slugify(instance.name)}{ext}'
+    return f'stores/{slugify(instance.name)}{ext}'
 
 
 def product_image_path(instance, filename):
-    return f'images/products/{instance.uuid}/{uuid4()}/raw{splitext(filename)[1]}'
+    return f'products/{instance.uuid}/{uuid4()}/raw{splitext(filename)[1]}'

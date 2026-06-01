@@ -4,4 +4,4 @@ from django.utils.timezone import now
 
 
 def profile_avatar_path(instance, filename):
-    return f'images/avatar/{uuid4()}/raw{splitext(filename)[1]}'
+    return f'avatar/{uuid4()}/raw{splitext(filename)[1]}'
