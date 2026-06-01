@@ -15,16 +15,16 @@ def optimize_content_images(content):
     if not content:
         return content
 
-    pattern = r'(<img[^>]*?src=")([^"]*?/images/content/[^"]*?/raw\.[a-zA-Z0-9]+)("[^>]*?>)'
+    pattern = r'(<img[^>]*?src=["\'])([^"\']*?/raw\.[a-zA-Z0-9]+)(["\'][^>]*?>)'
     
     def replacer(match):
         start_tag = match.group(1)
         raw_src = match.group(2)
         end_tag = match.group(3)
-        
+
         base_path = raw_src.rsplit('/', 1)[0]
         avif_src = f"{base_path}/processed.avif"
-        
+
         return f'{start_tag}{avif_src}" data-zoom-src="{raw_src}" class="zoomable" onerror="this.onerror=null; this.src=\'{raw_src}\';"{end_tag}'
 
     optimized_html = re.sub(pattern, replacer, content, flags=re.IGNORECASE)
