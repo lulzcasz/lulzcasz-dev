@@ -16,8 +16,9 @@ def process_image(self, relative_path, kind):
             }
             for suffix, (width, height, crf) in versions.items():
                 final_path = os.path.join(directory, f"{suffix}.avif")
+
                 args = [
-                    '-vf', f"scale='if(lt(iw/ih,{width}/{height}),{width},-2)':'if(lt(iw/ih,{width}/{height}),-2,{height})',crop={width}:{height}",
+                    '-vf', f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}",
                     '-pix_fmt', 'yuv420p', '-c:v', 'libaom-av1', 
                     '-still-picture', '1', '-crf', str(crf)
                 ]
@@ -29,17 +30,19 @@ def process_image(self, relative_path, kind):
             with Image.open(input_path) as img:
                 is_animated = getattr(img, 'is_animated', False)
 
+            vf_scale_crop = "scale='min(896,iw)':'min(504,ih)':force_original_aspect_ratio=decrease,crop=trunc(iw/2)*2:trunc(ih/2)*2"
+
             if is_animated:
                 args = [
                     '-c:v', 'libsvtav1', '-crf', '38', '-preset', '8',
-                    '-vf', "scale='min(1024,iw)':-2:force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2",
+                    '-vf', vf_scale_crop,
                     '-pix_fmt', 'yuv420p'
                 ]
             else:
                 args = [
-                    '-vf', "scale='min(1024,iw)':'min(576,ih)':force_original_aspect_ratio=decrease,crop=trunc(iw/2)*2:trunc(ih/2)*2:0:0",
+                    '-vf', vf_scale_crop,
                     '-pix_fmt', 'yuv420p', '-c:v', 'libaom-av1',
-                    '-still-picture', '1', '-crf', '25', '-cpu-used', '4'
+                    '-still-picture', '1', '-crf', '10', '-cpu-used', '4'
                 ]
             
             process_and_save_avif(input_path, final_path, args)
