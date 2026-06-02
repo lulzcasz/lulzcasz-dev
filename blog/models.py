@@ -1,8 +1,11 @@
 from common.models import ContentBase, TaxonomyBase, Technology
-from django.db.models import SET_NULL, Count, ForeignKey, ManyToManyField, Q
+from django.db.models import (
+    SET_NULL, Count, ForeignKey, ManyToManyField, Q, DateTimeField, BooleanField
+)
 from django.urls import reverse
 from taggit.managers import TaggableManager
 from products.models import Product
+from django.utils import timezone
 
 
 class Genre(TaxonomyBase):
@@ -16,6 +19,10 @@ class Category(TaxonomyBase):
 
 
 class Post(ContentBase):
+    is_featured = BooleanField("destaque", default=False)
+    published_at = DateTimeField("publicado em", null=True, editable=False)
+    created_at = DateTimeField("criado em", auto_now_add=True)
+    updated_at = DateTimeField("atualizado em", auto_now=True)
     post_genre = ForeignKey(
         Genre,
         SET_NULL,
@@ -37,6 +44,10 @@ class Post(ContentBase):
     )
     tags = TaggableManager(blank=True)
     products = ManyToManyField(Product, verbose_name="produtos", blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.is_published == True and not self.published_at:
+            self.published_at = timezone.now()
 
     class Meta:
         verbose_name = "post"

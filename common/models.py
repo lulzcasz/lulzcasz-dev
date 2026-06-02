@@ -2,13 +2,11 @@ from common.utils.upload_to import post_image_path
 from django.db.models import (
     BooleanField,
     CharField,
-    DateTimeField,
     ImageField,
     Model,
     SlugField,
     UUIDField,
 )
-from django.utils import timezone
 from django.utils.text import slugify
 from tinymce.models import HTMLField
 from uuid import uuid4
@@ -55,11 +53,7 @@ class ContentBase(Model):
     description = CharField("descrição", max_length=145, blank=True)
     cover = ImageField("capa", upload_to=post_image_path, blank=True)
     content = HTMLField("conteúdo", blank=True)
-    is_featured = BooleanField("destaque", default=False)
     is_published = BooleanField("publicado", default=False)
-    published_at = DateTimeField("publicado em", null=True, editable=False)
-    created_at = DateTimeField("criado em", auto_now_add=True)
-    updated_at = DateTimeField("atualizado em", auto_now=True)
 
     class Meta:
         abstract = True
@@ -67,9 +61,6 @@ class ContentBase(Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-
-        if self.is_published == True and not self.published_at:
-            self.published_at = timezone.now()
 
         self._cover_changed = False
         if self.cover:
