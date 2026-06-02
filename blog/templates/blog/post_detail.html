@@ -39,6 +39,37 @@
   {% for tag in post.tags.all %}
     <meta property="article:tag" content="{{ tag.name }}" />
   {% endfor %}
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+    },
+    "headline": "{{ post.title|escapejs }}",
+    "description": "{{ post.description|escapejs }}",
+    "image": [
+      "{{ post.cover|variant:'og' }}"
+    ],
+    "datePublished": "{{ post.published_at|date:'c' }}",
+    "dateModified": "{{ post.updated_at|date:'c' }}",
+    "proficiencyLevel": "Expert",
+    "keywords": "{% if post.category %}{{ post.category.name|escapejs }}, {% endif %}{% if post.post_genre %}{{ post.post_genre.name|escapejs }}, {% endif %}{% for tech in post.technologies.all %}{{ tech.name|escapejs }}, {% endfor %}{% for tag in post.tags.all %}{{ tag.name|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+    "author": {
+      "@type": "Person",
+      "name": "{{ profile.name|escapejs }}",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "lulzcasz.dev"
+    }
+  }
+</script>
+
+
 {% endblock meta_tags %}
 
 {% block main %}
@@ -77,43 +108,81 @@
 
 
 {% if post.products.exists %}
+<style>
+  /* Oculta o conteúdo e prepara a animação de expansão */
+  .product-reveal-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease;
+  }
+
+  /* Quando o mouse passa por cima do card inteiro, o conteúdo se revela */
+  .product-hover-card:hover .product-reveal-content,
+  .product-hover-card:focus-within .product-reveal-content {
+    /* AUMENTADO: de 300px para 800px para garantir que a imagem gigante não seja cortada */
+    max-height: 800px; 
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
+
+  /* Uma setinha discreta que gira ao expandir */
+  .product-hover-card .fa-chevron-down {
+    transition: transform 0.3s ease;
+  }
+  .product-hover-card:hover .fa-chevron-down,
+  .product-hover-card:focus-within .fa-chevron-down {
+    transform: rotate(180deg);
+  }
+</style>
+
 <div class="mb-4">            
   <div class="d-flex flex-column gap-2"> 
-    {% for product in post.products.all %}
+{% for product in post.products.all %}
       
-      <div class="card border-0 rounded-4 w-100" style="background-color: #1E1E1E;">
-        <div class="d-flex flex-row p-2 align-items-center"> 
+      <div class="card w-100 p-1 shadow-sm product-hover-card border-0" tabindex="0" style="background-color: #2a2a2a; border-radius: 12px; cursor: pointer; outline: none;">
+        
+        <div class="card w-100 border-0" style="background-color: #1E1E1E; border-radius: 10px;"> 
           
-          <div class="d-flex align-items-center justify-content-center p-2" style="width: 128px; height: 128px; min-width: 128px;">
-          {% if product.image %}
-            <img 
-              src="{{ product.image|variant:'processed' }}" 
-              class="img-fluid" 
-              alt="{{ product.name }}" 
-              style="max-height: 100%; max-width: 100%; object-fit: contain;"
-              onerror="this.onerror=null; this.src='{{ product.image.url }}';"
-            >
-          {% endif %}
-          </div>
-          
-          <div class="d-flex flex-column ms-3 flex-grow-1">
+          <div class="py-2 px-3 d-flex justify-content-between align-items-center">
             
-            <h6 class="card-title text-light mb-2" style="font-size: 1.1rem; font-weight: 500;">{{ product.name }}</h6>
+            <h6 class="card-title text-light mb-0 text-start pe-2" style="font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px;">
+              {{ product.name }}
+            </h6>
             
-            <div class="d-flex flex-row gap-2">
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
               {% for link in product.links.all %}
-                <a href="{{ link.url }}" target="_blank" rel="nofollow noopener" title="Comprar na {{ link.store.name }}" class="bg-dark rounded-circle d-flex justify-content-center align-items-center shadow-sm text-decoration-none" style="width: 48px; height: 48px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <a href="{{ link.url }}" target="_blank" rel="nofollow noopener" title="Comprar na {{ link.store.name }}" 
+                   class="bg-dark rounded-circle d-flex justify-content-center align-items-center text-decoration-none border border-secondary shadow-sm" 
+                   style="width: 36px; height: 36px; transition: transform 0.2s;" 
+                   onmouseover="this.style.transform='scale(1.1)'" 
+                   onmouseout="this.style.transform='scale(1)'">
                   {% if link.store.logo %}
-                      <img src="{{ link.store.logo.url }}" alt="{{ link.store.name }}" style="width: 24px; height: 24px; object-fit: contain;">
+                      <img src="{{ link.store.logo.url }}" alt="{{ link.store.name }}" style="width: 18px; height: 18px; object-fit: contain;">
                   {% else %}
-                      <i class="fa-solid fa-cart-shopping text-secondary" style="font-size: 16px;"></i>
+                      <i class="fa-solid fa-cart-shopping text-light" style="font-size: 13px;"></i>
                   {% endif %}
                 </a>
               {% endfor %}
             </div>
 
           </div>
-
+          
+          <div class="product-reveal-content">
+            <div class="w-100 px-3 pb-3 pt-0">
+              <div class="w-100 bg-white rounded" style="aspect-ratio: 1 / 1; padding: 6px;">
+                {% if product.image %}
+                  <img 
+                    src="{{ product.image|variant:'processed' }}" 
+                    class="w-100 h-100 object-fit-contain" 
+                    alt="{{ product.name }}" 
+                    loading="lazy" onerror="this.onerror=null; this.src='{{ product.image.url }}';"
+                  >
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
 
@@ -121,7 +190,8 @@
   </div>
 </div>
 {% endif %}
-          
+
+
 
           {% if post.get_related_posts %}
             {% for related_post in post.get_related_posts %}
@@ -168,7 +238,7 @@
               </a>
             {% endif %}
             {% for tech in post.technologies.all %}
-              <a href="#" class="btn btn-sm btn-dark rounded-pill px-3">
+              <a class="btn btn-sm btn-dark rounded-pill px-3">
                 {{ tech.name }}
               </a>
             {% endfor %}
