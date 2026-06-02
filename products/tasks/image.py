@@ -9,12 +9,13 @@ def process_image(self, relative_path):
     final_path = os.path.join(directory, 'processed.avif')
 
     args = [
-        '-vf', "scale=128:128:force_original_aspect_ratio=decrease",
+        '-vf', "scale=512:512:force_original_aspect_ratio=decrease",
         '-c:v', 'libaom-av1',
         '-still-picture', '1',
-        '-crf', '15',
-        '-cpu-used', '4'
-    ]
+        '-crf', '25', 
+        '-cpu-used', '4',
+        '-pix_fmt', 'yuv420p' 
+        ]
 
     with download_to_temp(relative_path) as input_path:
         process_and_save_image(input_path, final_path, args)
