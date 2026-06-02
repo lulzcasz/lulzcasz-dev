@@ -14,6 +14,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django.contrib.sites",
+    'django.contrib.sitemaps',
     'tinymce',
     "django_htmx",
     'taggit',
@@ -22,6 +24,8 @@ INSTALLED_APPS = [
     'blog',
     'portfolio',
 ]
+
+SITE_ID = 1
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": "800px",
