@@ -8,7 +8,9 @@ register = template.Library()
 
 @register.filter
 def variant(image_field, size):
-    return default_storage.url(f"{os.path.dirname(image_field.name)}/{size}.avif")
+    ext = 'webp' if size == 'og' else 'avif'
+    
+    return default_storage.url(f"{os.path.dirname(image_field.name)}/{size}.{ext}")
 
 @register.filter
 def optimize_content_images(content):

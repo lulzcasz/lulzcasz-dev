@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
+
 @contextmanager
 def download_to_temp(relative_path):
     _, ext = os.path.splitext(relative_path)
@@ -19,8 +20,11 @@ def download_to_temp(relative_path):
         if os.path.exists(temp_in.name):
             os.remove(temp_in.name)
 
-def process_and_save_avif(input_path, final_storage_path, ffmpeg_args):
-    temp_out = tempfile.NamedTemporaryFile(suffix='.avif', delete=False)
+
+def process_and_save_image(input_path, final_storage_path, ffmpeg_args):
+    _, ext = os.path.splitext(final_storage_path)
+    
+    temp_out = tempfile.NamedTemporaryFile(suffix=ext, delete=False)
     temp_out.close()
     
     try:

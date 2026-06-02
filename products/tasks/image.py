@@ -1,6 +1,7 @@
 import os
 from celery import shared_task
-from common.utils.image import download_to_temp, process_and_save_avif
+from common.utils.image import download_to_temp, process_and_save_image
+
 
 @shared_task(bind=True)
 def process_image(self, relative_path):
@@ -16,6 +17,6 @@ def process_image(self, relative_path):
     ]
 
     with download_to_temp(relative_path) as input_path:
-        process_and_save_avif(input_path, final_path, args)
+        process_and_save_image(input_path, final_path, args)
 
     return f"Successfully processed product image for {relative_path}"
