@@ -50,7 +50,6 @@ class Profile(Model):
 class Project(ContentBase):
     repository = URLField("repositório", blank=True, null=True)
     live = URLField("ao vivo", blank=True, null=True)
-    tags = TaggableManager(blank=True)
     technologies = ManyToManyField(
         Technology, blank=True, related_name="projects", verbose_name="tecnologias"
     )
