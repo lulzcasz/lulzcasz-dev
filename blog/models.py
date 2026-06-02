@@ -49,6 +49,8 @@ class Post(ContentBase):
         if self.is_published == True and not self.published_at:
             self.published_at = timezone.now()
 
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "post"
 
