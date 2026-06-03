@@ -47,7 +47,7 @@ RUN uv sync --frozen --no-dev
 
 RUN STATIC_URL="static/" CSRF_TRUSTED_ORIGINS="*" DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" SECRET_KEY="build-dummy-key" ALLOWED_HOSTS="*" DATABASE_URL="sqlite:///" uv run --no-dev python manage.py collectstatic --noinput
 
-CMD ["uv", "run", "--no-dev", "gunicorn", "lulzcasz_dev.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "5"]
+CMD ["uv", "run", "--no-dev", "gunicorn", "lulzcasz_dev.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
 
 FROM prod_dependencies AS worker_production
 
@@ -55,4 +55,4 @@ COPY . .
 
 RUN uv sync --frozen --no-dev
 
-CMD ["uv", "run", "--no-dev", "celery", "-A", "lulzcasz_dev", "worker", "-c", "2", "--loglevel", "INFO"]
+CMD ["uv", "run", "--no-dev", "celery", "-A", "lulzcasz_dev", "worker", "-c", "1", "--loglevel", "INFO"]

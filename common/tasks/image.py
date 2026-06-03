@@ -10,9 +10,9 @@ def process_image(self, relative_path, kind):
     with download_to_temp(relative_path) as input_path:
         if kind == 'cover':
             versions = {
-                'display': {'w': 960, 'h': 502, 'ext': 'avif', 'args': ['-c:v', 'libaom-av1', '-still-picture', '1', '-crf', '16']},
-                'thumbnail': {'w': 480, 'h': 252, 'ext': 'avif', 'args': ['-c:v', 'libaom-av1', '-still-picture', '1', '-crf', '8']},
-                'og': {'w': 1200, 'h': 630, 'ext': 'webp', 'args': ['-c:v', 'libwebp', '-q:v', '80']}
+                'display': {'w': 960, 'h': 502, 'ext': 'avif', 'args': ['-threads', '1', '-c:v', 'libaom-av1', '-still-picture', '1', '-crf', '16']},
+                'thumbnail': {'w': 480, 'h': 252, 'ext': 'avif', 'args': ['-threads', '1', '-c:v', 'libaom-av1', '-still-picture', '1', '-crf', '8']},
+                'og': {'w': 1200, 'h': 630, 'ext': 'webp', 'args': ['-threads', '1', '-c:v', 'libwebp', '-q:v', '80']}
             }
             
             for suffix, config in versions.items():
@@ -30,16 +30,18 @@ def process_image(self, relative_path, kind):
             with Image.open(input_path) as img:
                 is_animated = getattr(img, 'is_animated', False)
 
-            vf_scale_crop = "scale='min(896,iw)':'min(504,ih)':force_original_aspect_ratio=decrease,crop=trunc(iw/2)*2:trunc(ih/2)*2"
+            vf_scale_crop = "scale='min(960,iw)':'min(620,ih)':force_original_aspect_ratio=decrease,crop=trunc(iw/2)*2:trunc(ih/2)*2"
 
             if is_animated:
                 args = [
+                    '-threads', '1',
                     '-c:v', 'libsvtav1', '-crf', '38', '-preset', '8',
                     '-vf', vf_scale_crop,
                     '-pix_fmt', 'yuv420p'
                 ]
             else:
                 args = [
+                    '-threads', '1',
                     '-vf', vf_scale_crop,
                     '-pix_fmt', 'yuv420p', '-c:v', 'libaom-av1',
                     '-still-picture', '1', '-crf', '10', '-cpu-used', '4'
