@@ -360,7 +360,7 @@ dependencies = [
     { name = "django-tinymce" },
     { name = "gunicorn" },
     { name = "pillow" },
-    { name = "psycopg" },
+    { name = "psycopg", extra = ["binary"] },
     { name = "redis" },
     { name = "whitenoise", extra = ["brotli"] },
 ]
@@ -383,7 +383,7 @@ requires-dist = [
     { name = "django-tinymce", specifier = "==5.0.0" },
     { name = "gunicorn", specifier = "==26.0.0" },
     { name = "pillow", specifier = "==12.2.0" },
-    { name = "psycopg", specifier = "==3.3.4" },
+    { name = "psycopg", extras = ["binary"], specifier = "==3.3.4" },
     { name = "redis", specifier = "==8.0.0" },
     { name = "whitenoise", extras = ["brotli"], specifier = "==6.12.0" },
 ]

@@ -14,7 +14,7 @@ dependencies = [
     "django-tinymce==5.0.0",
     "gunicorn==26.0.0",
     "pillow==12.2.0",
-    "psycopg==3.3.4",
+    "psycopg[binary]==3.3.4",
     "redis==8.0.0",
     "whitenoise[brotli]==6.12.0",
 ]
