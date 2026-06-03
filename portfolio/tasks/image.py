@@ -8,6 +8,7 @@ def process_image(self, relative_path):
     final_path = os.path.join(directory, 'processed.avif')
 
     args = [
+        '-threads', '1',
         '-vf', "crop='min(iw,ih)':'min(iw,ih)',scale=256:256",
         '-pix_fmt', 'yuv420p',
         '-c:v', 'libaom-av1',
