@@ -16,7 +16,7 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'post-detail' post_slug=post.slug %}">
   
-  <meta property="og:image" content="{{ post.cover|variant:'og' }}">
+  <meta property="og:image" content="{{ post.cover|variant:'large.webp' }}">
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
   <meta property="og:site_name" content="lulzcasz.dev">
@@ -28,7 +28,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{{ post.title }}" />
   <meta name="twitter:description" content="{{ post.description }}" />
-  <meta name="twitter:image" content="{{ post.cover|variant:'og' }}" />
+  <meta name="twitter:image" content="{{ post.cover|variant:'large.webp' }}" />
   
   <meta property="article:tag" content="{{ post.category }}" />
   <meta property="article:tag" content="{{ post.post_genre }}" />
@@ -51,7 +51,7 @@
     "headline": "{{ post.title|escapejs }}",
     "description": "{{ post.description|escapejs }}",
     "image": [
-      "{{ post.cover|variant:'og' }}"
+      "{{ post.cover|variant:'large.webp' }}"
     ],
     "datePublished": "{{ post.published_at|date:'c' }}",
     "dateModified": "{{ post.updated_at|date:'c' }}",
@@ -68,25 +68,40 @@
     }
   }
 </script>
-
-
 {% endblock meta_tags %}
 
 {% block main %}
-  <main class="container flex-fill">
+  <main class="container flex-fill" style="max-width: 1200px;">
+    
+    <div class="row mb-3">
+      <div class="col-12">
+        <h1 class="pb-2 pt-2 fw-bold">{{ post.title }}</h1>
+        <p class="fs-5 text-secondary">{{ post.description }}</p>
+        <p class="pb-3 text-muted">{{ post.created_at | date }}</p>
+        
+        <div class="pb-2 w-100">
+          <picture>
+            <source srcset="{{ post.cover|variant:'large.avif' }}" type="image/avif">
+            <source srcset="{{ post.cover|variant:'large.webp' }}" type="image/webp">
+            <img 
+              alt="{{ post.title }}" 
+              src="{{ post.cover|variant:'large.webp' }}" 
+              class="w-100 rounded-4 shadow-sm object-fit-cover" 
+              style="aspect-ratio: 1200 / 630;"
+            >
+          </picture>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-xl-8">
-        <h1 class="pb-2 pt-2">{{ post.title }}</h1>
-        <p>{{ post.description }}</p>
-        <p class="pb-2">{{ post.created_at | date }}</p>
-        <div class="pb-3">
-          <img alt="{{ post.title }}" src="{{ post.cover|variant:'display' }}">
-          </div>
-          <div class="pt-3">
+        <div class="pt-3">
           <div class="post-content">
             {{ post.content|optimize_content_images }}
           </div>
         </div>
+        
         {% if profile %}
           <a href="{% url 'home' %}" class="text-decoration-none text-reset">
             <div class="card mt-1 mb-4 border-0 rounded-4 text-light" style="background-color: #1E1E1E;">
@@ -103,30 +118,24 @@
           </a>
         {% endif %}
       </div>
+      
       <div class="col-xl-4 mt-3" style="position: sticky; top: 1rem; height: fit-content;">
         <div>
 
-
 {% if post.products.exists %}
 <style>
-  /* Oculta o conteúdo e prepara a animação de expansão */
   .product-reveal-content {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease;
   }
-
-  /* Quando o mouse passa por cima do card inteiro, o conteúdo se revela */
   .product-hover-card:hover .product-reveal-content,
   .product-hover-card:focus-within .product-reveal-content {
-    /* AUMENTADO: de 300px para 800px para garantir que a imagem gigante não seja cortada */
     max-height: 800px; 
     opacity: 1;
     margin-top: 0.5rem;
   }
-
-  /* Uma setinha discreta que gira ao expandir */
   .product-hover-card .fa-chevron-down {
     transition: transform 0.3s ease;
   }
@@ -141,15 +150,11 @@
 {% for product in post.products.all %}
       
       <div class="card w-100 p-1 shadow-sm product-hover-card border-0" tabindex="0" style="background-color: #2a2a2a; border-radius: 12px; cursor: pointer; outline: none;">
-        
         <div class="card w-100 border-0" style="background-color: #1E1E1E; border-radius: 10px;"> 
-          
           <div class="py-2 px-3 d-flex justify-content-between align-items-center">
-            
             <h6 class="card-title text-light mb-0 text-start pe-2" style="font-weight: 600; font-size: 0.95rem; letter-spacing: 0.5px;">
               {{ product.name }}
             </h6>
-            
             <div class="d-flex align-items-center gap-2 flex-shrink-0">
               {% for link in product.links.all %}
                 <a href="{{ link.url }}" target="_blank" rel="nofollow noopener" title="Comprar na {{ link.store.name }}" 
@@ -165,9 +170,7 @@
                 </a>
               {% endfor %}
             </div>
-
           </div>
-          
           <div class="product-reveal-content">
             <div class="w-100 px-3 pb-3 pt-0">
               <div class="w-100 bg-white rounded" style="aspect-ratio: 1 / 1; padding: 6px;">
@@ -182,16 +185,12 @@
               </div>
             </div>
           </div>
-          
         </div>
       </div>
-
     {% endfor %}
   </div>
 </div>
 {% endif %}
-
-
 
           {% if post.get_related_posts %}
             {% for related_post in post.get_related_posts %}
@@ -199,19 +198,18 @@
               <a href="{% url 'post-detail' post_slug=related_post.slug %}" class="text-decoration-none text-reset">
                 <div class="card border-0 rounded-4">
                   <div style="position: relative;"> 
-                    <img 
-                      src="{{ related_post.cover|variant:'thumbnail' }}" 
-                      class="card-img-top rounded-top-4" 
-                      alt="{{ related_post.title }}"
-                      style="aspect-ratio: 191/100; object-fit: cover;"
-                    >
-                    <span class="badge rounded-3" style="
-                      position: absolute; 
-                      top: 10px; 
-                      left: 10px; 
-                      font-size: 0.75em;
-                      z-index: 10;
-                    ">
+                    <picture>
+                      <source srcset="{{ related_post.cover|variant:'small.avif' }}" type="image/avif">
+                      <source srcset="{{ related_post.cover|variant:'small.webp' }}" type="image/webp">
+                      <img 
+                        src="{{ related_post.cover|variant:'small.webp' }}" 
+                        class="card-img-top rounded-top-4" 
+                        alt="{{ related_post.title }}"
+                        style="aspect-ratio: 191/100; object-fit: cover;"
+                        loading="lazy"
+                      >
+                    </picture>
+                    <span class="badge rounded-3" style="position: absolute; top: 10px; left: 10px; font-size: 0.75em; z-index: 10;">
                       {{ related_post.post_genre.name }} 
                     </span>
                   </div>
@@ -224,8 +222,9 @@
             {% endfor %}
           {% endif %}
         </div>
+        
         <div class="pb-3">
-          <hr class="pb-2">
+          <hr class="pb-2 border-secondary">
           <div class="d-flex justify-content-center flex-wrap gap-2">
             {% if post.post_genre %}
               <a href="{% url 'posts-by-genre' genre_slug=post.post_genre.slug %}" class="btn btn-sm btn-dark rounded-pill px-3">
