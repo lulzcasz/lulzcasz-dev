@@ -38,6 +38,8 @@ TINYMCE_DEFAULT_CONFIG = {
     'skin': 'oxide-dark',
     'license_key': 'gpl',
     "images_upload_handler": "upload_image",
+    "file_picker_types": "media",
+    "file_picker_callback": "upload_media_handler",
     'image_dimensions': False,
     "codesample_languages": [
         {"text": "Arduino", "value": "arduino"},
@@ -66,7 +68,8 @@ TINYMCE_DEFAULT_CONFIG = {
 
 TINYMCE_EXTRA_MEDIA = {
     'js': [
-        'common/js/tinymce-upload-image.js'
+        'common/js/tinymce-upload-image.js',
+        'common/js/tinymce-upload-media.js',
     ],
 }
 
