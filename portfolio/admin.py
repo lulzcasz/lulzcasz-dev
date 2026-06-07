@@ -1,5 +1,5 @@
 from django.contrib import admin
-from portfolio.models import  Link, Profile, Project
+from portfolio.models import  Link, Profile, Project, Technology
 
 
 @admin.register(Link)
@@ -9,6 +9,11 @@ class LinkAdmin(admin.ModelAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Technology)
+class TechnologyAdmin(admin.ModelAdmin):
     pass
 
 

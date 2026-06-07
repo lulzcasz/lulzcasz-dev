@@ -1,4 +1,4 @@
-from common.models import ContentBase, TaxonomyBase, Technology
+from common.models import ContentBase, TaxonomyBase
 from django.db.models import (
     SET_NULL, Count, ForeignKey, ManyToManyField, Q, DateTimeField, BooleanField
 )
@@ -38,9 +38,6 @@ class Post(ContentBase):
         blank=True,
         verbose_name="categoria",
         related_name="posts",
-    )
-    technologies = ManyToManyField(
-        Technology, blank=True, related_name="posts", verbose_name="tecnologias"
     )
     tags = TaggableManager(blank=True)
     products = ManyToManyField(Product, verbose_name="produtos", blank=True)

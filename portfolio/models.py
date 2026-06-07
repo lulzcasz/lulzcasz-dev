@@ -1,4 +1,4 @@
-from common.models import ColorMixin, ContentBase, Technology
+from common.models import ContentBase, TaxonomyBase
 from django.db.models import (
     CharField,
     ImageField,
@@ -10,6 +10,24 @@ from django.db.models import (
 from django.urls import reverse
 from portfolio.utils.upload_to import profile_avatar_path
 from taggit.managers import TaggableManager
+
+
+class ColorMixin(Model):
+    color = CharField("cor", max_length=7)
+
+    @property
+    def text_color(self):
+        hex_color = self.color.lstrip("#")
+
+        if len(hex_color) == 6:
+            r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+            luminance = 0.299 * r + 0.587 * g + 0.114 * b
+            return "#000000" if luminance > 128 else "#ffffff"
+
+        return "#ffffff"
+
+    class Meta:
+        abstract = True
 
 
 class Link(ColorMixin, Model):
@@ -45,6 +63,11 @@ class Profile(Model):
 
     def __str__(self):
         return self.name
+
+
+class Technology(ColorMixin, TaxonomyBase):
+    class Meta(TaxonomyBase.Meta):
+        verbose_name = "tecnologia"
 
 
 class Project(ContentBase):
