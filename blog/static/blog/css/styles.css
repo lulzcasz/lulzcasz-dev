@@ -38,7 +38,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
   border: none;
 }
 
-h1,
+/*h1,
 h2,
 h3,
 h4,
@@ -49,7 +49,7 @@ h6 {
 
 p {
   color: #C7C7C0;
-}
+}*/
 
 p,
 h1,
@@ -155,7 +155,7 @@ img.zoomable {
     cursor: pointer;
 }
 
-a, a:hover, a:focus, a:active {
+/*a, a:hover, a:focus, a:active {
     text-decoration: none !important;
     color: inherit !important;
-}
+}*/

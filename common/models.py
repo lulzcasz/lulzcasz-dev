@@ -12,24 +12,6 @@ from tinymce.models import HTMLField
 from uuid import uuid4
 
 
-class ColorMixin(Model):
-    color = CharField("cor", max_length=7)
-
-    @property
-    def text_color(self):
-        hex_color = self.color.lstrip("#")
-
-        if len(hex_color) == 6:
-            r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
-            luminance = 0.299 * r + 0.587 * g + 0.114 * b
-            return "#000000" if luminance > 128 else "#ffffff"
-
-        return "#ffffff"
-
-    class Meta:
-        abstract = True
-
-
 class TaxonomyBase(Model):
     name = CharField("nome", max_length=32, unique=True)
     slug = SlugField(max_length=32, unique=True, blank=True)
@@ -78,8 +60,3 @@ class ContentBase(Model):
 
     def __str__(self):
         return self.title
-
-
-class Technology(ColorMixin, TaxonomyBase):
-    class Meta(TaxonomyBase.Meta):
-        verbose_name = "tecnologia"
