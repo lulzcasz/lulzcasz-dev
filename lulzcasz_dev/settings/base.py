@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'tinymce',
     "django_htmx",
     'taggit',
+    "django_tailwind_cli",
     'common',
     'products',
     'blog',
@@ -102,6 +103,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -168,3 +170,6 @@ AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
 AWS_S3_ADDRESSING_STYLE = os.getenv('AWS_S3_ADDRESSING_STYLE')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TAILWIND_CLI_SRC_CSS = "static/css/input.css"
+TAILWIND_CLI_DIST_CSS = "static/css/output.css"

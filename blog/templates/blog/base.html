@@ -10,48 +10,19 @@
 {% block title %}{% endblock %}
 
 {% block body %}
-  <body data-prismjs-copy="Copiar"
-	data-prismjs-copy-error="Erro ao copiar, use Ctrl+C"
-	data-prismjs-copy-success="Copiado!" style="background-color: #121212" class="d-flex flex-column min-vh-100" data-bs-theme="dark">
-    <header>
-      {% include 'includes/_navbar.html' %}
-      <div style="background-color: #1a1a1a; border-bottom: 1px solid #333;" class="py-2 mb-4">
-  <div class="container-fluid">
-    <div class="d-flex flex-wrap gap-3 justify-content-start align-items-center" style="font-size: 0.9rem;">
-      
-      <a href="/blog/" class="text-secondary text-decoration-none fw-bold me-2">Tudo</a>
-      
-      {% for genre in genres %}
-        <a href="{% url 'posts-by-genre' genre_slug=genre.slug %}" class="text-light text-decoration-none opacity-75 text-hover-white">
-          {{ genre.name }}
-        </a>
-      {% endfor %}
-
-      {% if genres and categories %}
-        <div style="border-left: 1px solid #444; height: 15px;"></div>
-      {% endif %}
-
-      {% for category in categories %}
-        <a href="{% url 'posts-by-category' category_slug=category.slug %}" class="text-light text-decoration-none opacity-75 text-hover-white">
-          {{ category.name }}
-        </a>
-      {% endfor %}
-
+<div class="bg-midnight text-brand-light p-8">
+    
+    <h1 class="text-midnight text-4xl font-bold ">
+        Bem-vindo ao Lulzcasz Dev!
+    </h1>
+    
+    <div class="bg-brand-gray border-2 border-brand-pink mt-4 p-4 rounded">
+        <p>Este é um post do meu blog.</p>
     </div>
-  </div>
+
+    <button class="bg-brand-cyan text-brand-black px-4 py-2 mt-4 font-bold rounded">
+        Clique Aqui
+    </button>
+    
 </div>
-    </header>
-    {% block main %}{% endblock %}
-    <footer style="background-color: #1E1E1E;">
-      <div class="p-5 text-white">
-        <div class="container py-5 text-center">   
-          <p>lulzcasz © 2026 Todos os direitos reservados.</p>
-        </div>
-      </div>
-    </footer>
-    <div id="fullscreenOverlay" class="fullscreen-overlay" onclick="closeFullscreen()">
-  <span class="close-btn" onclick="closeFullscreen()">&times;</span>
-  <img id="overlayImage" src="" alt="Fullscreen image">
-</div>
-  </body>
 {% endblock body %}

@@ -1,31 +1,45 @@
+{% load tailwind_cli %}
 {% load static %}
 {% load django_htmx %}
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'js/prism.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/prism-coy-without-shadows.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/prism-toolbar.min.css' %}">
-        <script src="{% static 'js/prism-autoloader.min.js' %}"></script>
-        <script src="{% static 'js/prism-toolbar.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/prism-treeview.min.css' %}">
-        <script src="{% static 'js/prism-treeview.min.js' %}"></script>
-        <script src="{% static 'js/prism-copy-to-clipboard.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
-        {% htmx_script %}
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-        <script src="{% static 'js/script.js' %}"></script>
-        {% block extra_head %}{% endblock %}
-        {% block title %}{% endblock %}
-        {% block meta_tags %}{% endblock %}
-        <script>
-            Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.24/components/';
-        </script>
-    </head>
-    {% block body %}{% endblock %}
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'js/prism.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/prism-toolbar.min.css' %}">
+    <script src="{% static 'js/prism-autoloader.min.js' %}"></script>
+    <script src="{% static 'js/prism-toolbar.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/prism-treeview.min.css' %}">
+    <script src="{% static 'js/prism-treeview.min.js' %}"></script>
+    <script src="{% static 'js/prism-copy-to-clipboard.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_head %}{% endblock %}
+    {% block title %}{% endblock %}
+    {% tailwind_css %}
+    {% htmx_script %}
+    {% block meta_tags %}{% endblock %}
+    <script>
+      Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.24/components/';
+    </script>
+  </head>
+  <body>
+    <div class="bg-brand-black text-brand-light p-8">
+    
+    <h1 class="text-brand-yellow text-4xl font-bold">
+        Bem-vindo ao Lulzcasz Dev!
+    </h1>
+    
+    <div class="bg-brand-gray border-2 border-brand-pink mt-4 p-4 rounded">
+        <p>Este é um post do meu blog.</p>
+    </div>
+
+    <button class="bg-brand-cyan text-brand-black px-4 py-2 mt-4 font-bold rounded">
+        Clique Aqui
+    </button>
+    
+</div>
+  </body>
 </html>
