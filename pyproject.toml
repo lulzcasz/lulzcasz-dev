@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = "==3.14.5"
 dependencies = [
     "celery==5.6.3",
-    "django==5.2.14",
+    "django==5.2.15",
     "django-htmx==1.27.0",
     "django-storages[s3]==1.14.6",
     "django-taggit==6.1.0",
@@ -23,7 +23,7 @@ package = false
 
 [dependency-groups]
 dev = [
-    "ipython==9.14.0",
+    "ipython==9.14.1",
     "psycopg[binary]==3.3.4",
-    "rust-just==1.51.0",
+    "rust-just==1.52.0",
 ]
