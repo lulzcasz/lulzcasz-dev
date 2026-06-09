@@ -1,28 +1,9 @@
 {% extends 'base.html' %}
 
-{% load static %}
-
-{% block extra_head %}
-  <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
-  <script src="{% static 'blog/js/script.js' %}"></script>
-{% endblock %}
-
 {% block title %}{% endblock %}
 
 {% block body %}
-<div class="bg-midnight text-brand-light p-8">
-    
-    <h1 class="text-midnight text-4xl font-bold ">
-        Bem-vindo ao Lulzcasz Dev!
-    </h1>
-    
-    <div class="bg-brand-gray border-2 border-brand-pink mt-4 p-4 rounded">
-        <p>Este é um post do meu blog.</p>
-    </div>
-
-    <button class="bg-brand-cyan text-brand-black px-4 py-2 mt-4 font-bold rounded">
-        Clique Aqui
-    </button>
-    
-</div>
+  <main class="max-w-6xl mx-auto px-4">
+    {% block main %}{% endblock main %}
+  </main>
 {% endblock body %}

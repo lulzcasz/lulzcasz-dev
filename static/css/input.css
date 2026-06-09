@@ -2,9 +2,16 @@
 
 @theme {
   --color-brand-black: #080606;
-  --color-brand-gray: #212121;
-  --color-brand-light: #fefcf8;
-  --color-brand-yellow: #fdca00;
-  --color-brand-cyan: #03d4fb;
-  --color-brand-pink: #ec1a90;
+  --color-brand-gray: #1c1a1c;
+  --color-brand-light: #fdfbf7;
+  --color-brand-yellow: #fbc600;
+  --color-brand-cyan: #eebb29;
+  --color-brand-pink: #3f41fa;
+}
+
+@utility post-content {
+  @apply text-brand-light;
+  h2 { @apply text-2xl mt-8 mb-4 font-bold; }
+  h3 { @apply text-xl mt-6 mb-3 font-semibold; }
+  p { @apply text-base leading-relaxed mb-6; }
 }
