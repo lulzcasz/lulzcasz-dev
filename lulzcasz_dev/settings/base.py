@@ -172,4 +172,4 @@ AWS_S3_ADDRESSING_STYLE = os.getenv('AWS_S3_ADDRESSING_STYLE')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TAILWIND_CLI_SRC_CSS = "static/css/input.css"
-TAILWIND_CLI_DIST_CSS = "static/css/output.css"
+TAILWIND_CLI_DIST_CSS = "css/output.css"

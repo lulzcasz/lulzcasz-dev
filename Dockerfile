@@ -28,6 +28,8 @@ ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa
 ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-regular-400.woff2 /app/static/webfonts/
 ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-brands-400.woff2 /app/static/webfonts/
 
+ADD https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js /app/static/js/medium-zoom.min.js
+
 COPY pyproject.toml uv.lock ./
 
 FROM base AS development

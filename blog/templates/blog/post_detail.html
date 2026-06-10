@@ -66,14 +66,14 @@
 {% endblock extra_head %}
 
 {% block main %}
-  <h1 class="text-xl font-bold text-brand-light">{{ post.title }}</h1>
-  <time class="text-sm text-brand-light font-sans" datetime="{{ post.published_at|date:'Y-m-d' }}">
+  <h1 class="text-3xl font-bold text-brand-yellow mb-1">{{ post.title }}</h1>
+  <time class="text-sm text-amber-100 font-sans" datetime="{{ post.published_at|date:'Y-m-d' }}">
     Publicado em {{ post.published_at|date }}
   </time>
   <picture>
     <source srcset="{{ post.cover|variant:'large.avif' }}" type="image/avif">
     <source srcset="{{ post.cover|variant:'large.webp' }}" type="image/webp">
-    <img alt="{{ post.title }}" src="{{ post.cover.url }}" class="aspect-1200/630 w-full">
+    <img alt="{{ post.title }}" src="{{ post.cover.url }}" class="aspect-1200/630 w-full mb-5 mt-3" data-zoomable data-zoom-src="{{ post.cover.url }}">
   </picture>
   <div class="flex flex-row">
     <div class="post-content basis-4/6 pr-2">
@@ -87,7 +87,7 @@
             <source srcset="{{ related_post.cover|variant:'small.webp' }}" type="image/webp">
             <img alt="{{ related_post.title }}" src="{{ related_post.cover.url }}" class="aspect-1200/630 w-full transition-transform group-hover:opacity-80">
           </picture>
-          <h4 class="font-medium text-gray-900 group-hover:text-blue-600 leading-snug">
+          <h4 class="text-brand-light">
             {{ related_post.title }}
           </h4>
           <time class="text-xs text-gray-400 block mt-1" datetime="{{ related_post.published_at|date:'Y-m-d' }}">
