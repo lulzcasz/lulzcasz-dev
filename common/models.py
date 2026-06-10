@@ -33,7 +33,7 @@ class ContentBase(Model):
     title = CharField("título", max_length=60, unique=True)
     slug = SlugField(max_length=60, unique=True, blank=True)
     description = CharField("descrição", max_length=145, blank=True)
-    cover = ImageField("capa", upload_to=post_image_path, blank=True)
+    cover = ImageField("capa", upload_to=post_image_path, blank=True, max_length=110)
     content = HTMLField("conteúdo", blank=True)
     is_published = BooleanField("publicado", default=False)
 
