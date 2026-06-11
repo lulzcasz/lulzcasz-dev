@@ -1,12 +1,21 @@
+x-app-env: &app-env
+  env_file:
+    - .env
+  environment:
+    - DATABASE_HOST=postgresql
+    - AWS_S3_ENDPOINT_URL=http://garage:3900
+    - CELERY_BROKER_URL=redis://redis:6379/0
+
 services:
   django:
     build:
       context: .
       dockerfile: Dockerfile
       target: development
-    command: uv run manage.py runserver 0.0.0.0:8000
+    command: uv run manage.py tailwind runserver 0.0.0.0:8000
     ports:
       - 8000:8000
+    <<: *app-env
     develop:
       watch:
         - action: sync
@@ -15,12 +24,36 @@ services:
         - action: sync+restart
           path: uv.lock
           target: /app/uv.lock
-    env_file:
-      - .env
-    environment:
-      - DATABASE_HOST=postgresql
-      - AWS_S3_ENDPOINT_URL=http://garage:3900
-      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      garage:
+        condition: service_started
+    restart: on-failure
+    tty: true
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: uv run celery -A lulzcasz_dev worker --loglevel=INFO --concurrency=2
+    <<: *app-env
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./
+          target: /app
+        - action: sync+restart
+          path: uv.lock
+          target: /app/uv.lock
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: on-failure
 
   postgresql:
@@ -31,75 +64,32 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lulzcasz_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     restart: on-failure
 
   garage:
     image: dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
-    configs:
-      - source: garage_config
-        target: /etc/garage.toml
     ports:
       - "3900:3900"
       - "3901:3901"
       - "3902:3902"
       - "3903:3903"
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
     restart: on-failure
 
   redis:
     image: redis:8.8.0-alpine3.23@sha256:09160599abd229764c0fb44cb6be640294e1d360a54b19985ab4843dcf2d90f1
     ports:
       - 6379:6379
-    command: redis-server
-
-  celery:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
-    command: uv run celery -A lulzcasz_dev worker --loglevel=INFO --concurrency=2
-    develop:
-      watch:
-        - action: sync+restart
-          path: ./
-          target: /app
-        - action: sync+restart
-          path: uv.lock
-          target: /app/uv.lock
-    env_file:
-      - .env
-    environment:
-      - DATABASE_HOST=postgresql
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - AWS_S3_ENDPOINT_URL=http://garage:3900
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     restart: on-failure
-
-configs:
-  garage_config:
-    content: |
-      metadata_dir = "/tmp/meta"
-      data_dir = "/tmp/data"
-      db_engine = "sqlite"
-
-      replication_factor = 1
-
-      rpc_bind_addr = "[::]:3901"
-      rpc_public_addr = "127.0.0.1:3901"
-      rpc_secret = "13556022166d5123c3bffa8182d39763d45a2f2427cbee65c5961d0cfe6e9c32"
-
-      [s3_api]
-      s3_region = "garage"
-      api_bind_addr = "[::]:3900"
-      root_domain = ".s3.localhost"
-
-      [s3_web]
-      bind_addr = "[::]:3902"
-      root_domain = ".web.localhost"
-      index = "index.html"
-
-      [k2v_api]
-      api_bind_addr = "[::]:3904"
-
-      [admin]
-      api_bind_addr = "[::]:3903"
-      admin_token = "3V889khJexVenGA+zYNzJ3XJno7xfTceJNPlTlAOsYE="
-      metrics_token = "nal/3iUaamhGw1OVyh7SA4HJsQEf5CDejVeI+LPO1Mk="

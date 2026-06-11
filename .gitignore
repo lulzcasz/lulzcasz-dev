@@ -1,5 +1,7 @@
 .venv/
+.django_tailwind_cli
 __pycache__/
 media/
 
+output.css
 db.sqlite3
