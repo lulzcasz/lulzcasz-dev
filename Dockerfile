@@ -48,7 +48,7 @@ COPY . .
 RUN uv sync --frozen --no-dev
 
 RUN STATIC_URL="static/" \
-    CSRF_TRUSTED_ORIGINS="*" \
+    CSRF_TRUSTED_ORIGINS="http://localhost" \
     DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" \
     SECRET_KEY="build-dummy-key" \
     ALLOWED_HOSTS="*" \
@@ -56,7 +56,7 @@ RUN STATIC_URL="static/" \
     uv run --no-dev python manage.py tailwind build
 
 RUN STATIC_URL="static/" \
-    CSRF_TRUSTED_ORIGINS="*" \
+    CSRF_TRUSTED_ORIGINS="http://localhost" \
     DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" \
     SECRET_KEY="build-dummy-key" \
     ALLOWED_HOSTS="*" \
