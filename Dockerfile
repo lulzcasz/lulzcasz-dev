@@ -47,8 +47,11 @@ FROM prod_dependencies AS web_production
 COPY . .
 RUN uv sync --frozen --no-dev
 
-RUN DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" \
+RUN STATIC_URL="static/" \
+    CSRF_TRUSTED_ORIGINS="*" \
+    DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" \
     SECRET_KEY="build-dummy-key" \
+    ALLOWED_HOSTS="*" \
     DATABASE_URL="sqlite:///" \
     uv run --no-dev python manage.py tailwind build
 
