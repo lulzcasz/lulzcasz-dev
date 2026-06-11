@@ -1,5 +1,5 @@
 .venv/
-.django_tailwind_cli
+.django_tailwind_cli/
 __pycache__/
 media/
 
