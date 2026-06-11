@@ -3,4 +3,5 @@
 __pycache__/
 media/
 
+output.css
 db.sqlite3
