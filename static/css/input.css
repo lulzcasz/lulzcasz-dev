@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-black: #101010;
+  --color-brand-gray: #1f1c1b;
+  --color-brand-light: #ededf0;
+  --color-brand-yellow: #00eac1;
+  --color-brand-cyan: #ffa500;
+  --color-brand-pink: #f50000;
+}
+
+@utility post-content {
+  h2 { @apply text-2xl font-bold text-brand-yellow; }
+  h3 { @apply text-xl font-semibold text-brand-yellow; }
+  p { @apply text-lg leading-relaxed text-brand-light; } 
+}

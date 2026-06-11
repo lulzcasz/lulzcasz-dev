@@ -29,7 +29,7 @@ def optimize_content_images(content):
         avif_src = f"{base_path}/processed.avif"
         webp_src = f"{base_path}/processed.webp"
 
-        img_tag = f'{start_tag}{webp_src}" data-zoom-src="{raw_src}" class="zoomable" loading="lazy" onerror="this.onerror=null; this.src=\'{raw_src}\';"{end_tag}'
+        img_tag = f'{start_tag}{webp_src}" data-zoomable data-zoom-src="{raw_src}" loading="lazy"'
 
         picture_tag = f"""<picture>
             <source srcset="{avif_src}" type="image/avif">
