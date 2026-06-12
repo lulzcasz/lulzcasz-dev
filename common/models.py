@@ -1,11 +1,6 @@
 from common.utils.upload_to import post_image_path
 from django.db.models import (
-    BooleanField,
-    CharField,
-    ImageField,
-    Model,
-    SlugField,
-    UUIDField,
+    BooleanField, CharField, ImageField, Model, SlugField, UUIDField,
 )
 from django.utils.text import slugify
 from tinymce.models import HTMLField
@@ -13,7 +8,7 @@ from uuid import uuid4
 
 
 class TaxonomyBase(Model):
-    name = CharField("nome", max_length=32, unique=True)
+    name = CharField(max_length=32, unique=True)
     slug = SlugField(max_length=32, unique=True, blank=True)
 
     class Meta:
@@ -30,12 +25,12 @@ class TaxonomyBase(Model):
 
 class ContentBase(Model):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
-    title = CharField("título", max_length=60, unique=True)
+    title = CharField(max_length=60, unique=True)
     slug = SlugField(max_length=60, unique=True, blank=True)
-    description = CharField("descrição", max_length=145, blank=True)
-    cover = ImageField("capa", upload_to=post_image_path, blank=True, max_length=110)
-    content = HTMLField("conteúdo", blank=True)
-    is_published = BooleanField("publicado", default=False)
+    description = CharField(max_length=145, blank=True)
+    cover = ImageField(upload_to=post_image_path, blank=True, max_length=110)
+    content = HTMLField(blank=True)
+    is_published = BooleanField(default=False)
 
     class Meta:
         abstract = True

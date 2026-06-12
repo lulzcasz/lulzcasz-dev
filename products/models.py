@@ -6,11 +6,8 @@ from uuid import uuid4
 
 
 class Store(Model):
-    name = CharField('nome', max_length=16, unique=True)
+    name = CharField(max_length=16, unique=True)
     logo = FileField(upload_to=store_logo_path)
-
-    class Meta:
-        verbose_name = "loja"
 
     def __str__(self):
         return self.name
@@ -18,8 +15,8 @@ class Store(Model):
 
 class Product(Model):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
-    name = CharField('nome', max_length=32, unique=True)
-    image = ImageField("imagem", upload_to=product_image_path)
+    name = CharField(max_length=32, unique=True)
+    image = ImageField(upload_to=product_image_path)
 
     def save(self, *args, **kwargs):
         self._image_changed = False
@@ -32,22 +29,15 @@ class Product(Model):
             self._image_changed = True
 
         super().save(*args, **kwargs)
-    
-    class Meta:
-        verbose_name = "produto"
 
     def __str__(self):
         return self.name
 
 
 class AffiliateLink(Model):
-    product = ForeignKey(Product, CASCADE, related_name="links", verbose_name="produto")
-    store = ForeignKey(Store, CASCADE, related_name="links", verbose_name="loja")
+    product = ForeignKey(Product, on_delete=CASCADE, related_name="links")
+    store = ForeignKey(Store, on_delete=CASCADE, related_name="links")
     url = URLField(max_length=500)
-
-    class Meta:
-        verbose_name = "link de afiliado"
-        verbose_name_plural = "links de afiliados"
 
     def __str__(self):
         return f"{self.store.name} - {self.product.name}"
