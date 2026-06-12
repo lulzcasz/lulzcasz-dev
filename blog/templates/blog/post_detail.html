@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load image_utils %}
+{% load product_shortcodes %}
 
 {% block title %}
   <title>{{ post.title }}</title>
@@ -91,7 +92,7 @@
   <div class="flex flex-row mx-auto items-start">
     <div class="basis-4/6 pr-2">
       <div class="post-content">
-        {{ post.content|optimize_content_images }}
+        {{ post.content|render_product_shortcodes|optimize_content_images|safe }}
       </div>
       <div id="bottom-related-section" class="border-t border-gray-850 pt-10 hidden">
         <div id="bottom-related-container" class="flex flex-col md:flex-row gap-6"></div>
@@ -108,31 +109,6 @@
           </a>
         {% endfor %}
       </div>
-      {% if post.products.exists %}
-        <div class="bg-brand-gray p-4 rounded-md mb-6">
-          <ul class="divide-y divide-gray-700/50">
-            {% for product in post.get_ordered_products %}
-              <li class="flex items-center gap-4 py-4 {% if forloop.first %}pt-0{% endif %} {% if forloop.last %}pb-0{% endif %}">
-                <div class="flex-1 min-w-0">
-                  <p class="text-base font-semibold text-brand-light">{{ product.name }}</p>
-                  <div class="flex w-full gap-2 mt-3">
-                    {% for link in product.links.all %}
-                      <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.store.name }}" class="flex-1 h-11 bg-gray-700 rounded hover:opacity-80 transition-opacity flex justify-center items-center px-2">
-                        {% if link.store.logo %}
-                          <img src="{{ link.store.logo.url }}" alt="{{ link.store.name }}" class="h-6 w-full object-contain">
-                        {% endif %}
-                      </a>
-                    {% endfor %}
-                  </div>
-                </div>
-                {% if product.image %}
-                  <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-32 h-32 object-contain bg-white p-1 rounded-md shrink-0">
-                {% endif %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
       <div id="related-posts-container">
         {% for related_post in post.get_related_posts %}
           <a href="{% url 'post-detail' post_slug=related_post.slug %}" class="related-post-item hidden block mb-6 group">

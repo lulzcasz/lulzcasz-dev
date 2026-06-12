@@ -26,19 +26,6 @@ class Category(TaxonomyBase):
         verbose_name_plural = 'categories'
 
 
-class PostProduct(Model):
-    post = ForeignKey('Post', on_delete=CASCADE)
-    product = ForeignKey(Product, on_delete=CASCADE)
-    order = PositiveSmallIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
-        unique_together = ('post', 'product')
-
-    def __str__(self):
-        return f"{self.post.title} - {self.product.name}"
-
-
 class Post(ContentBase):
     is_featured = BooleanField(default=False)
     published_at = DateTimeField(null=True, editable=False)
@@ -51,16 +38,13 @@ class Post(ContentBase):
         Category, on_delete=SET_NULL, null=True, blank=True, related_name="posts",
     )
     tags = TaggableManager(blank=True)
-    products = ManyToManyField(Product, through=PostProduct, blank=True)
+    products = ManyToManyField(Product, blank=True)
 
     def save(self, *args, **kwargs):
         if self.is_published and not self.published_at:
             self.published_at = timezone.now()
 
         super().save(*args, **kwargs)
-
-    def get_ordered_products(self):
-        return self.products.all().order_by('postproduct__order')
 
     def get_related_posts(self):
         tag_ids = list(self.tags.values_list("id", flat=True))
