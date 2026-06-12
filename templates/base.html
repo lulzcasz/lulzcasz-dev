@@ -24,6 +24,7 @@
     <script src="{% static 'js/prism-copy-to-clipboard.min.js' %}"></script>
     <script src="{% static 'js/medium-zoom.min.js' %}"></script>
     {% htmx_script %}
+    {% block extra_js %}{% endblock extra_js %}
     <script>
       Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.24/components/';
       mediumZoom('[data-zoomable]')
