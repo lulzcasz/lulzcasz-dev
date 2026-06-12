@@ -9,47 +9,33 @@ from django.utils import timezone
 
 
 class Genre(TaxonomyBase):
-    class Meta:
-        verbose_name = "gênero"
+    pass
 
 
 class Category(TaxonomyBase):
     class Meta:
-        verbose_name = "categoria"
+        verbose_name_plural = 'categories'
 
 
 class Post(ContentBase):
-    is_featured = BooleanField("destaque", default=False)
-    published_at = DateTimeField("publicado em", null=True, editable=False)
-    created_at = DateTimeField("criado em", auto_now_add=True)
-    updated_at = DateTimeField("atualizado em", auto_now=True)
+    is_featured = BooleanField(default=False)
+    published_at = DateTimeField(null=True, editable=False)
+    created_at = DateTimeField(auto_now_add=True)
+    updated_at = DateTimeField(auto_now=True)
     post_genre = ForeignKey(
-        Genre,
-        SET_NULL,
-        null=True,
-        blank=True,
-        related_name="posts",
-        verbose_name="gênero",
+        Genre, on_delete=SET_NULL, null=True, blank=True, related_name="posts",
     )
     category = ForeignKey(
-        Category,
-        SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="categoria",
-        related_name="posts",
+        Category, on_delete=SET_NULL, null=True, blank=True, related_name="posts",
     )
     tags = TaggableManager(blank=True)
-    products = ManyToManyField(Product, verbose_name="produtos", blank=True)
+    products = ManyToManyField(Product, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.is_published == True and not self.published_at:
+        if self.is_published and not self.published_at:
             self.published_at = timezone.now()
 
         super().save(*args, **kwargs)
-
-    class Meta:
-        verbose_name = "post"
 
     def get_related_posts(self):
         tag_ids = list(self.tags.values_list("id", flat=True))

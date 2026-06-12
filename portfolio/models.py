@@ -1,11 +1,6 @@
 from common.models import ContentBase, TaxonomyBase
 from django.db.models import (
-    CharField,
-    ImageField,
-    ManyToManyField,
-    Model,
-    TextField,
-    URLField,
+    CharField, ImageField, ManyToManyField, Model, TextField, URLField,
 )
 from django.urls import reverse
 from portfolio.utils.upload_to import profile_avatar_path
@@ -13,7 +8,7 @@ from taggit.managers import TaggableManager
 
 
 class ColorMixin(Model):
-    color = CharField("cor", max_length=7)
+    color = CharField(max_length=7)
 
     @property
     def text_color(self):
@@ -31,7 +26,7 @@ class ColorMixin(Model):
 
 
 class Link(ColorMixin, Model):
-    name = CharField("nome", max_length=16)
+    name = CharField(max_length=16)
     link = URLField(max_length=255)
 
     def __str__(self):
@@ -39,14 +34,10 @@ class Link(ColorMixin, Model):
 
 
 class Profile(Model):
-    name = CharField("nome", max_length=40)
-    subtitle = CharField("subtítulo", max_length=128)
+    name = CharField(max_length=40)
+    subtitle = CharField(max_length=128)
     avatar = ImageField(upload_to=profile_avatar_path)
     bio = TextField(max_length=800)
-
-    class Meta:
-        verbose_name = "perfil"
-        verbose_name_plural = "perfil"
 
     def save(self, *args, **kwargs):
         self.pk = 1
@@ -66,19 +57,14 @@ class Profile(Model):
 
 
 class Technology(ColorMixin, TaxonomyBase):
-    class Meta(TaxonomyBase.Meta):
-        verbose_name = "tecnologia"
+    class Meta:
+        verbose_name_plural = 'technologies'
 
 
 class Project(ContentBase):
-    repository = URLField("repositório", blank=True, null=True)
-    live = URLField("ao vivo", blank=True, null=True)
-    technologies = ManyToManyField(
-        Technology, blank=True, related_name="projects", verbose_name="tecnologias"
-    )
-
-    class Meta:
-        verbose_name = "projeto"
+    repository = URLField(blank=True, null=True)
+    live = URLField(blank=True, null=True)
+    technologies = ManyToManyField(Technology, blank=True, related_name="projects")
 
     def get_absolute_url(self):
         return reverse("project-detail", kwargs={"project_slug": self.slug})
