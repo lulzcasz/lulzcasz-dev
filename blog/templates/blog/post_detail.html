@@ -70,6 +70,18 @@
   <time class="text-sm text-amber-100 font-sans" datetime="{{ post.published_at|date:'Y-m-d' }}">
     Publicado em {{ post.published_at|date }}
   </time>
+  <div class="flex flex-wrap gap-2 mt-3 mb-2">
+    {% if post.post_genre %}
+      <span class="px-3 py-1 text-brand-light bg-brand-gray text-sm transition-colors">
+        {{ post.post_genre }}
+      </span>
+    {% endif %}
+    {% if post.category %}
+      <span class="px-3 py-1 text-brand-light bg-brand-gray text-sm transition-colors">
+        {{ post.category }}
+      </span>
+    {% endif %}
+  </div>
   <picture>
     <source srcset="{{ post.cover|variant:'large.avif' }}" type="image/avif">
     <source srcset="{{ post.cover|variant:'large.webp' }}" type="image/webp">
