@@ -1,19 +1,9 @@
 from common.models import ContentBase, TaxonomyBase
 from django.db.models import (
-    SET_NULL,
-    Count,
-    ForeignKey,
-    ManyToManyField,
-    Q,
-    DateTimeField,
-    BooleanField,
-    PositiveSmallIntegerField,
-    Model,
-    CASCADE,
+    SET_NULL, Count, ForeignKey, Q, DateTimeField, BooleanField,
 )
 from django.urls import reverse
 from taggit.managers import TaggableManager
-from products.models import Product
 from django.utils import timezone
 
 
@@ -38,7 +28,6 @@ class Post(ContentBase):
         Category, on_delete=SET_NULL, null=True, blank=True, related_name="posts",
     )
     tags = TaggableManager(blank=True)
-    products = ManyToManyField(Product, blank=True)
 
     def save(self, *args, **kwargs):
         if self.is_published and not self.published_at:

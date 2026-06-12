@@ -8,6 +8,7 @@ from uuid import uuid4
 class Store(Model):
     name = CharField(max_length=16, unique=True)
     logo = FileField(upload_to=store_logo_path)
+    color = CharField(max_length=7)
 
     def __str__(self):
         return self.name
@@ -16,6 +17,7 @@ class Store(Model):
 class Product(Model):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
     name = CharField(max_length=32, unique=True)
+    description = CharField(max_length=160, blank=True)
     image = ImageField(upload_to=product_image_path)
 
     def save(self, *args, **kwargs):
