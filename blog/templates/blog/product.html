@@ -1,7 +1,13 @@
+{% load image_utils %}
+
 <div class="my-4 p-3 bg-brand-gray flex flex-col sm:flex-row items-center sm:items-stretch gap-4 group">
   {% if product.image %}
     <div class="shrink-0 w-34 h-34 p-1 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 bg-white self-center">
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain !m-0">
+      <picture>
+  <source srcset="{{ product.image|variant:'processed.avif' }}" type="image/avif">
+  <source srcset="{{ product.image|variant:'processed.webp' }}" type="image/webp">
+  <img alt="{{ product.name }}" src="{{ product.image.url }}" class="suas-classes-css-aqui">
+</picture>
     </div>
   {% endif %}
   <div class="flex-1 w-full flex flex-col justify-center">
