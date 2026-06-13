@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Cascadia Code';
+  src: url('../fonts/CascadiaCode.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --color-brand-black: #101010;
   --color-brand-gray: #1f1c1b;
@@ -7,10 +14,43 @@
   --color-brand-yellow: #00eac1;
   --color-brand-cyan: #ffa500;
   --color-brand-pink: #f50000;
+  --font-cascadia: 'Cascadia Code', Consolas, Monaco, monospace;
 }
 
 @utility post-content {
-  h2 { @apply text-2xl font-bold text-brand-yellow; }
-  h3 { @apply text-xl font-semibold text-brand-yellow; }
-  p { @apply text-lg leading-relaxed text-brand-light; } 
+  h2 { @apply text-2xl font-bold text-brand-yellow mb-4; }
+  h3 { @apply text-xl font-semibold text-brand-yellow mb-3; }
+  p { @apply text-lg leading-relaxed text-brand-light mb-4; } 
+
+  ul { @apply list-disc list-outside ml-8 mb-6 text-brand-light; }
+  ol { @apply list-decimal list-outside ml-8 mb-6 text-brand-light; }
+  li { @apply text-lg leading-relaxed mb-2; }
+  li pre { @apply mt-3 mb-2; }
+
+  ul ul, ol ul {
+    list-style-type: circle;
+    @apply mt-2 mb-0;
+  }
+  ul ul ul, ol ul ul {
+    list-style-type: square;
+  }
+
+  blockquote { 
+    @apply border-l-4 border-brand-yellow bg-brand-gray px-5 py-4 mb-6 italic text-brand-light rounded-r-md; 
+  }
+  blockquote p:last-child { 
+    @apply mb-0; 
+  }
+
+  pre[class*="language-"],
+  :not(pre) > code[class*="language-"] {
+    background: var(--color-brand-gray) !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  code[class*="language-"],
+  pre[class*="language-"] {
+    font-family: 'Cascadia Code', Consolas, Monaco, monospace !important;
+  }
 }

@@ -19,16 +19,15 @@ ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-
 
 ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css /app/static/css/
 ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/treeview/prism-treeview.min.css /app/static/css/
-ADD https://cdn.jsdelivr.net/npm/prism-themes@1.9.0/themes/prism-coy-without-shadows.min.css /app/static/css/
 ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css /app/static/css/
 
-ADD https://cdn.jsdelivr.net/npm/prism-themes@1.9.0/themes/prism-holi-theme.min.css /app/static/css/prism-holi-theme.min.css
+ADD https://cdn.jsdelivr.net/npm/prism-themes@1.9.0/themes/prism-coldark-dark.min.css /app/static/css/
 
 ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-solid-900.woff2 /app/static/webfonts/
 ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-regular-400.woff2 /app/static/webfonts/
 ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-brands-400.woff2 /app/static/webfonts/
 
-ADD https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js /app/static/js/medium-zoom.min.js
+ADD https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js /app/static/js/
 
 COPY pyproject.toml uv.lock ./
 
