@@ -84,11 +84,13 @@
       </span>
     {% endif %}
   </div>
-  <picture>
-    <source srcset="{{ post.cover|variant:'large.avif' }}" type="image/avif">
-    <source srcset="{{ post.cover|variant:'large.webp' }}" type="image/webp">
-    <img alt="{{ post.title }}" src="{{ post.cover.url }}" class="aspect-1200/630 w-full mb-5 mt-3" data-zoomable data-zoom-src="{{ post.cover.url }}">
-  </picture>
+  <div class="mb-5 mt-3">
+    <picture>
+      <source srcset="{{ post.cover|variant:'large.avif' }}" type="image/avif">
+      <source srcset="{{ post.cover|variant:'large.webp' }}" type="image/webp">
+      <img alt="{{ post.title }}" src="{{ post.cover.url }}" class="aspect-1200/630 w-full" data-zoomable data-zoom-src="{{ post.cover.url }}">
+    </picture>
+  </div>
   <div class="flex flex-row mx-auto items-start">
     <div class="basis-4/6 pr-2">
       <div class="post-content">
