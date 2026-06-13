@@ -94,7 +94,7 @@
   <div class="flex flex-row mx-auto items-start">
     <div class="basis-4/6 pr-2">
       <div class="post-content">
-        {{ post.content|render_product_shortcodes|optimize_content_images|safe }}
+        {{ post.content|optimize_content_images|render_product_shortcodes|render_post_shortcodes|safe }}
       </div>
       <div id="bottom-related-section" class="border-t border-gray-850 pt-10 hidden">
         <div id="bottom-related-container" class="flex flex-col md:flex-row gap-6"></div>

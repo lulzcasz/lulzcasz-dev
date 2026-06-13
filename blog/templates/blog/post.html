@@ -1,0 +1,29 @@
+{% load image_utils %}
+
+<a href="{% url 'post-detail' post_slug=post.slug %}" target="_blank" class="my-5 p-4 bg-brand-gray rounded-md flex flex-col sm:flex-row gap-5 items-stretch group !no-underline transition-transform duration-300 hover:scale-[1.01]">
+  
+  <div class="shrink-0 w-full sm:w-70 overflow-hidden rounded-sm bg-black/20">
+    {% if post.cover %}
+      <picture class="block w-full h-full">
+        <source srcset="{{ post.cover|variant:'small.avif' }}" type="image/avif">
+        <source srcset="{{ post.cover|variant:'small.webp' }}" type="image/webp">
+        <img alt="{{ post.title }}" src="{{ post.cover.url }}" class="w-full h-full object-cover aspect-[1.91/1] !m-0 transition-opacity group-hover:opacity-80">
+      </picture>
+    {% else %}
+      <div class="w-full aspect-[1.91/1] flex items-center justify-center border border-zinc-800">
+        <span class="text-zinc-600 !text-xs font-sans uppercase tracking-widest">No Cover</span>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="flex-1 min-w-0 flex flex-col justify-center w-full">
+    <h4 class="!text-lg font-bold text-brand-light !mt-0 !mb-1 !leading-tight line-clamp-2">
+      {{ post.title }}
+    </h4>
+    
+    <p class="!text-sm text-gray-400 !mt-1 !mb-0 font-sans !leading-relaxed">
+      {{ post.description }}
+    </p>
+  </div>
+  
+</a>
