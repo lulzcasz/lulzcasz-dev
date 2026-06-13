@@ -6,44 +6,36 @@ from blog.models import Post
 
 register = template.Library()
 
-SHORTCODE_REGEX = re.compile(r'\[product-(\d+)\]')
+WRAPPED_SHORTCODE_REGEX = re.compile(r'<p[^>]*>\s*\[(product|post)-(\d+)\]\s*</p>')
+INLINE_SHORTCODE_REGEX = re.compile(r'\[(product|post)-(\d+)\]')
 
-@register.filter(name='render_product_shortcodes')
-def render_product_shortcodes(content):
+@register.filter(name='render_shortcodes')
+def render_shortcodes(content):
     if not content:
         return ""
 
     def replace_with_card(match):
-        product_id = match.group(1)
-        try:
-            product = Product.objects.get(id=product_id)
+        shortcode_type = match.group(1) 
+        item_id = match.group(2)        
 
-            return render_to_string('blog/product.html', {'product': product})
-            
-        except Product.DoesNotExist:
-            return f""
-
-    return re.sub(SHORTCODE_REGEX, replace_with_card, content)
-
-WRAPPED_POST_REGEX = re.compile(r'<p[^>]*>\s*\[post-(\d+)\]\s*</p>')
-
-INLINE_POST_REGEX = re.compile(r'\[post-(\d+)\]')
-
-@register.filter(name='render_post_shortcodes')
-def render_post_shortcodes(content):
-    if not content:
+        if shortcode_type == 'product':
+            try:
+                product = Product.objects.get(id=item_id)
+                return render_to_string('blog/product.html', {'product': product})
+            except Product.DoesNotExist:
+                return ""
+                
+        elif shortcode_type == 'post':
+            try:
+                post = Post.objects.get(id=item_id)
+                return render_to_string('blog/post.html', {'post': post})
+            except Post.DoesNotExist:
+                return ""
+                
         return ""
 
-    def replace_with_card(match):
-        post_id = match.group(1)
-        try:
-            post = Post.objects.get(id=post_id)
-            return render_to_string('blog/post.html', {'post': post})
-        except Post.DoesNotExist:
-            return ""
-
-    content = re.sub(WRAPPED_POST_REGEX, replace_with_card, content)
-
-    content = re.sub(INLINE_POST_REGEX, replace_with_card, content)
+    content = re.sub(WRAPPED_SHORTCODE_REGEX, replace_with_card, content)
+    
+    content = re.sub(INLINE_SHORTCODE_REGEX, replace_with_card, content)
 
     return content
