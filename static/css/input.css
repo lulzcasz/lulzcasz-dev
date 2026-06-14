@@ -36,7 +36,7 @@
   }
 
   blockquote { 
-    @apply border-l-4 border-brand-yellow bg-brand-gray px-5 py-4 mb-6 italic text-brand-light rounded-r-md; 
+    @apply border-l-4 border-brand-yellow bg-brand-gray px-5 py-4 mb-6 text-brand-light rounded-r-md; 
   }
   blockquote p:last-child { 
     @apply mb-0; 
@@ -51,6 +51,8 @@
 
   code[class*="language-"],
   pre[class*="language-"] {
-    font-family: 'Cascadia Code', Consolas, Monaco, monospace !important;
+    font-family: var(--font-cascadia) !important; 
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
   }
 }
