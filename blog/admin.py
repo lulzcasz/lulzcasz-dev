@@ -1,9 +1,9 @@
 from django.contrib import admin
-from blog.models import Genre, Category, Post
+from blog.models import Kind, Category, Article
 
 
-@admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
+@admin.register(Kind)
+class KindAdmin(admin.ModelAdmin):
     pass
 
 
@@ -12,8 +12,8 @@ class CategoryAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
     readonly_fields = ('uuid', 'created_at', 'updated_at')
 
     def get_exclude(self, request, obj=None):

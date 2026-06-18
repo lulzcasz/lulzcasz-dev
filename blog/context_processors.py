@@ -1,7 +1,7 @@
-from blog.models import Genre, Category, Post
+from blog.models import Kind, Category, Article
 
 def explore_items(request):
     return {
-        'genres': Genre.objects.all(), 
+        'kinds': Kind.objects.all(), 
         'categories': Category.objects.all(),
     }

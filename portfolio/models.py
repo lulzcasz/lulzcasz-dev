@@ -4,7 +4,6 @@ from django.db.models import (
 )
 from django.urls import reverse
 from portfolio.utils.upload_to import profile_avatar_path
-from taggit.managers import TaggableManager
 
 
 class ColorMixin(Model):

@@ -9,23 +9,23 @@
   <main class="container flex-fill bg-body-tertiary pt-3">
     <div class="row">
       <div class="col-xxl-8">
-        {% for post in page_obj %}
-          <a href="{% url 'post-detail' post_slug=post.slug %}" class="text-decoration-none text-reset">
+        {% for article in page_obj %}
+          <a href="{% url 'article-detail' article_slug=article.slug %}" class="text-decoration-none text-reset">
             <div class="card mb-3 border border-0 rounded-4">
               <div class="row g-0 align-items-center">
                 <div class="col-lg-5">
                   <img
-                    src="{{ post.cover|variant:'thumbnail' }}"
+                    src="{{ article.cover|variant:'thumbnail' }}"
                     class="img-fluid rounded-start-4"
-                    alt="{{ post.title }}"
+                    alt="{{ article.title }}"
                     style="aspect-ratio: 191/100; object-fit: cover;"
                   >
                 </div>
                 <div class="col-lg-7">
                   <div class="card-body">
-                    <h5 class="card-title">{{ post.title }}</h5>
-                    <p class="card-text">{{ post.description }}</p>
-                    <p class="card-text"><small class="text-body-secondary">{{ post.created_at | date }}</small></p>
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text">{{ article.description }}</p>
+                    <p class="card-text"><small class="text-body-secondary">{{ article.created_at | date }}</small></p>
                   </div>
                 </div>
               </div>

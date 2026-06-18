@@ -1,0 +1,139 @@
+{% extends 'blog/base.html' %}
+
+{% load static %}
+{% load image_utils %}
+{% load product_shortcodes %}
+
+{% block title %}
+  <title>{{ article.title }}</title>
+{% endblock title %}
+
+{% block extra_head %}
+  <meta name="description" content="{{ article.description }}">
+  
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'article-detail' article_slug=article.slug %}">
+  
+  <meta property="og:title" content="{{ article.title }}">
+  <meta property="og:description" content="{{ article.description }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'article-detail' article_slug=article.slug %}">
+  <meta property="og:image" content="{{ article.cover|variant:'large.webp' }}">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:site_name" content="lulzcasz.dev">
+  
+  <meta property="article:published_time" content="{{ article.published_at|date:'c' }}" />
+  <meta property="article:modified_time" content="{{ article.updated_at|date:'c' }}" />
+  <meta property="article:section" content="{{ article.category }}" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{ article.title }}" />
+  <meta name="twitter:description" content="{{ article.description }}" />
+  <meta name="twitter:image" content="{{ article.cover|variant:'large.webp' }}" />
+  
+  <meta property="article:tag" content="{{ article.category }}" />
+  <meta property="article:tag" content="{{ article.kind }}" />
+  {% for tag in article.tags.all %}
+    <meta property="article:tag" content="{{ tag.name }}" />
+  {% endfor %}
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+      },
+      "headline": "{{ article.title|escapejs }}",
+      "description": "{{ article.description|escapejs }}",
+      "image": [
+        "{{ article.cover|variant:'large.webp' }}"
+      ],
+      "datePublished": "{{ article.published_at|date:'c' }}",
+      "dateModified": "{{ article.updated_at|date:'c' }}",
+      "proficiencyLevel": "Expert",
+      "keywords": "{% if article.category %}{{ article.category.name|escapejs }}, {% endif %}{% if article.kind %}{{ article.kind.name|escapejs }}, {% endif %}{% for tech in article.technologies.all %}{{ tech.name|escapejs }}, {% endfor %}{% for tag in article.tags.all %}{{ tag.name|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ profile.name|escapejs }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "lulzcasz.dev"
+      }
+    }
+  </script>
+{% endblock extra_head %}
+
+{% block main %}
+  <h1 class="text-3xl font-bold text-brand-yellow mb-1">{{ article.title }}</h1>
+  <time class="text-sm text-amber-100 font-sans" datetime="{{ article.published_at|date:'Y-m-d' }}">
+    Published on {{ article.published_at|date:"F j, Y" }}
+  </time>
+  <div class="flex flex-wrap gap-2 mt-3 mb-2">
+    {% if article.kind %}
+      <span class="px-3 py-1 text-brand-light bg-brand-gray text-sm transition-colors">
+        {{ article.kind }}
+      </span>
+    {% endif %}
+    {% if article.category %}
+      <span class="px-3 py-1 text-brand-light bg-brand-gray text-sm transition-colors">
+        {{ article.category }}
+      </span>
+    {% endif %}
+  </div>
+  <div class="mb-5 mt-3">
+    <picture>
+      <source srcset="{{ article.cover|variant:'large.avif' }}" type="image/avif">
+      <source srcset="{{ article.cover|variant:'large.webp' }}" type="image/webp">
+      <img alt="{{ article.title }}" src="{{ article.cover.url }}" class="aspect-1200/630 w-full" data-zoomable data-zoom-src="{{ article.cover.url }}">
+    </picture>
+  </div>
+  <div class="flex flex-row mx-auto items-start">
+    <div class="basis-4/6 pr-2">
+      <div class="article-content">
+        {{ article.content|optimize_content_images|render_shortcodes|safe }}
+      </div>
+      <div id="bottom-related-section" class="border-t border-gray-850 pt-10 hidden">
+        <div id="bottom-related-container" class="flex flex-col md:flex-row gap-6"></div>
+      </div>
+    </div>
+    <aside class="basis-2/6 pl-2 sticky top-5">
+      <div id="table-of-contents" class="bg-brand-gray p-4 rounded-md mb-5 hidden">
+        <ul id="toc-list" class="space-y-2 text-sm"></ul>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-5">
+        {% for tag in article.tags.all %}
+          <a href="{% url 'articles-by-tag' tag_slug=tag.slug %}" class="grow text-center px-3 py-1 text-brand-light bg-brand-gray transition-colors hover:opacity-80">
+            {{ tag.name }}
+          </a>
+        {% endfor %}
+      </div>
+      <div id="related-articles-container">
+        {% for related_article in article.get_related_articles %}
+          <a href="{% url 'article-detail' article_slug=related_article.slug %}" class="related-article-item hidden block mb-6 group">
+            <picture>
+              <source srcset="{{ related_article.cover|variant:'small.avif' }}" type="image/avif">
+              <source srcset="{{ related_article.cover|variant:'small.webp' }}" type="image/webp">
+              <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" class="aspect-1200/630 w-full transition-transform group-hover:opacity-80">
+            </picture>
+            <h4 class="text-brand-light">
+              {{ related_article.title }}
+            </h4>
+            <p class="text-sm text-brand-light">{{ article.description }}</p>
+            <time class="text-sm text-gray-400 block mt-1" datetime="{{ related_article.published_at|date:'Y-m-d' }}">
+              {{ related_article.published_at|date }}
+            </time>
+          </a>
+        {% endfor %}
+      </div>
+    </aside>
+  </div>
+{% endblock main %}
+
+{% block extra_js %}
+  <script src="{% static 'blog/js/toc.js' %}" defer></script>
+  <script src="{% static 'blog/js/sidebar-fit.js' %}" defer></script>
+{% endblock extra_js %}

@@ -12,11 +12,11 @@ from common.tasks.video import process_video
 def tinymce_upload_image(request):
     if request.method == 'POST' and request.FILES.get('file'):
         upload = request.FILES['file']
-        raw_post_uuid = request.POST.get('post_uuid')
+        raw_article_uuid = request.POST.get('article_uuid')
 
         try:
-            valid_uuid = str(uuid.UUID(raw_post_uuid))
-            folder_path = f"publications/{valid_uuid}/content"
+            valid_uuid = str(uuid.UUID(raw_article_uuid))
+            folder_path = f"posts/{valid_uuid}/content"
         except (ValueError, TypeError):
             date_path = timezone.now().strftime('%Y/%m/%d')
             folder_path = f"images/content/unassigned/{date_path}"
@@ -40,11 +40,11 @@ def tinymce_upload_image(request):
 def tinymce_upload_video(request):
     if request.method == 'POST' and request.FILES.get('file'):
         upload = request.FILES['file']
-        raw_post_uuid = request.POST.get('post_uuid')
+        raw_article_uuid = request.POST.get('article_uuid')
 
         try:
-            valid_uuid = str(uuid.UUID(raw_post_uuid))
-            folder_path = f"publications/{valid_uuid}/content"
+            valid_uuid = str(uuid.UUID(raw_article_uuid))
+            folder_path = f"posts/{valid_uuid}/content"
         except (ValueError, TypeError):
             date_path = timezone.now().strftime('%Y/%m/%d')
             folder_path = f"videos/content/unassigned/{date_path}"

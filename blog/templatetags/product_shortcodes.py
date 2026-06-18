@@ -2,12 +2,12 @@ import re
 from django import template
 from django.template.loader import render_to_string
 from products.models import Product
-from blog.models import Post
+from blog.models import Article
 
 register = template.Library()
 
-WRAPPED_SHORTCODE_REGEX = re.compile(r'<p[^>]*>\s*\[(product|post)-(\d+)\]\s*</p>')
-INLINE_SHORTCODE_REGEX = re.compile(r'\[(product|post)-(\d+)\]')
+WRAPPED_SHORTCODE_REGEX = re.compile(r'<p[^>]*>\s*\[(product|article)-(\d+)\]\s*</p>')
+INLINE_SHORTCODE_REGEX = re.compile(r'\[(product|article)-(\d+)\]')
 
 @register.filter(name='render_shortcodes')
 def render_shortcodes(content):
@@ -25,11 +25,11 @@ def render_shortcodes(content):
             except Product.DoesNotExist:
                 return ""
                 
-        elif shortcode_type == 'post':
+        elif shortcode_type == 'article':
             try:
-                post = Post.objects.get(id=item_id)
-                return render_to_string('blog/post.html', {'post': post})
-            except Post.DoesNotExist:
+                article = Article.objects.get(id=item_id)
+                return render_to_string('blog/article.html', {'article': article})
+            except Article.DoesNotExist:
                 return ""
                 
         return ""
