@@ -48,23 +48,23 @@ function upload_image(blobInfo, progress) {
         const formData = new FormData();
         formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-        let postUuid = null;
+        let articleUuid = null;
 
         const adminUuidField = document.querySelector('.field-uuid .readonly');
         if (adminUuidField) {
-            postUuid = adminUuidField.innerText.trim();
+            articleUuid = adminUuidField.innerText.trim();
         }
 
         else {
             const uuidInput = document.querySelector('input[name="uuid"]');
-            if (uuidInput) postUuid = uuidInput.value;
+            if (uuidInput) articleUuid = uuidInput.value;
         }
 
-        if (postUuid) {
-            formData.append('post_uuid', postUuid);
+        if (articleUuid) {
+            formData.append('article_uuid', articleUuid);
         }
 
-        console.log(postUuid);
+        console.log(articleUuid);
 
         xhr.send(formData);
     });

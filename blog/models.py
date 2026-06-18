@@ -1,13 +1,10 @@
 from common.models import ContentBase, TaxonomyBase
-from django.db.models import (
-    SET_NULL, Count, ForeignKey, Q, DateTimeField, BooleanField,
-)
+from django.db.models import SET_NULL, Count, ForeignKey, Q, BooleanField
 from django.urls import reverse
 from taggit.managers import TaggableManager
-from django.utils import timezone
 
 
-class Genre(TaxonomyBase):
+class Kind(TaxonomyBase):
     pass
 
 
@@ -16,33 +13,24 @@ class Category(TaxonomyBase):
         verbose_name_plural = 'categories'
 
 
-class Post(ContentBase):
+class Article(ContentBase):
     is_featured = BooleanField(default=False)
-    published_at = DateTimeField(null=True, editable=False)
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
-    post_genre = ForeignKey(
-        Genre, on_delete=SET_NULL, null=True, blank=True, related_name="posts",
+    kind = ForeignKey(
+        Kind, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
     )
     category = ForeignKey(
-        Category, on_delete=SET_NULL, null=True, blank=True, related_name="posts",
+        Category, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
     )
     tags = TaggableManager(blank=True)
 
-    def save(self, *args, **kwargs):
-        if self.is_published and not self.published_at:
-            self.published_at = timezone.now()
-
-        super().save(*args, **kwargs)
-
-    def get_related_posts(self):
+    def get_related_articles(self):
         tag_ids = list(self.tags.values_list("id", flat=True))
 
         if not tag_ids:
-            return Post.objects.none()
+            return Article.objects.none()
 
         return (
-            Post.objects.filter(
+            Article.objects.filter(
                 is_published=True,
                 tags__in=tag_ids,
             )
@@ -53,4 +41,4 @@ class Post(ContentBase):
         )
 
     def get_absolute_url(self):
-        return reverse("post-detail", kwargs={"post_slug": self.slug})
+        return reverse("article-detail", kwargs={"article_slug": self.slug})

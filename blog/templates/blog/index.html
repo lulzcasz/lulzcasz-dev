@@ -8,9 +8,9 @@
 {% endblock title %}
 
 {% block main %}
-  {% for post in last_posts %}
-    <a href="{% url 'post-detail' post_slug=post.slug %}" class="text-brand-light flex">
-      {{ post.title }}
+  {% for article in last_articles %}
+    <a href="{% url 'article-detail' article_slug=article.slug %}" class="text-brand-light flex">
+      {{ article.title }}
     </a>
   {% endfor %}
 {% endblock main %}

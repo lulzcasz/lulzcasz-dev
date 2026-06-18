@@ -1,20 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const postContent = document.querySelector('.post-content');
+    const articleContent = document.querySelector('.article-content');
     const asideElement = document.querySelector('aside');
-    const relatedPosts = document.querySelectorAll('.related-post-item');
+    const relatedArticles = document.querySelectorAll('.related-article-item');
     const bottomContainer = document.getElementById('bottom-related-container');
     const bottomSection = document.getElementById('bottom-related-section');
     
-    if (!postContent || !asideElement || relatedPosts.length === 0 || !bottomContainer) return;
+    if (!articleContent || !asideElement || relatedArticles.length === 0 || !bottomContainer) return;
 
     function adjustSidebarContent() {
         const viewportHeight = window.innerHeight;
-        const maxPostHeight = postContent.offsetHeight;
+        const maxArticleHeight = articleContent.offsetHeight;
 
-        const sidebarContainer = document.getElementById('related-posts-container');
-        relatedPosts.forEach(post => {
-            post.classList.add('hidden');
-            sidebarContainer.appendChild(post);
+        const sidebarContainer = document.getElementById('related-articles-container');
+        relatedArticles.forEach(article => {
+            article.classList.add('hidden');
+            sidebarContainer.appendChild(article);
         });
 
         bottomContainer.innerHTML = '';
@@ -22,15 +22,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let movedToBottomCount = 0;
 
-        for (let i = 0; i < relatedPosts.length; i++) {
-            const currentPost = relatedPosts[i];
+        for (let i = 0; i < relatedArticles.length; i++) {
+            const currentArticle = relatedArticles[i];
             
-            currentPost.classList.remove('hidden');
+            currentArticle.classList.remove('hidden');
             const currentSidebarHeight = asideElement.scrollHeight;
 
             let cabeNaSidebar = true;
 
-            if (currentSidebarHeight > maxPostHeight) {
+            if (currentSidebarHeight > maxArticleHeight) {
                 cabeNaSidebar = false;
             }
 
@@ -42,16 +42,16 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             if (!cabeNaSidebar) {
-                currentPost.classList.remove('hidden'); 
+                currentArticle.classList.remove('hidden'); 
 
-                currentPost.classList.remove('mb-6');
-                currentPost.classList.add('w-full', 'md:flex-1', 'bg-brand-gray/30', 'p-4', 'rounded-md', 'border', 'border-gray-800/50', 'hover:border-gray-700', 'transition-colors');
+                currentArticle.classList.remove('mb-6');
+                currentArticle.classList.add('w-full', 'md:flex-1', 'bg-brand-gray/30', 'p-4', 'rounded-md', 'border', 'border-gray-800/50', 'hover:border-gray-700', 'transition-colors');
                 
-                bottomContainer.appendChild(currentPost);
+                bottomContainer.appendChild(currentArticle);
                 movedToBottomCount++;
             } else {
-                currentPost.classList.add('mb-6');
-                currentPost.classList.remove('w-full', 'md:flex-1', 'bg-brand-gray/30', 'p-4', 'rounded-md', 'border', 'border-gray-800/50', 'hover:border-gray-700', 'transition-colors');
+                currentArticle.classList.add('mb-6');
+                currentArticle.classList.remove('w-full', 'md:flex-1', 'bg-brand-gray/30', 'p-4', 'rounded-md', 'border', 'border-gray-800/50', 'hover:border-gray-700', 'transition-colors');
             }
         }
 

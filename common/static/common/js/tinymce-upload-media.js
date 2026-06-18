@@ -9,17 +9,17 @@ function upload_media_handler(callback, value, meta) {
             const formData = new FormData();
             formData.append('file', file);
 
-            let postUuid = null;
+            let articleUuid = null;
             const adminUuidField = document.querySelector('.field-uuid .readonly');
             if (adminUuidField) {
-                postUuid = adminUuidField.innerText.trim();
+                articleUuid = adminUuidField.innerText.trim();
             } else {
                 const uuidInput = document.querySelector('input[name="uuid"]');
-                if (uuidInput) postUuid = uuidInput.value;
+                if (uuidInput) articleUuid = uuidInput.value;
             }
 
-            if (postUuid) {
-                formData.append('post_uuid', postUuid);
+            if (articleUuid) {
+                formData.append('article_uuid', articleUuid);
             }
 
             document.body.style.cursor = 'wait';

@@ -3,17 +3,18 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic.base import TemplateView
 
-from blog.sitemaps import PostSitemap
+from blog.sitemaps import ArticleSitemap
 
 sitemaps = {
-    "posts": PostSitemap,
+    "articles": ArticleSitemap,
 }
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
-    path('portfolio/', include('portfolio.urls')),
+    path('blog/', include('blog.urls')),
     path('', include('common.urls')),
+    path('', include('portfolio.urls')),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
@@ -24,5 +25,4 @@ urlpatterns = [
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
-    path('', include('blog.urls')),
 ]

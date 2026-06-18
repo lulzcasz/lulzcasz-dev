@@ -40,9 +40,9 @@ def process_image(self, relative_path, kind):
                         '-crf', '16', '-cpu-used', '6',
                         '-vf', vf_scale_crop, '-pix_fmt', 'yuv420p'
                     ]
-                else: # webp
+                else:
                     args = [
-                        '-threads', '2', '-c:v', 'libwebp', '-q:v', '85',
+                        '-threads', '2', '-c:v', 'libwebp', '-q:v', '80',
                         '-vf', vf_scale_crop, '-pix_fmt', 'yuv420p'
                     ]
                 

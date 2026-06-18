@@ -1,4 +1,4 @@
-from blog.models import Category, Genre, Post
+from blog.models import Category, Kind, Article
 from common.utils.paginate import paginate_queryset
 from django.shortcuts import get_object_or_404, render
 from portfolio.models import Profile
@@ -6,64 +6,64 @@ from taggit.models import Tag
 
 
 def index(request):
-    last_posts = Post.objects.filter(is_published=True).order_by("-published_at")[:3]
+    last_articles = Article.objects.filter(is_published=True).order_by("-published_at")[:3]
 
-    featured_posts = Post.objects.filter(is_published=True, is_featured=True)[:3]
+    featured_articles = Article.objects.filter(is_published=True, is_featured=True)[:3]
 
-    ctx = {"featured_posts": featured_posts, "last_posts": last_posts}
+    ctx = {"featured_articles": featured_articles, "last_articles": last_articles}
 
     return render(request, "blog/index.html", ctx)
 
 
-def post_detail(request, post_slug):
-    post = get_object_or_404(Post, slug=post_slug, is_published=True)
+def article_detail(request, article_slug):
+    article = get_object_or_404(Article, slug=article_slug, is_published=True)
     profile = Profile.objects.first()
 
     return render(
         request,
-        "blog/post_detail.html",
-        {"post": post, "profile": profile},
+        "blog/article_detail.html",
+        {"article": article, "profile": profile},
     )
 
 
-def posts(request):
-    all_posts = Post.objects.filter(is_published=True).order_by("-published_at")
+def articles(request):
+    all_articles = Article.objects.filter(is_published=True).order_by("-published_at")
 
-    page_obj = paginate_queryset(request, all_posts)
+    page_obj = paginate_queryset(request, all_articles)
 
     return render(
         request,
-        "blog/post_list.html",
-        {"page_obj": page_obj, "title": "Todos os Posts"},
+        "blog/article_list.html",
+        {"page_obj": page_obj, "title": "All Articles"},
     )
 
 
-def posts_by_genre(request, genre_slug):
-    post_genre = get_object_or_404(Genre, slug=genre_slug)
+def articles_by_kind(request, kind_slug):
+    kind = get_object_or_404(Kind, slug=kind_slug)
 
-    posts_qs = Post.objects.filter(post_genre=post_genre, is_published=True).order_by(
+    articles_qs = Article.objects.filter(kind=kind, is_published=True).order_by(
         "-published_at"
     )
 
-    page_obj = paginate_queryset(request, posts_qs)
+    page_obj = paginate_queryset(request, articles_qs)
 
     context = {
         "page_obj": page_obj,
-        "title": f"Gênero: {post_genre.name}",
-        "current_genre": post_genre,
+        "title": f"Gênero: {kind.name}",
+        "current_kind": kind,
     }
 
-    return render(request, "blog/post_list.html", context)
+    return render(request, "blog/article_list.html", context)
 
 
-def posts_by_category(request, category_slug):
+def articles_by_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
 
-    posts_qs = Post.objects.filter(category=category, is_published=True).order_by(
+    articles_qs = Article.objects.filter(category=category, is_published=True).order_by(
         "-published_at"
     )
 
-    page_obj = paginate_queryset(request, posts_qs)
+    page_obj = paginate_queryset(request, articles_qs)
 
     context = {
         "page_obj": page_obj,
@@ -71,17 +71,17 @@ def posts_by_category(request, category_slug):
         "current_category": category,
     }
 
-    return render(request, "blog/post_list.html", context)
+    return render(request, "blog/article_list.html", context)
 
 
-def posts_by_tag(request, tag_slug):
+def articles_by_tag(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
 
-    posts_qs = Post.objects.filter(tags__slug=tag_slug, is_published=True).order_by(
+    articles_qs = Article.objects.filter(tags__slug=tag_slug, is_published=True).order_by(
         "-published_at"
     )
 
-    page_obj = paginate_queryset(request, posts_qs)
+    page_obj = paginate_queryset(request, articles_qs)
 
     context = {
         "page_obj": page_obj,
@@ -89,4 +89,4 @@ def posts_by_tag(request, tag_slug):
         "current_tag": tag,
     }
 
-    return render(request, "blog/post_list.html", context)
+    return render(request, "blog/article_list.html", context)

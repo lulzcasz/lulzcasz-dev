@@ -1,10 +1,11 @@
-from common.utils.upload_to import post_image_path
+from common.utils.upload_to import article_image_path
 from django.db.models import (
-    BooleanField, CharField, ImageField, Model, SlugField, UUIDField,
+    BooleanField, CharField, ImageField, Model, SlugField, UUIDField, DateTimeField
 )
 from django.utils.text import slugify
 from tinymce.models import HTMLField
 from uuid import uuid4
+from django.utils import timezone
 
 
 class TaxonomyBase(Model):
@@ -20,6 +21,7 @@ class TaxonomyBase(Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+
         super().save(*args, **kwargs)
 
 
@@ -28,9 +30,12 @@ class ContentBase(Model):
     title = CharField(max_length=60, unique=True)
     slug = SlugField(max_length=60, unique=True, blank=True)
     description = CharField(max_length=145, blank=True)
-    cover = ImageField(upload_to=post_image_path, blank=True, max_length=110)
+    cover = ImageField(upload_to=article_image_path, blank=True)
     content = HTMLField(blank=True)
+    created_at = DateTimeField(auto_now_add=True)
+    updated_at = DateTimeField(auto_now=True)
     is_published = BooleanField(default=False)
+    published_at = DateTimeField(null=True, editable=False)
 
     class Meta:
         abstract = True
@@ -38,6 +43,9 @@ class ContentBase(Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        if self.is_published and not self.published_at:
+            self.published_at = timezone.now()
 
         self._cover_changed = False
         if self.cover:
