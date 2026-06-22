@@ -55,4 +55,28 @@
     font-size: 1rem !important;
     line-height: 1.5 !important;
   }
+
+  table {
+    font-family: var(--font-cascadia);
+    max-width: 100%;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  table th,
+  table tr:first-child td {
+    color: var(--color-brand-yellow);
+    font-weight: bold;
+  }
+
+  table td {
+    color: var(--color-brand-light);
+  }
+
+  table [style*="background-color"] {
+    display: inline-block;
+    padding: 0.125rem 0.5rem !important;
+    border-radius: 0.25rem !important; 
+  }
+  
 }
