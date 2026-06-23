@@ -12,10 +12,9 @@
     <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/prism-coldark-dark.min.css' %}">
     {% if debug %}
-      <script type="module" src="http://localhost:5173/@vite/client"></script>
-      <link rel="stylesheet" href="http://localhost:5173/static/css/input.css">
+      <link rel="stylesheet" href="http://localhost:5173/static/css/style.css">
     {% else %}
-      <link rel="stylesheet" href="{% static 'css/output.css' %}">
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% endif %}
     {% block extra_head %}{% endblock %}
   </head>
@@ -26,12 +25,16 @@
     <script src="{% static 'js/prism-toolbar.min.js' %}"></script>
     <script src="{% static 'js/prism-treeview.min.js' %}"></script>
     <script src="{% static 'js/prism-copy-to-clipboard.min.js' %}"></script>
-    <script src="{% static 'js/medium-zoom.min.js' %}"></script>
+    {% if debug %}
+      <script type="module" src="http://localhost:5173/@vite/client"></script>
+      <script type="module" src="http://localhost:5173/static/js/main.js"></script>
+    {% else %}
+      <script type="module" src="{% static 'dist/js/main.js' %}"></script>
+    {% endif %}
     {% htmx_script %}
     {% block extra_js %}{% endblock extra_js %}
     <script>
       Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.24/components/';
-      mediumZoom('[data-zoomable]')
     </script>
   </body>
 </html>

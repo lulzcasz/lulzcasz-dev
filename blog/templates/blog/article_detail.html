@@ -84,56 +84,103 @@
       </span>
     {% endif %}
   </div>
-  <div class="mb-5 mt-3">
+<div class="mb-5 mt-3">
     <picture>
       <source srcset="{{ article.cover|variant:'large.avif' }}" type="image/avif">
       <source srcset="{{ article.cover|variant:'large.webp' }}" type="image/webp">
-      <img alt="{{ article.title }}" src="{{ article.cover.url }}" class="aspect-1200/630 w-full" data-zoomable data-zoom-src="{{ article.cover.url }}">
+      
+      <img alt="{{ article.title }}" 
+           src="{{ article.cover|variant:'large.webp' }}" 
+           class="w-full zoom-cover" 
+           data-zoomable 
+           data-zoom-src="{{ article.cover.url }}">
     </picture>
   </div>
-  <div class="flex flex-row mx-auto items-start">
-    <div class="basis-4/6 pr-2">
-      <div class="article-content">
-        {{ article.content|optimize_content_images|render_shortcodes|safe }}
-      </div>
-      <div id="bottom-related-section" class="border-t border-gray-850 pt-10 hidden">
-        <div id="bottom-related-container" class="flex flex-col md:flex-row gap-6"></div>
-      </div>
+<div x-data="sidebarManager" 
+     @toc-loaded.window="adjust()"
+     @resize.window.debounce.150ms="adjust()" 
+     class="flex flex-row mx-auto items-start">
+     
+  <div class="basis-4/6 pr-2">
+    <div class="article-content">
+      {{ article.content|optimize_content_images|render_shortcodes|safe }}
     </div>
-    <aside class="basis-2/6 pl-2 sticky top-5">
-      <div id="table-of-contents" class="bg-brand-gray p-4 rounded-md mb-5 hidden">
-        <ul id="toc-list" class="space-y-2 text-sm"></ul>
-      </div>
-      <div class="flex flex-wrap gap-2 mb-5">
-        {% for tag in article.tags.all %}
-          <a href="{% url 'articles-by-tag' tag_slug=tag.slug %}" class="grow text-center px-3 py-1 text-brand-light bg-brand-gray transition-colors hover:opacity-80">
-            {{ tag.name }}
-          </a>
-        {% endfor %}
-      </div>
-      <div id="related-articles-container">
-        {% for related_article in article.get_related_articles %}
-          <a href="{% url 'article-detail' article_slug=related_article.slug %}" class="related-article-item hidden block mb-6 group">
-            <picture>
-              <source srcset="{{ related_article.cover|variant:'small.avif' }}" type="image/avif">
-              <source srcset="{{ related_article.cover|variant:'small.webp' }}" type="image/webp">
-              <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" class="aspect-1200/630 w-full transition-transform group-hover:opacity-80">
-            </picture>
-            <h4 class="text-brand-light">
-              {{ related_article.title }}
-            </h4>
-            <p class="text-sm text-brand-light">{{ article.description }}</p>
-            <time class="text-sm text-gray-400 block mt-1" datetime="{{ related_article.published_at|date:'Y-m-d' }}">
-              {{ related_article.published_at|date }}
-            </time>
-          </a>
-        {% endfor %}
-      </div>
-    </aside>
+    
+    <div id="bottom-related-section" 
+         class="border-t border-gray-850 pt-10" 
+         x-show="movedToBottomCount > 0" 
+         x-cloak>
+      <div id="bottom-related-container" class="flex flex-col md:flex-row gap-6"></div>
+    </div>
   </div>
-{% endblock main %}
 
-{% block extra_js %}
-  <script src="{% static 'blog/js/toc.js' %}" defer></script>
-  <script src="{% static 'blog/js/sidebar-fit.js' %}" defer></script>
-{% endblock extra_js %}
+  <aside class="basis-2/6 pl-2 sticky top-5">
+    
+    <div id="table-of-contents" 
+         x-data="{ 
+            headings: [],
+            init() {
+                $nextTick(() => {
+                    const elements = document.querySelector('.article-content').querySelectorAll('h2, h3');
+                    this.headings = Array.from(elements).map((el, i) => {
+                        if (!el.id) el.id = 'heading-' + i;
+                        return { id: el.id, text: el.textContent, tag: el.tagName.toLowerCase() };
+                    });
+                    
+                    // Dispara um evento global avisando que o TOC terminou de montar
+                    $nextTick(() => {
+                        $dispatch('toc-loaded');
+                    });
+                });
+            }
+         }" 
+         x-show="headings.length > 0" 
+         class="bg-brand-gray p-4 rounded-md mb-5" 
+         x-cloak>
+         
+      <ul class="space-y-2 text-sm">
+        <li x-data>
+          <a href="#article-main-title" id="article-main-title" class="hover:text-brand-yellow transition-colors duration-200 block py-1 text-brand-light font-bold text-base">
+            {{ article.title }}
+          </a>
+        </li>
+        
+        <template x-for="heading in headings" :key="heading.id">
+          <li :class="heading.tag === 'h2' ? 'pl-3 border-l-2 border-gray-700/30 ml-1' : 'pl-6 border-l-2 border-gray-700/50 ml-1'">
+            <a :href="'#' + heading.id" 
+               x-text="heading.text"
+               :class="heading.tag === 'h2' ? 'text-brand-light font-semibold' : 'text-gray-400 text-xs'"
+               class="hover:text-brand-yellow transition-colors duration-200 block py-1">
+            </a>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-5">
+      {% for tag in article.tags.all %}
+        <a href="{% url 'articles-by-tag' tag_slug=tag.slug %}" class="grow text-center px-3 py-1 text-brand-light bg-brand-gray transition-colors hover:opacity-80">
+          {{ tag.name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <div id="related-articles-container">
+      {% for related_article in article.get_related_articles %}
+        <a href="{% url 'article-detail' article_slug=related_article.slug %}" class="related-article-item hidden mb-6 group">
+          <picture>
+            <source srcset="{{ related_article.cover|variant:'small.avif' }}" type="image/avif">
+            <source srcset="{{ related_article.cover|variant:'small.webp' }}" type="image/webp">
+            <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" class="aspect-1200/630 w-full transition-transform group-hover:opacity-80">
+          </picture>
+          <h4 class="text-brand-light">{{ related_article.title }}</h4>
+          <p class="text-sm text-brand-light">{{ article.description }}</p>
+          <time class="text-sm text-gray-400 block mt-1" datetime="{{ related_article.published_at|date:'Y-m-d' }}">
+            {{ related_article.published_at|date }}
+          </time>
+        </a>
+      {% endfor %}
+    </div>
+  </aside>
+</div>
+{% endblock main %}
