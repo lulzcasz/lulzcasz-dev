@@ -3,7 +3,7 @@ name = "lulzcasz-dev"
 version = "0.0.0"
 description = "lulzcasz.dev source code"
 readme = "README.md"
-requires-python = "==3.14.5"
+requires-python = "==3.14.6"
 dependencies = [
     "celery==5.6.3",
     "django==5.2.15",
