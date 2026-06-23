@@ -1,8 +1,8 @@
 .venv/
 .git/
-.django_tailwind_cli/
 **/__pycache__/
 media/
+node_modules/
 
 .env
 .gitignore

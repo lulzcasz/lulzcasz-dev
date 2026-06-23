@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import socket
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -19,12 +20,19 @@ INSTALLED_APPS = [
     'tinymce',
     "django_htmx",
     'taggit',
-    "django_tailwind_cli",
     'common',
     'products',
     'blog',
     'portfolio',
 ]
+
+INTERNAL_IPS = []
+
+try:
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.extend([ip[:-1] + "1" for ip in ips])
+except Exception:
+    pass
 
 SITE_ID = 1
 
@@ -171,6 +179,3 @@ AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
 AWS_S3_ADDRESSING_STYLE = os.getenv('AWS_S3_ADDRESSING_STYLE')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-TAILWIND_CLI_SRC_CSS = "static/css/input.css"
-TAILWIND_CLI_DIST_CSS = "css/output.css"

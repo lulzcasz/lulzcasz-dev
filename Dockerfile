@@ -41,18 +41,22 @@ FROM base AS prod_dependencies
 
 RUN uv sync --frozen --no-dev --no-install-project
 
+FROM node:24.17.0-alpine3.23 AS frontend_builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
 FROM prod_dependencies AS web_production
 
 COPY . .
 RUN uv sync --frozen --no-dev
 
-RUN STATIC_URL="static/" \
-    CSRF_TRUSTED_ORIGINS="http://localhost" \
-    DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" \
-    SECRET_KEY="build-dummy-key" \
-    ALLOWED_HOSTS="*" \
-    DATABASE_URL="sqlite:///" \
-    uv run --no-dev python manage.py tailwind build
+COPY --from=frontend_builder /app/static/css ./static/css
 
 RUN STATIC_URL="static/" \
     CSRF_TRUSTED_ORIGINS="http://localhost" \
