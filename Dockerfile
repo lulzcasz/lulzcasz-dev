@@ -54,7 +54,7 @@ FROM prod_dependencies AS web_production
 COPY . .
 RUN uv sync --frozen --no-dev
 
-COPY --from=frontend_builder /app/static/css ./static/css
+COPY --from=frontend_builder /app/static/dist ./static/dist
 
 RUN STATIC_URL="static/" \
     CSRF_TRUSTED_ORIGINS="http://localhost" \
