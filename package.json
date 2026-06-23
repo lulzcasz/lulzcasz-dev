@@ -1,0 +1,28 @@
+{
+  "name": "lulzcasz-dev",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lulzcasz/lulzcasz-dev.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lulzcasz/lulzcasz-dev/issues"
+  },
+  "homepage": "https://github.com/lulzcasz/lulzcasz-dev#readme",
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.1",
+    "tailwindcss": "4.3.1",
+    "vite": "8.1.0",
+    "vite-plugin-full-reload": "1.2.0"
+  }
+}

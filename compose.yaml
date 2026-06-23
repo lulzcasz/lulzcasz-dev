@@ -12,7 +12,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    command: uv run manage.py tailwind runserver 0.0.0.0:8000
+    command: uv run manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
     <<: *app-env
@@ -92,4 +92,15 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    restart: on-failure
+
+  vite:
+    image: node:24.17.0-alpine3.23
+    working_dir: /app
+    user: "${UID:-1000}:${GID:-1000}"
+    command: sh -c "npm install && npx vite --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app
     restart: on-failure
