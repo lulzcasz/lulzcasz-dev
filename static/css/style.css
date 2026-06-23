@@ -17,6 +17,14 @@
   --font-cascadia: 'Cascadia Code', Consolas, Monaco, monospace;
 }
 
+@layer utilities {
+  .zoom-cover {
+    aspect-ratio: 1200 / 630 !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+}
+
 @utility article-content {
   h2 { @apply text-2xl font-bold text-brand-yellow mb-4; }
   h3 { @apply text-xl font-semibold text-brand-yellow mb-3; }

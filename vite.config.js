@@ -12,12 +12,16 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'static/css', 
-    emptyOutDir: false, 
+    outDir: 'static/dist',
+    emptyOutDir: true, 
     rollupOptions: {
-      input: 'static/css/input.css', 
+      input: {
+        'main': 'static/js/main.js',
+        'style': 'static/css/style.css'
+      }, 
       output: {
-        assetFileNames: 'output.[ext]',
+        entryFileNames: 'js/[name].js',
+        assetFileNames: 'css/[name].[ext]',
       },
     },
   },
