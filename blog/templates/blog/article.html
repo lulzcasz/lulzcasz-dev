@@ -6,7 +6,6 @@
     {% if article.cover %}
       <picture class="block w-full h-full">
         <source srcset="{{ article.cover|variant:'small.avif' }}" type="image/avif">
-        <source srcset="{{ article.cover|variant:'small.webp' }}" type="image/webp">
         <img alt="{{ article.title }}" src="{{ article.cover.url }}" class="w-full h-full object-cover aspect-[1.91/1] !m-0 transition-opacity group-hover:opacity-80">
       </picture>
     {% else %}
