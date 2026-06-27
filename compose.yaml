@@ -57,7 +57,7 @@ services:
     restart: on-failure
 
   postgresql:
-    image: postgres:18.4-alpine3.23@sha256:169a12515b04a483f4d508e9f8256edcda9e81409a03f89d6a0461ea59c673f9
+    image: postgres:18.4-alpine3.23@sha256:865a3cfdac164ea2608bea36342a9bb5c11e99b5aa8ed9b83b662185e556e178
     environment:
       POSTGRES_DB: lulzcasz_dev
       POSTGRES_USER: postgres
@@ -83,7 +83,7 @@ services:
     restart: on-failure
 
   redis:
-    image: redis:8.8.0-alpine3.23@sha256:98ebfc1258473b4188fddcd606f2a8aaaab9130be203d8c539ebe0e7c8c30a4e
+    image: redis:8.8.0-alpine3.23@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
     ports:
       - 6379:6379
     command: redis-server --save 60 1 --loglevel warning
@@ -95,7 +95,7 @@ services:
     restart: on-failure
 
   vite:
-    image: node:24.17.0-alpine3.23
+    image: node:24.18.0-alpine3.23@sha256:595398b0081eacda8e1c4c5b97b76cd1020e4d58a8ebcb4843b9bca1e79e7436
     working_dir: /app
     user: "${UID:-1000}:${GID:-1000}"
     command: sh -c "npm install && npx vite --host 0.0.0.0"
