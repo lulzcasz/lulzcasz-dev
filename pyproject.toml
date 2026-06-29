@@ -14,7 +14,7 @@ dependencies = [
     "gunicorn==26.0.0",
     "pillow==12.2.0",
     "psycopg[binary]==3.3.4",
-    "redis==8.0.0",
+    "redis==8.0.1",
     "whitenoise[brotli]==6.12.0",
 ]
 
@@ -23,7 +23,7 @@ package = false
 
 [dependency-groups]
 dev = [
-    "ipython==9.14.1",
+    "ipython==9.15.0",
     "psycopg[binary]==3.3.4",
-    "rust-just==1.53.0",
+    "rust-just==1.54.0",
 ]
