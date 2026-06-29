@@ -1,6 +1,6 @@
 FROM mwader/static-ffmpeg:8.1.2@sha256:33f770f812cbfc3de96c547157fc9faf8bd95a36481753439ffa761045167585 AS ffmpeg
 
-FROM ghcr.io/astral-sh/uv:0.11.23-trixie-slim@sha256:e08a160f54f8c272f810f30f3099162199a529151ded0edb3018f6e9c8631846 AS base 
+FROM ghcr.io/astral-sh/uv:0.11.25-trixie-slim@sha256:463d232f7aaa58b7536a02ea435ad5ab195b3d56ac8c504c0d587efd751e1efe AS base 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -39,7 +39,7 @@ FROM base AS prod_dependencies
 
 RUN uv sync --frozen --no-dev --no-install-project
 
-FROM node:24.17.0-alpine3.23 AS frontend_builder
+FROM node:24.18.0-alpine3.23@sha256:595398b0081eacda8e1c4c5b97b76cd1020e4d58a8ebcb4843b9bca1e79e7436 AS frontend_builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
