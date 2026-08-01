@@ -1,14 +1,7 @@
 import Alpine from 'alpinejs'
-import mediumZoom from 'medium-zoom'
-
-document.addEventListener('DOMContentLoaded', () => {
-    mediumZoom('[data-zoomable]', {
-        background: '#101010',
-        margin: 24
-    })
-})
 
 document.addEventListener('alpine:init', () => {
+    
     Alpine.data('sidebarManager', () => ({
         movedToBottomCount: 0,
         
@@ -63,8 +56,28 @@ document.addEventListener('alpine:init', () => {
                 }
             });
         }
-    }))
-})
+    }));
+
+    Alpine.data('lightbox', () => ({
+        isOpen: false,
+        imgSrc: '',
+        
+        openImage(event) {
+            this.imgSrc = event.detail;
+            this.isOpen = true;
+        },
+        
+        close() {
+            this.isOpen = false;
+        },
+        
+        closeOnScroll() {
+            if (this.isOpen) {
+                this.close();
+            }
+        }
+    }));
+});
 
 window.Alpine = Alpine
 Alpine.start()

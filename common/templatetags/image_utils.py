@@ -29,7 +29,8 @@ def optimize_content_images(content):
         avif_src = f"{base_path}/processed.avif"
 
         tag_without_close = f'{start_tag}{raw_src}{end_tag}'.rstrip('>').rstrip('/')
-        img_tag = f'{tag_without_close} data-zoomable data-zoom-src="{raw_src}" loading="lazy">'
+        
+        img_tag = f'{tag_without_close} loading="lazy" class="cursor-zoom-in hover:opacity-95 transition-opacity" @click="$dispatch(\'open-lightbox\', \'{raw_src}\')">'
 
         picture_tag = f"""<picture>
             <source srcset="{avif_src}" type="image/avif">
