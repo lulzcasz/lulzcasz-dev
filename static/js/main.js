@@ -1,5 +1,18 @@
 import Alpine from 'alpinejs'
 
+import 'prismjs';
+import 'prismjs/plugins/autoloader/prism-autoloader.min.js';
+import 'prismjs/plugins/toolbar/prism-toolbar.min.js';
+import 'prismjs/plugins/treeview/prism-treeview.min.js';
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js';
+
+import 'prismjs/plugins/toolbar/prism-toolbar.min.css';
+import 'prismjs/plugins/treeview/prism-treeview.min.css';
+import 'prism-themes/themes/prism-coldark-dark.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/';
+
 document.addEventListener('alpine:init', () => {
     
     Alpine.data('sidebarManager', () => ({

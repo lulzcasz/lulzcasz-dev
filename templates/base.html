@@ -7,10 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block title %}{% endblock %}
-    <link rel="stylesheet" href="{% static 'css/prism-toolbar.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/prism-treeview.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/prism-coldark-dark.min.css' %}">
     {% if debug %}
       <link rel="stylesheet" href="http://localhost:5173/static/css/style.css">
     {% else %}
@@ -20,11 +16,6 @@
   </head>
   <body class="bg-brand-black">
     {% block body %}{% endblock %}
-    <script src="{% static 'js/prism.min.js' %}"></script>
-    <script src="{% static 'js/prism-autoloader.min.js' %}"></script>
-    <script src="{% static 'js/prism-toolbar.min.js' %}"></script>
-    <script src="{% static 'js/prism-treeview.min.js' %}"></script>
-    <script src="{% static 'js/prism-copy-to-clipboard.min.js' %}"></script>
     {% if debug %}
       <script type="module" src="http://localhost:5173/@vite/client"></script>
       <script type="module" src="http://localhost:5173/static/js/main.js"></script>
@@ -33,8 +24,5 @@
     {% endif %}
     {% htmx_script %}
     {% block extra_js %}{% endblock extra_js %}
-    <script>
-      Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.24/components/';
-    </script>
   </body>
 </html>
