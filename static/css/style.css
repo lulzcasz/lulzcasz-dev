@@ -18,11 +18,7 @@
 }
 
 @layer utilities {
-  .zoom-cover {
-    aspect-ratio: 1200 / 630 !important;
-    object-fit: cover !important;
-    object-position: center !important;
-  }
+
 }
 
 @utility article-content {

@@ -85,12 +85,11 @@
     {% endif %}
   </div>
 
-  <div class="mb-5 mt-3">
+<div class="mb-5 mt-3" x-data>
     <img alt="{{ article.title }}" 
          src="{{ article.cover|variant:'large.jpg' }}" 
-         class="w-full zoom-cover rounded-4 shadow-sm" 
-         data-zoomable 
-         data-zoom-src="{{ article.cover.url }}">
+         class="w-full rounded-4 shadow-sm cursor-zoom-in hover:opacity-95 transition-opacity"
+         @click="$dispatch('open-lightbox', '{{ article.cover.url }}')">
   </div>
 
 <div x-data="sidebarManager" 
@@ -179,4 +178,41 @@
     </div>
   </aside>
 </div>
+
+<div 
+    x-data="lightbox"
+    @open-lightbox.window="openImage($event)"
+    @scroll.window.passive="closeOnScroll"
+    @keydown.escape.window="close"
+    x-show="isOpen"
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-brand-black/90 backdrop-blur-sm cursor-zoom-out"
+    style="display: none;"
+    @click="close"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+>
+
+    <img 
+        :src="imgSrc" 
+        class="max-w-[95vw] max-h-[95vh] object-contain rounded-lg shadow-2xl"
+        @click.stop
+        alt="Zoom de Imagem em Alta Resolução"
+        x-show="isOpen"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 scale-75"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-200 transform"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-75"
+    >
+    
+    <button @click="close" class="absolute top-6 right-6 text-brand-light hover:text-brand-yellow transition-colors cursor-pointer">
+        <i class="fa-solid fa-xmark text-3xl"></i>
+    </button>
+</div>
+
 {% endblock main %}
