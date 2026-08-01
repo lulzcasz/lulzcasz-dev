@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "24.18.1"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build"
@@ -26,7 +29,6 @@
     "vite-plugin-full-reload": "1.2.0"
   },
   "dependencies": {
-    "alpinejs": "3.15.12",
-    "medium-zoom": "^1.1.0"
+    "alpinejs": "3.15.12"
   }
 }
