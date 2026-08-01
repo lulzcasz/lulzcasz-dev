@@ -3,7 +3,7 @@ x-app-env: &app-env
     - .env
   environment:
     - DATABASE_HOST=postgresql
-    - AWS_S3_ENDPOINT_URL=http://garage:3900
+    - AWS_S3_ENDPOINT_URL=http://rustfs:9000
     - CELERY_BROKER_URL=redis://redis:6379/0
 
 services:
@@ -29,7 +29,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      garage:
+      rustfs:
         condition: service_started
     restart: on-failure
     tty: true
@@ -71,16 +71,19 @@ services:
       retries: 5
     restart: on-failure
 
-  garage:
-    image: dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
+  rustfs:
+    image: rustfs/rustfs:1.0.0-beta.12
     ports:
-      - "3900:3900"
-      - "3901:3901"
-      - "3902:3902"
-      - "3903:3903"
-    volumes:
-      - ./garage.toml:/etc/garage.toml:ro
-    restart: on-failure
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - RUSTFS_ACCESS_KEY=rustfsadmin
+      - RUSTFS_SECRET_KEY=rustfsadmin
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      - RUSTFS_CONSOLE_ENABLE=true
+    command: /data
+    restart: unless-stopped
 
   redis:
     image: redis:8.10.0-alpine3.23@sha256:5cca2f8a01ef2264c52dac86f14ec6a5abe973a93331e1b62522cfc5e63e4691
