@@ -1,11 +1,7 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'Cascadia Code';
-  src: url('../fonts/CascadiaCode.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+@import "@fontsource/inter"; 
+@import "@fontsource/cascadia-code";
 
 @theme {
   --color-brand-black: #101010;
@@ -14,11 +10,18 @@
   --color-brand-yellow: #00eac1;
   --color-brand-cyan: #ffa500;
   --color-brand-pink: #f50000;
-  --font-cascadia: 'Cascadia Code', Consolas, Monaco, monospace;
+  
+  --font-sans: 'Inter', sans-serif;
+  
+  --font-mono: 'Cascadia Code', Consolas, Monaco, monospace;
+  
+  --font-cascadia: var(--font-mono);
 }
 
-@layer utilities {
-
+@layer base {
+  body {
+    font-family: var(--font-sans);
+  }
 }
 
 @utility article-content {
@@ -55,13 +58,12 @@
 
   code[class*="language-"],
   pre[class*="language-"] {
-    font-family: var(--font-cascadia) !important; 
+    font-family: var(--font-mono) !important; 
     font-size: 1rem !important;
     line-height: 1.5 !important;
   }
 
   table {
-    font-family: var(--font-cascadia);
     max-width: 100%;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
@@ -82,5 +84,4 @@
     padding: 0.125rem 0.5rem !important;
     border-radius: 0.25rem !important; 
   }
-  
 }

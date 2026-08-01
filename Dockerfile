@@ -11,22 +11,6 @@ COPY --from=ffmpeg /ffprobe /usr/local/bin/
 
 WORKDIR /app
 
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js /app/static/js/
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/autoloader/prism-autoloader.min.js /app/static/js/
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js /app/static/js/
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/treeview/prism-treeview.min.js /app/static/js/
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js /app/static/js/
-
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css /app/static/css/
-ADD https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/treeview/prism-treeview.min.css /app/static/css/
-ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css /app/static/css/
-
-ADD https://cdn.jsdelivr.net/npm/prism-themes@1.9.0/themes/prism-coldark-dark.min.css /app/static/css/
-
-ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-solid-900.woff2 /app/static/webfonts/
-ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-regular-400.woff2 /app/static/webfonts/
-ADD https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/webfonts/fa-brands-400.woff2 /app/static/webfonts/
-
 COPY pyproject.toml uv.lock ./
 
 FROM base AS development
@@ -39,7 +23,7 @@ FROM base AS prod_dependencies
 
 RUN uv sync --frozen --no-dev --no-install-project
 
-FROM node:24.18.0-alpine3.23@sha256:595398b0081eacda8e1c4c5b97b76cd1020e4d58a8ebcb4843b9bca1e79e7436 AS frontend_builder
+FROM node:24.18.1-alpine3.23 AS frontend_builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
