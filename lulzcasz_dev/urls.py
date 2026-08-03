@@ -12,9 +12,7 @@ sitemaps = {
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
-    path('blog/', include('blog.urls')),
-    path('', include('common.urls')),
-    path('', include('portfolio.urls')),
+    path('', include('blog.urls')),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),

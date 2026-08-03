@@ -20,10 +20,8 @@ INSTALLED_APPS = [
     'tinymce',
     "django_htmx",
     'taggit',
-    'common',
     'products',
     'blog',
-    'portfolio',
 ]
 
 INTERNAL_IPS = []
@@ -43,7 +41,7 @@ TINYMCE_DEFAULT_CONFIG = {
     "plugins": "image codesample directionality fullscreen link lists advlist media preview table code",
     "toolbar": "undo redo | blocks fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | pagebreak anchor codesample ltr rtl",
     "toolbar_mode": "wrap",
-    "content_css": ["dark", "/static/common/css/tinymce-content.css"],
+    "content_css": ["dark", "/static/blog/css/tinymce-content.css"],
     "skin": "oxide-dark",
     "license_key": "gpl",
     "images_upload_handler": "upload_image",
@@ -78,8 +76,8 @@ TINYMCE_DEFAULT_CONFIG = {
 
 TINYMCE_EXTRA_MEDIA = {
     'js': [
-        'common/js/tinymce-upload-image.js',
-        'common/js/tinymce-upload-media.js',
+        'blog/js/tinymce-upload-image.js',
+        'blog/js/tinymce-upload-media.js',
     ],
 }
 
