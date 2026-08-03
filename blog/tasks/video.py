@@ -1,6 +1,6 @@
 import os
 from celery import shared_task
-from common.utils.image import download_to_temp, process_and_save_image
+from blog.utils.image import download_to_temp, process_and_save_image
 
 @shared_task(bind=True)
 def process_video(self, relative_path, kind):
