@@ -1,19 +1,20 @@
 from django.contrib import admin
 from blog.models import Kind, Category, Article
+from parler.admin import TranslatableAdmin
 
 
 @admin.register(Kind)
-class KindAdmin(admin.ModelAdmin):
+class KindAdmin(TranslatableAdmin):
     pass
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(TranslatableAdmin):
     pass
 
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(TranslatableAdmin):
     readonly_fields = ('uuid', 'created_at', 'updated_at')
 
     def get_exclude(self, request, obj=None):

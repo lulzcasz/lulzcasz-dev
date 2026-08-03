@@ -12,21 +12,19 @@
   {% endif %}
   <div class="flex-1 w-full flex flex-col justify-center">
     <p class="!text-base font-bold text-brand-light !m-0 !leading-tight">{{ product.name }}</p>
-    <p class="!text-sm text-gray-400 !mt-1 !mb-2 font-sans line-clamp-4 !leading-normal">
-      {% if product.description %}
-        {{ product.description }}
-      {% endif %}
-    </p>
     <div class="flex flex-wrap w-full gap-2 mt-1">
-      {% for link in product.links.all %}
+{% for link in product.get_active_links %}
+      
         <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.store.name }}" 
           style="background-color: {{ link.store.color }};"
           class="flex-1 sm:flex-initial min-w-[100px] max-w-[140px] h-10 flex justify-center items-center px-3 rounded-md transition-all hover:opacity-90 !no-underline">
+          
           {% if link.store.logo %}
             <img src="{{ link.store.logo.url }}" alt="{{ link.store.name }}" class="w-full h-6 object-contain !m-0">
           {% else %}
             <span class="!text-[11px] font-bold text-zinc-300 uppercase tracking-wide !m-0 !leading-none">{{ link.store.name }}</span>
           {% endif %}   
+          
         </a>
       {% endfor %}
     </div>

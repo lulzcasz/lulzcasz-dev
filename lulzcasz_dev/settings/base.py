@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'tinymce',
     "django_htmx",
     'taggit',
+    'parler',
     'products',
     'blog',
 ]
@@ -87,6 +88,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -148,7 +150,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('en', "English"),
+    ('pt-br', "Portuguese (Brazil)"),
+)
+
+PARLER_LANGUAGES = {
+    1: (
+        {'code': 'en'},
+        {'code': 'pt-br'},
+    ),
+    'default': {
+        'fallback': 'en',
+        'hide_untranslated': True,
+    }
+}
 
 TIME_ZONE = 'America/Sao_Paulo'
 
