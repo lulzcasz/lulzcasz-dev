@@ -10,12 +10,27 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from blog.tasks.image import process_image
 from blog.tasks.video import process_video
+from django.utils.translation import get_language
 
 
 def index(request):
-    last_articles = Article.objects.filter(is_published=True).order_by("-published_at")[:3]
+    current_lang = get_language()
 
-    featured_articles = Article.objects.filter(is_published=True, is_featured=True)[:3]
+    last_articles = (
+        Article.objects.filter(
+            translations__is_published=True,
+            translations__language_code=current_lang,
+        )
+        .order_by("-translations__published_at")[:3]
+    )
+
+    featured_articles = (
+        Article.objects.filter(
+            translations__is_published=True,
+            translations__is_featured=True,
+            translations__language_code=current_lang,
+        )[:3]
+    )
 
     ctx = {"featured_articles": featured_articles, "last_articles": last_articles}
 
@@ -23,11 +38,16 @@ def index(request):
 
 
 def article_detail(request, article_slug):
-    article = get_object_or_404(Article, slug=article_slug, is_published=True)
-
-    return render(
-        request, "blog/article_detail.html", {"article": article},
+    current_lang = get_language()
+    
+    article = get_object_or_404(
+        Article,
+        translations__slug=article_slug,
+        translations__language_code=current_lang,
+        translations__is_published=True
     )
+
+    return render(request, 'blog/article_detail.html', {'article': article})
 
 
 def articles(request):

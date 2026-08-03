@@ -3,6 +3,7 @@
 {% load static %}
 {% load image_utils %}
 {% load product_shortcodes %}
+{% load i18n %}
 
 {% block title %}
   <title>{{ article.title }}</title>
@@ -70,7 +71,7 @@
 {% block main %}
   <h1 class="text-3xl font-bold text-brand-yellow mb-1">{{ article.title }}</h1>
   <time class="text-sm text-amber-100 font-sans" datetime="{{ article.published_at|date:'Y-m-d' }}">
-    Published on {{ article.published_at|date:"F j, Y" }}
+    {% trans "Published on" %} {{ article.published_at|date }}
   </time>
   <div class="flex flex-wrap gap-2 mt-3 mb-2">
     {% if article.kind %}

@@ -8,7 +8,6 @@ from django.db.models import (
     SlugField,
     DateTimeField,
     ImageField,
-    Model,
     UUIDField,
 )
 from django.urls import reverse
@@ -18,14 +17,21 @@ from uuid import uuid4
 from django.utils.text import slugify
 from django.utils import timezone
 from blog.utils.upload_to import article_image_path
+from parler.models import TranslatableModel, TranslatedFields
+from django.utils.translation import get_language
 
 
-class TaxonomyBase(Model):
-    name = CharField(max_length=32, unique=True)
-    slug = SlugField(max_length=32, unique=True, blank=True)
-
-    class Meta:
-        abstract = True
+class Kind(TranslatableModel):
+    translations = TranslatedFields(
+        name = CharField(max_length=32),
+        slug = SlugField(max_length=32, blank=True),
+        meta={
+            'unique_together': [
+                ('language_code', 'name'),
+                ('language_code', 'slug'),
+            ]
+        }
+    )
 
     def __str__(self):
         return self.name
@@ -37,27 +43,45 @@ class TaxonomyBase(Model):
         super().save(*args, **kwargs)
 
 
-class Kind(TaxonomyBase):
-    pass
+class Category(TranslatableModel):
+    translations = TranslatedFields(
+        name = CharField(max_length=32),
+        slug = SlugField(max_length=32, blank=True),
+        meta={
+            'unique_together': [
+                ('language_code', 'name'),
+                ('language_code', 'slug'),
+            ]
+        }
+    )
 
+    def __str__(self):
+        return self.name
 
-class Category(TaxonomyBase):
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = 'categories'
 
 
-class Article(Model):
+class Article(TranslatableModel):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
-    title = CharField(max_length=60, unique=True)
-    slug = SlugField(max_length=60, unique=True, blank=True)
-    description = CharField(max_length=145, blank=True)
+    translations = TranslatedFields(
+        title = CharField(max_length=60, unique=True),
+        slug = SlugField(max_length=60, unique=True, blank=True),
+        description = CharField(max_length=145, blank=True),
+        content = HTMLField(blank=True),
+        created_at = DateTimeField(auto_now_add=True),
+        updated_at = DateTimeField(auto_now=True),
+        is_published = BooleanField(default=False),
+        published_at = DateTimeField(null=True, editable=False),
+        is_featured = BooleanField(default=False)
+    )
     cover = ImageField(upload_to=article_image_path, blank=True)
-    content = HTMLField(blank=True)
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
-    is_published = BooleanField(default=False)
-    published_at = DateTimeField(null=True, editable=False)
-    is_featured = BooleanField(default=False)
     kind = ForeignKey(
         Kind, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
     )
@@ -93,19 +117,28 @@ class Article(Model):
         if not tag_ids:
             return Article.objects.none()
 
+        current_lang = self.get_current_language()
+
         return (
             Article.objects.filter(
-                is_published=True,
+                translations__is_published=True,
+                translations__language_code=current_lang,
                 tags__in=tag_ids,
             )
             .exclude(pk=self.pk)
             .annotate(shared_tag_count=Count("tags", filter=Q(tags__in=tag_ids)))
-            .order_by("-shared_tag_count")
-            .only("id", "title", "slug")[:3]
+            .order_by("-shared_tag_count")[:3] 
         )
 
     def get_absolute_url(self):
-        return reverse("article-detail", kwargs={"article_slug": self.slug})
+        current_lang = get_language()
+        
+        slug = self.safe_translation_getter('slug', language_code=current_lang)
+
+        if not slug:
+            slug = self.slug 
+
+        return reverse("article-detail", kwargs={"article_slug": slug})
 
     def __str__(self):
         return self.title

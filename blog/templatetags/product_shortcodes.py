@@ -1,6 +1,7 @@
 import re
 from django import template
 from django.template.loader import render_to_string
+from django.utils.translation import get_language
 from products.models import Product
 from blog.models import Article
 
@@ -14,14 +15,20 @@ def render_shortcodes(content):
     if not content:
         return ""
 
+    current_lang = get_language()
+
     def replace_with_card(match):
         shortcode_type = match.group(1) 
         item_id = match.group(2)        
 
+
         if shortcode_type == 'product':
             try:
                 product = Product.objects.get(id=item_id)
+                
                 return render_to_string('blog/product.html', {'product': product})
+            except Product.DoesNotExist:
+                return ""
             except Product.DoesNotExist:
                 return ""
                 
@@ -35,7 +42,6 @@ def render_shortcodes(content):
         return ""
 
     content = re.sub(WRAPPED_SHORTCODE_REGEX, replace_with_card, content)
-    
     content = re.sub(INLINE_SHORTCODE_REGEX, replace_with_card, content)
 
     return content

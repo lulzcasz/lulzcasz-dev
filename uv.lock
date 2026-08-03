@@ -202,6 +202,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-parler"
+version = "2.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/96/e336bd885f185c5d4336217b26dfdd1a8a295ed6f5ea8d8b24a2e0f4d870/django_parler-2.4.tar.gz", hash = "sha256:6c70f853cf19c09fd72d9a10aa784ae57da9094178c650eab0c5d30c0a48be40", size = 91503, upload-time = "2026-05-14T08:58:08.128Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/87/6d6129e14a7815bb383b61e7f86ffa85a4f43132eafa15de4a3a30ff9424/django_parler-2.4-py3-none-any.whl", hash = "sha256:0fff7185d581790d7063cbe0f7c57a399517d5ec976536b6c6bc06cf8ad4b956", size = 112605, upload-time = "2026-05-14T08:58:06.545Z" },
+]
+
+[[package]]
 name = "django-storages"
 version = "1.14.6"
 source = { registry = "https://pypi.org/simple" }
@@ -341,6 +353,7 @@ dependencies = [
     { name = "celery" },
     { name = "django" },
     { name = "django-htmx" },
+    { name = "django-parler" },
     { name = "django-storages", extra = ["s3"] },
     { name = "django-taggit" },
     { name = "django-tinymce" },
@@ -363,6 +376,7 @@ requires-dist = [
     { name = "celery", specifier = "==5.6.3" },
     { name = "django", specifier = "==5.2.15" },
     { name = "django-htmx", specifier = "==1.27.0" },
+    { name = "django-parler", specifier = "==2.4" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
     { name = "django-taggit", specifier = "==6.1.0" },
     { name = "django-tinymce", specifier = "==5.0.0" },
