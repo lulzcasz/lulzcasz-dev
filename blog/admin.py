@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Kind, Category, Article
+from blog.models import Kind, Category, Tag, Article
 from parler.admin import TranslatableAdmin
 
 
@@ -10,6 +10,11 @@ class KindAdmin(TranslatableAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(TranslatableAdmin):
+    pass
+
+
+@admin.register(Tag)
+class TagAdmin(TranslatableAdmin):
     pass
 
 
