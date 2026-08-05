@@ -87,7 +87,7 @@ class Article(TranslatableModel):
     category = ForeignKey(
         Category, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
     )
-    tags = ManyToManyField(Tag)
+    tags = ManyToManyField(Tag, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
