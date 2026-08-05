@@ -45,7 +45,8 @@ RUN STATIC_URL="static/" \
     DJANGO_SETTINGS_MODULE="lulzcasz_dev.settings.production" \
     SECRET_KEY="build-dummy-key" \
     ALLOWED_HOSTS="*" \
-    DATABASE_URL="sqlite:///" \
+    DATABASE_NAME="dummy" \
+    CELERY_BROKER_URL="redis://localhost:6379" \
     uv run --no-dev python manage.py collectstatic --noinput
 
 CMD ["uv", "run", "--no-dev", "gunicorn", "lulzcasz_dev.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
