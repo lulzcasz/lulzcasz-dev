@@ -9,9 +9,9 @@ from django.db.models import (
     DateTimeField,
     ImageField,
     UUIDField,
+    ManyToManyField,
 )
 from django.urls import reverse
-from taggit.managers import TaggableManager
 from tinymce.models import HTMLField
 from uuid import uuid4
 from django.utils.text import slugify
@@ -21,17 +21,9 @@ from parler.models import TranslatableModel, TranslatedFields
 from django.utils.translation import get_language
 
 
-class Kind(TranslatableModel):
-    translations = TranslatedFields(
-        name = CharField(max_length=32),
-        slug = SlugField(max_length=32, blank=True),
-        meta={
-            'unique_together': [
-                ('language_code', 'name'),
-                ('language_code', 'slug'),
-            ]
-        }
-    )
+class BaseTaxonomy(TranslatableModel):
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return self.name
@@ -39,33 +31,40 @@ class Kind(TranslatableModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
-
         super().save(*args, **kwargs)
 
 
-class Category(TranslatableModel):
+class Kind(BaseTaxonomy):
     translations = TranslatedFields(
-        name = CharField(max_length=32),
-        slug = SlugField(max_length=32, blank=True),
+        name=CharField(max_length=32),
+        slug=SlugField(max_length=32, blank=True),
         meta={
-            'unique_together': [
-                ('language_code', 'name'),
-                ('language_code', 'slug'),
-            ]
+            'unique_together': [('language_code', 'name'), ('language_code', 'slug')]
         }
     )
 
-    def __str__(self):
-        return self.name
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-
-        super().save(*args, **kwargs)
+class Category(BaseTaxonomy):
+    translations = TranslatedFields(
+        name=CharField(max_length=32),
+        slug=SlugField(max_length=32, blank=True),
+        meta={
+            'unique_together': [('language_code', 'name'), ('language_code', 'slug')]
+        }
+    )
 
     class Meta:
         verbose_name_plural = 'categories'
+
+
+class Tag(BaseTaxonomy):
+    translations = TranslatedFields(
+        name=CharField(max_length=32),
+        slug=SlugField(max_length=32, blank=True),
+        meta={
+            'unique_together': [('language_code', 'name'), ('language_code', 'slug')]
+        }
+    )
 
 
 class Article(TranslatableModel):
@@ -88,7 +87,7 @@ class Article(TranslatableModel):
     category = ForeignKey(
         Category, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
     )
-    tags = TaggableManager(blank=True)
+    tags = ManyToManyField(Tag)
 
     def save(self, *args, **kwargs):
         if not self.slug:

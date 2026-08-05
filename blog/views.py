@@ -1,7 +1,6 @@
-from blog.models import Category, Kind, Article
+from blog.models import Kind, Category, Tag, Article
 from blog.utils.paginate import paginate_queryset
 from django.shortcuts import get_object_or_404, render
-from taggit.models import Tag
 import os
 import uuid
 from django.utils import timezone

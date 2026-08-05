@@ -19,7 +19,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'tinymce',
     "django_htmx",
-    'taggit',
     'parler',
     'products',
     'blog',
