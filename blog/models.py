@@ -129,6 +129,13 @@ class Article(TranslatableModel):
             .order_by("-shared_tag_count")[:3] 
         )
 
+    def get_published_languages(self):
+        return [
+            translation.language_code 
+            for translation in self.translations.all() 
+            if translation.is_published
+        ]
+
     def get_absolute_url(self):
         current_lang = get_language()
         
