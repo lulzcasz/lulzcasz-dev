@@ -10,7 +10,10 @@ class ArticleSitemap(Sitemap):
     def items(self):
         return Article.objects.filter(
             translations__is_published=True
-        ).order_by('-pk').distinct()
+        ).prefetch_related('translations').order_by('-pk').distinct()
 
     def lastmod(self, obj):
         return obj.updated_at
+        
+    def get_languages_for_item(self, item):
+        return item.get_published_languages()

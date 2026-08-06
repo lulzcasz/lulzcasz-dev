@@ -14,6 +14,18 @@
   
   <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'article-detail' article_slug=article.slug %}">
   
+  {% for lang_code in article.get_published_languages %}
+    {% language lang_code %}
+      <link rel="alternate" hreflang="{{ lang_code }}" href="{{ request.scheme }}://{{ request.get_host }}{{ article.get_absolute_url }}" />
+    {% endlanguage %}
+  {% endfor %}
+
+  {% language 'en' %}
+    {% if 'en' in article.get_published_languages %}
+      <link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}{{ article.get_absolute_url }}" />
+    {% endif %}
+  {% endlanguage %}
+
   <meta property="og:title" content="{{ article.title }}">
   <meta property="og:description" content="{{ article.description }}">
   <meta property="og:type" content="article">
