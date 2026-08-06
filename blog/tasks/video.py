@@ -3,11 +3,11 @@ from celery import shared_task
 from blog.utils.image import download_to_temp, process_and_save_image
 
 @shared_task(bind=True)
-def process_video(self, relative_path, kind):
+def process_video(self, relative_path, section):
     directory = os.path.dirname(relative_path)
 
     with download_to_temp(relative_path) as input_path:
-        if kind == 'content_video':
+        if section == 'content_video':
             vf_scale_crop = "fps=24,scale='min(960,iw)':'min(504,ih)':force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2"
 
             final_path = os.path.join(directory, 'processed.webm')
@@ -26,4 +26,4 @@ def process_video(self, relative_path, kind):
 
             process_and_save_image(input_path, final_path, args)
 
-    return f"Successfully processed {kind} for {relative_path}"
+    return f"Successfully processed {section} for {relative_path}"

@@ -3,11 +3,11 @@ from celery import shared_task
 from blog.utils.image import download_to_temp, process_and_save_image
 
 @shared_task(bind=True)
-def process_image(self, relative_path, kind):
+def process_image(self, relative_path, section):
     directory = os.path.dirname(relative_path)
 
     with download_to_temp(relative_path) as input_path:
-        if kind == 'cover':
+        if section == 'cover':
             versions = [
                 {'size': 'large',  'ext': 'jpg',  'w': 1200, 'h': 630, 'q': '3'},
                 {'size': 'medium', 'ext': 'avif', 'w': 960,  'h': 504, 'crf': '16'},
@@ -39,7 +39,7 @@ def process_image(self, relative_path, kind):
                 
                 process_and_save_image(input_path, final_path, args)
 
-        elif kind == 'content_image':
+        elif section == 'content_image':
             vf_scale_crop = "scale='min(960,iw)':'min(504,ih)':force_original_aspect_ratio=decrease,crop=trunc(iw/2)*2:trunc(ih/2)*2"
 
             final_path = os.path.join(directory, 'processed.avif')
@@ -56,4 +56,4 @@ def process_image(self, relative_path, kind):
             
             process_and_save_image(input_path, final_path, args)
 
-    return f"Successfully processed {kind} for {relative_path}"
+    return f"Successfully processed {section} for {relative_path}"

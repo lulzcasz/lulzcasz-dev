@@ -1,4 +1,4 @@
-from blog.models import Kind, Category, Tag, Article
+from blog.models import Section, Category, Tag, Article
 from blog.utils.paginate import paginate_queryset
 from django.shortcuts import get_object_or_404, render
 import os
@@ -61,10 +61,10 @@ def articles(request):
     )
 
 
-def articles_by_kind(request, kind_slug):
-    kind = get_object_or_404(Kind, slug=kind_slug)
+def articles_by_section(request, section_slug):
+    section = get_object_or_404(Section, slug=section_slug)
 
-    articles_qs = Article.objects.filter(kind=kind, is_published=True).order_by(
+    articles_qs = Article.objects.filter(section=section, is_published=True).order_by(
         "-published_at"
     )
 
@@ -72,8 +72,8 @@ def articles_by_kind(request, kind_slug):
 
     context = {
         "page_obj": page_obj,
-        "title": f"Gênero: {kind.name}",
-        "current_kind": kind,
+        "title": f"Gênero: {section.name}",
+        "current_section": section,
     }
 
     return render(request, "blog/article_list.html", context)

@@ -34,7 +34,7 @@ class BaseTaxonomy(TranslatableModel):
         super().save(*args, **kwargs)
 
 
-class Kind(BaseTaxonomy):
+class Section(BaseTaxonomy):
     translations = TranslatedFields(
         name=CharField(max_length=32),
         slug=SlugField(max_length=32, blank=True),
@@ -81,8 +81,8 @@ class Article(TranslatableModel):
         is_featured = BooleanField(default=False)
     )
     cover = ImageField(upload_to=article_image_path, blank=True)
-    kind = ForeignKey(
-        Kind, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
+    section = ForeignKey(
+        Section, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
     )
     category = ForeignKey(
         Category, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
