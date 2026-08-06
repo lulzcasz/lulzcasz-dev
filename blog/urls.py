@@ -3,7 +3,7 @@ from blog.views import (
     article_detail,
     articles,
     articles_by_category,
-    articles_by_kind,
+    articles_by_section,
     articles_by_tag,
 )
 from django.urls import path
@@ -20,7 +20,7 @@ urlpatterns = [
         'tinymce/upload-video/', tinymce_upload_video, name='tinymce-upload-media',
     ),
     path("<slug:article_slug>/", article_detail, name="article-detail"),
-    path("generos/<str:kind_slug>/", articles_by_kind, name="articles-by-kind"),
+    path("generos/<str:section_slug>/", articles_by_section, name="articles-by-section"),
     path(
         "categorias/<slug:category_slug>/", articles_by_category, name="articles-by-category"
     ),

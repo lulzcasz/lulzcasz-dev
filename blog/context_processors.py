@@ -1,7 +1,7 @@
-from blog.models import Kind, Category, Article
+from blog.models import Section, Category, Article
 
 def explore_items(request):
     return {
-        'kinds': Kind.objects.all(), 
+        'sections': Section.objects.all(), 
         'categories': Category.objects.all(),
     }

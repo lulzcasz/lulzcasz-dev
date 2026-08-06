@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="{{ article.cover|variant:'large.jpg' }}" />
   
   <meta property="article:tag" content="{{ article.category }}" />
-  <meta property="article:tag" content="{{ article.kind }}" />
+  <meta property="article:tag" content="{{ article.section }}" />
   {% for tag in article.tags.all %}
     <meta property="article:tag" content="{{ tag.name }}" />
   {% endfor %}
@@ -54,7 +54,7 @@
       "datePublished": "{{ article.published_at|date:'c' }}",
       "dateModified": "{{ article.updated_at|date:'c' }}",
       "proficiencyLevel": "Expert",
-      "keywords": "{% if article.category %}{{ article.category.name|escapejs }}, {% endif %}{% if article.kind %}{{ article.kind.name|escapejs }}, {% endif %}{% for tech in article.technologies.all %}{{ tech.name|escapejs }}, {% endfor %}{% for tag in article.tags.all %}{{ tag.name|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+      "keywords": "{% if article.category %}{{ article.category.name|escapejs }}, {% endif %}{% if article.section %}{{ article.section.name|escapejs }}, {% endif %}{% for tech in article.technologies.all %}{{ tech.name|escapejs }}, {% endfor %}{% for tag in article.tags.all %}{{ tag.name|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
       "author": {
         "@type": "Person",
         "name": "{{ profile.name|escapejs }}",
@@ -74,9 +74,9 @@
     {% trans "Published on" %} {{ article.published_at|date }}
   </time>
   <div class="flex flex-wrap gap-2 mt-3 mb-2">
-    {% if article.kind %}
+    {% if article.section %}
       <span class="px-3 py-1 text-brand-light bg-brand-gray text-sm transition-colors">
-        {{ article.kind }}
+        {{ article.section }}
       </span>
     {% endif %}
     {% if article.category %}
