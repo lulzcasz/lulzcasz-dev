@@ -1,6 +1,6 @@
 FROM mwader/static-ffmpeg:8.1.2@sha256:33f770f812cbfc3de96c547157fc9faf8bd95a36481753439ffa761045167585 AS ffmpeg
 
-FROM ghcr.io/astral-sh/uv:0.12.2-trixie-slim@sha256:829cfaa2f7e8dc7d92911ecc804ea2e2f7492980eea8140ea93d9fad3b51ded3 AS base 
+FROM ghcr.io/astral-sh/uv:0.12.3-trixie-slim@sha256:c50603599cfe995c7c736211b163305d9ee4b4947f4fdcb53f0834a391e79da1 AS base 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
