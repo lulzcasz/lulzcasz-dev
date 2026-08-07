@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@import "prismjs/plugins/toolbar/prism-toolbar.min.css";
+@import "prismjs/plugins/treeview/prism-treeview.min.css";
+@import "prism-themes/themes/prism-coldark-dark.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 @import "@fontsource/inter"; 
 @import "@fontsource/cascadia-code";
 
