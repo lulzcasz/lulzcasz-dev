@@ -8,22 +8,32 @@ def process_video(self, relative_path, section):
 
     with download_to_temp(relative_path) as input_path:
         if section == 'content_video':
-            vf_scale_crop = "fps=24,scale='min(960,iw)':'min(504,ih)':force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2"
-
-            final_path = os.path.join(directory, 'processed.webm')
-
-            args = [
-                '-threads', '1',
-                '-c:v', 'libaom-av1',
-                '-crf', '32',
-                '-b:v', '0',
-                '-cpu-used', '4',
-                '-c:a', 'libopus',
-                '-b:a', '96k',
-                '-vf', vf_scale_crop,
+            vf_raw = "hqdn3d=2:1.5:3:2.2,fps=30,scale='min(1920,iw)':-2"
+            path_raw = os.path.join(directory, 'raw.webm')
+            
+            args_raw = [
+                '-threads', '4', 
+                '-c:v', 'libsvtav1',
+                '-preset', '7',
+                '-crf', '26',
+                '-an',
+                '-vf', vf_raw,
                 '-pix_fmt', 'yuv420p'
             ]
+            process_and_save_image(input_path, path_raw, args_raw)
 
-            process_and_save_image(input_path, final_path, args)
+            vf_inline = "hqdn3d=2:1.5:3:2.2,fps=30,scale='min(960,iw)':-2"
+            path_inline = os.path.join(directory, 'processed.webm')
+
+            args_inline = [
+                '-threads', '4',
+                '-c:v', 'libsvtav1',
+                '-preset', '8',
+                '-crf', '42',
+                '-an',
+                '-vf', vf_inline,
+                '-pix_fmt', 'yuv420p'
+            ]
+            process_and_save_image(input_path, path_inline, args_inline)
 
     return f"Successfully processed {section} for {relative_path}"

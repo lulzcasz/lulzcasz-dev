@@ -89,4 +89,15 @@
     padding: 0.125rem 0.5rem !important;
     border-radius: 0.25rem !important; 
   }
+
+  img,
+  video {
+    @apply block mx-auto my-6 rounded-lg;
+    max-height: 75vh;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    background-color: var(--color-brand-gray);
+  }
+
 }
