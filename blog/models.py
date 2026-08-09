@@ -69,17 +69,19 @@ class Tag(BaseTaxonomy):
 
 class Article(TranslatableModel):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
+
+    created_at = DateTimeField(auto_now_add=True)
+    updated_at = DateTimeField(auto_now=True)
+    published_at = DateTimeField(null=True, blank=True)
+    is_featured = BooleanField(default=False)
+    
     translations = TranslatedFields(
         title = CharField(max_length=60, unique=True),
         slug = SlugField(max_length=60, unique=True, blank=True),
         description = CharField(max_length=145, blank=True),
         content = HTMLField(blank=True),
-        created_at = DateTimeField(auto_now_add=True),
-        updated_at = DateTimeField(auto_now=True),
-        is_published = BooleanField(default=False),
-        published_at = DateTimeField(null=True, editable=False),
-        is_featured = BooleanField(default=False)
     )
+    
     cover = ImageField(upload_to=article_image_path, blank=True)
     section = ForeignKey(
         Section, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
@@ -92,9 +94,6 @@ class Article(TranslatableModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-
-        if self.is_published and not self.published_at:
-            self.published_at = timezone.now()
 
         self._cover_changed = False
         if self.cover:
@@ -120,7 +119,7 @@ class Article(TranslatableModel):
 
         return (
             Article.objects.filter(
-                translations__is_published=True,
+                published_at__lte=timezone.now(),
                 translations__language_code=current_lang,
                 tags__in=tag_ids,
             )
@@ -130,11 +129,9 @@ class Article(TranslatableModel):
         )
 
     def get_published_languages(self):
-        return [
-            translation.language_code 
-            for translation in self.translations.all() 
-            if translation.is_published
-        ]
+        if self.published_at and self.published_at <= timezone.now():
+            return [translation.language_code for translation in self.translations.all()]
+        return []
 
     def get_absolute_url(self):
         current_lang = get_language()

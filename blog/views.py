@@ -1,7 +1,6 @@
 from blog.models import Section, Category, Tag, Article
 from blog.utils.paginate import paginate_queryset
 from django.shortcuts import get_object_or_404, render
-import os
 import uuid
 from django.utils import timezone
 from django.http import JsonResponse
@@ -17,16 +16,16 @@ def index(request):
 
     last_articles = (
         Article.objects.filter(
-            translations__is_published=True,
+            published_at__lte=timezone.now(),
             translations__language_code=current_lang,
         )
-        .order_by("-translations__published_at")[:3]
+        .order_by("-published_at")[:3]
     )
 
     featured_articles = (
         Article.objects.filter(
-            translations__is_published=True,
-            translations__is_featured=True,
+            published_at__lte=timezone.now(),
+            is_featured=True,
             translations__language_code=current_lang,
         )[:3]
     )
@@ -43,14 +42,16 @@ def article_detail(request, article_slug):
         Article,
         translations__slug=article_slug,
         translations__language_code=current_lang,
-        translations__is_published=True
+        published_at__lte=timezone.now()
     )
 
     return render(request, 'blog/article_detail.html', {'article': article})
 
 
 def articles(request):
-    all_articles = Article.objects.filter(is_published=True).order_by("-published_at")
+    all_articles = Article.objects.filter(
+        published_at__lte=timezone.now()
+    ).order_by("-published_at")
 
     page_obj = paginate_queryset(request, all_articles)
 
@@ -64,9 +65,10 @@ def articles(request):
 def articles_by_section(request, section_slug):
     section = get_object_or_404(Section, slug=section_slug)
 
-    articles_qs = Article.objects.filter(section=section, is_published=True).order_by(
-        "-published_at"
-    )
+    articles_qs = Article.objects.filter(
+        section=section, 
+        published_at__lte=timezone.now()
+    ).order_by("-published_at")
 
     page_obj = paginate_queryset(request, articles_qs)
 
@@ -82,9 +84,10 @@ def articles_by_section(request, section_slug):
 def articles_by_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
 
-    articles_qs = Article.objects.filter(category=category, is_published=True).order_by(
-        "-published_at"
-    )
+    articles_qs = Article.objects.filter(
+        category=category, 
+        published_at__lte=timezone.now()
+    ).order_by("-published_at")
 
     page_obj = paginate_queryset(request, articles_qs)
 
@@ -100,9 +103,10 @@ def articles_by_category(request, category_slug):
 def articles_by_tag(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
 
-    articles_qs = Article.objects.filter(tags__slug=tag_slug, is_published=True).order_by(
-        "-published_at"
-    )
+    articles_qs = Article.objects.filter(
+        tags__slug=tag_slug, 
+        published_at__lte=timezone.now()
+    ).order_by("-published_at")
 
     page_obj = paginate_queryset(request, articles_qs)
 
@@ -129,16 +133,12 @@ def tinymce_upload_image(request):
             folder_path = f"images/content/unassigned/{date_path}"
 
         image_token = str(uuid.uuid4())
-
         relative_path = f"{folder_path}/{image_token}/raw.webp"
-
         saved_path = default_storage.save(relative_path, upload)
         file_url = default_storage.url(saved_path)
-
         process_image.delay(saved_path, 'content_image')
         
         return JsonResponse({'location': file_url})
-    
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
@@ -156,14 +156,10 @@ def tinymce_upload_video(request):
             folder_path = f"videos/content/unassigned/{date_path}"
 
         video_token = str(uuid.uuid4())
-
         relative_path = f"{folder_path}/{video_token}/raw.webm"
-
         saved_path = default_storage.save(relative_path, upload)
         file_url = default_storage.url(saved_path)
-        
         process_video.delay(saved_path, 'content_video')
         
         return JsonResponse({'location': file_url})
-    
     return JsonResponse({'error': 'Invalid request'}, status=400)

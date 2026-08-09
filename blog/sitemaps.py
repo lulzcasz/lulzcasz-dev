@@ -1,5 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 from blog.models import Article
+from django.utils import timezone
 
 class ArticleSitemap(Sitemap):
     changefreq = "weekly" 
@@ -9,7 +10,7 @@ class ArticleSitemap(Sitemap):
 
     def items(self):
         return Article.objects.filter(
-            translations__is_published=True
+            published_at__lte=timezone.now()
         ).prefetch_related('translations').order_by('-pk').distinct()
 
     def lastmod(self, obj):
