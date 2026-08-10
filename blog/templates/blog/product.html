@@ -1,32 +1,16 @@
-{% load image_utils %}
+<div class="mt-3 mb-1 p-2 rounded-lg bg-brand-gray border border-neutral-800 flex flex-wrap items-center gap-4 w-fit max-w-full">
+    
+    <div class="pl-2 flex items-center text-neutral-500">
+        <i class="fa-solid fa-cart-shopping text-base"></i>
+    </div>
 
-<div class="my-4 p-3 bg-brand-gray flex flex-col sm:flex-row items-center sm:items-stretch gap-4 group">
-  {% if product.image %}
-    <div class="shrink-0 w-34 h-34 p-1 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 bg-white self-center">
-      <picture>
-  <source srcset="{{ product.image|variant:'processed.avif' }}" type="image/avif">
-  <source srcset="{{ product.image|variant:'processed.webp' }}" type="image/webp">
-  <img alt="{{ product.name }}" src="{{ product.image.url }}" class="suas-classes-css-aqui">
-</picture>
+    <div class="flex flex-wrap gap-2 items-center pr-1">
+        {% for link in product.get_active_links %}
+            <a href="{{ link.resolved_url }}" target="_blank" rel="noopener noreferrer"
+               class="affiliate-btn flex items-center justify-center h-10 px-4 rounded-md bg-brand-black border border-neutral-700 text-neutral-300 hover:border-neutral-400 hover:text-white transition-all duration-200 text-sm font-medium no-underline">
+                {{ link.store.name }}
+            </a>
+        {% endfor %}
     </div>
-  {% endif %}
-  <div class="flex-1 w-full flex flex-col justify-center">
-    <p class="!text-base font-bold text-brand-light !m-0 !leading-tight">{{ product.name }}</p>
-    <div class="flex flex-wrap w-full gap-2 mt-1">
-{% for link in product.get_active_links %}
-      
-        <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.store.name }}" 
-          style="background-color: {{ link.store.color }};"
-          class="flex-1 sm:flex-initial min-w-[100px] max-w-[140px] h-10 flex justify-center items-center px-3 rounded-md transition-all hover:opacity-90 !no-underline">
-          
-          {% if link.store.logo %}
-            <img src="{{ link.store.logo.url }}" alt="{{ link.store.name }}" class="w-full h-6 object-contain !m-0">
-          {% else %}
-            <span class="!text-[11px] font-bold text-zinc-300 uppercase tracking-wide !m-0 !leading-none">{{ link.store.name }}</span>
-          {% endif %}   
-          
-        </a>
-      {% endfor %}
-    </div>
-  </div>
+    
 </div>

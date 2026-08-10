@@ -12,36 +12,20 @@ class AffiliateLinkInline(TranslatableTabularInline):
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('name', 'color_badge')
-    search_fields = ('name',)
-
-    def color_badge(self, obj):
-        if obj.color:
-            return format_html(
-                '<div style="width: 16px; height: 16px; background-color: {}; '
-                'border-radius: 50%; border: 1px solid #ccc;"></div>', 
-                obj.color
-            )
-        return "-"
-    color_badge.short_description = 'Color'
+    list_display = ('name', )
+    search_fields = ('name', )
 
 
 @admin.register(Product)
-class ProductAdmin(TranslatableAdmin):
-    list_display = ('name', 'image_preview')
-    search_fields = ('translations__name',)
-    readonly_fields = ('uuid', 'image_preview')
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+    readonly_fields = ('uuid',)
     inlines = [AffiliateLinkInline]
-
-    def image_preview(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="max-height: 50px; border-radius: 4px;" />', obj.image.url)
-        return "-"
-    image_preview.short_description = 'Image'
 
     fieldsets = (
         ('Product Details', {
-            'fields': ('name', 'image', 'image_preview')
+            'fields': ('name',)
         }),
         ('System Info', {
             'fields': ('uuid',),

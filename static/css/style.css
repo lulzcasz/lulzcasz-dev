@@ -36,8 +36,20 @@
 
   ul { @apply list-disc list-outside ml-8 mb-6 text-brand-light; }
   ol { @apply list-decimal list-outside ml-8 mb-6 text-brand-light; }
-  li { @apply text-lg leading-relaxed mb-2; }
-  li pre { @apply mt-3 mb-2; }
+  
+  li { @apply text-lg leading-relaxed mb-4; }
+  li > p { @apply mt-1 mb-0; }
+  li pre { @apply mt-3 mb-4; }
+
+  li div {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  li img:not(.affiliate-logo) {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0 !important; 
+  }
 
   ul ul, ol ul {
     list-style-type: circle;
@@ -90,9 +102,9 @@
     border-radius: 0.25rem !important; 
   }
 
-  img,
+  img:not(.affiliate-logo),
   video {
-    @apply block mx-auto my-6 rounded-lg;
+    @apply block my-6 rounded-lg;
     max-height: 75vh;
     max-width: 100%;
     width: auto;
@@ -100,4 +112,8 @@
     background-color: var(--color-brand-gray);
   }
 
+  .affiliate-btn {
+    margin: 0 !important;
+    text-decoration: none !important;
+  }
 }
