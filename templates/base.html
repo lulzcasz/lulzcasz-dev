@@ -12,6 +12,17 @@
     {% else %}
       <link rel="stylesheet" href="{% static 'dist/css/style.css' %}">
     {% endif %}
+    
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "lulzcasz.dev",
+        "alternateName": "lulzcasz",
+        "url": "https://lulzcasz.dev/"
+      }
+    </script>
+
     {% block extra_head %}{% endblock %}
   </head>
   <body class="bg-brand-black">
