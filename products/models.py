@@ -15,7 +15,7 @@ class Store(Model):
 
 class Product(Model):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
-    name = CharField(max_length=128)
+    name = CharField(max_length=128, unique=True)
 
     def __str__(self):
         return self.name
