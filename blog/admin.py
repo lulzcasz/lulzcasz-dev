@@ -2,31 +2,8 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 from parler.admin import TranslatableAdmin
-from parler.forms import TranslatableModelForm
-from django import forms
-import uuid
 
 from blog.models import Section, Category, Tag, Article
-
-
-class ArticleAdminForm(TranslatableModelForm):
-    article_uuid_hidden = forms.CharField(widget=forms.HiddenInput(), required=False)
-
-    class Meta:
-        model = Article
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Garante a criação do UUID para o TinyMCE antes de salvar
-        if self.instance and self.instance.pk:
-            current_uuid = self.instance.uuid
-        else:
-            current_uuid = uuid.uuid4()
-            self.instance.uuid = current_uuid
-            
-        self.fields['article_uuid_hidden'].initial = current_uuid
-
 
 @admin.register(Section)
 class SectionAdmin(TranslatableAdmin):
@@ -48,8 +25,6 @@ class TagAdmin(TranslatableAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(TranslatableAdmin):
-    form = ArticleAdminForm
-
     list_display = ('title', 'article_status', 'published_at', 'section', 'category', 'is_featured')
     list_filter = ('section', 'category')
     search_fields = ('translations__title', 'translations__description')

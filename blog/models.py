@@ -78,7 +78,7 @@ class Article(TranslatableModel):
     translations = TranslatedFields(
         title = CharField(max_length=60, unique=True),
         slug = SlugField(max_length=60, unique=True, blank=True),
-        description = CharField(max_length=145, blank=True),
+        description = CharField(max_length=130, blank=True),
         content = HTMLField(blank=True),
     )
     
