@@ -72,6 +72,13 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
         }),
     )
 
+    def get_readonly_fields(self, request, obj=None):
+        readonly = list(super().get_readonly_fields(request, obj))
+        if obj is None or not obj.pk:
+            if 'content' not in readonly:
+                readonly.append('content')
+        return readonly
+
     @display(description="Status", label={
         "Draft": "info",
         "Scheduled": "warning",
@@ -92,7 +99,9 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
 
     @display(description="UUID")
     def get_uuid(self, obj):
-        return obj.uuid
+        if obj and obj.pk:
+            return obj.uuid
+        return "-"
 
     @display(description="Title (EN)")
     def get_title_en(self, obj):
