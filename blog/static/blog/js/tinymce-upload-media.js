@@ -10,9 +10,10 @@ function upload_media_handler(callback, value, meta) {
             formData.append('file', file);
 
             let articleUuid = null;
-            const adminUuidField = document.querySelector('.field-uuid .readonly');
-            if (adminUuidField) {
-                articleUuid = adminUuidField.innerText.trim();
+            const uuidMatch = document.body.textContent.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
+
+            if (uuidMatch) {
+                articleUuid = uuidMatch[0];
             } else {
                 const uuidInput = document.querySelector('input[name="uuid"]');
                 if (uuidInput) articleUuid = uuidInput.value;
@@ -21,6 +22,8 @@ function upload_media_handler(callback, value, meta) {
             if (articleUuid) {
                 formData.append('article_uuid', articleUuid);
             }
+            
+            console.log("UUID Video:", articleUuid);
 
             document.body.style.cursor = 'wait';
 
