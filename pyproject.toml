@@ -12,6 +12,7 @@ dependencies = [
     "django-redis==7.0.0",
     "django-storages[s3]==1.14.6",
     "django-tinymce==5.0.0",
+    "django-unfold==0.104.1",
     "gunicorn==26.0.0",
     "pillow==12.2.0",
     "psycopg[binary]==3.3.4",

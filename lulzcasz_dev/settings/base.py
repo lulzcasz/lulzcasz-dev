@@ -9,6 +9,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,9 +41,10 @@ SITE_ID = 1
 TINYMCE_DEFAULT_CONFIG = {
     "height": "800px",
     "width": "100%",
+    "language": "en_US",
     "menubar": False,
     "plugins": "image codesample directionality fullscreen link lists advlist media preview table code",
-    "toolbar": "undo redo | blocks fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | pagebreak anchor codesample ltr rtl",
+    "toolbar": "h2 h3 | undo redo | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent | forecolor backcolor removeformat | charmap emoticons | code fullscreen | pagebreak anchor codesample ltr rtl",
     "toolbar_mode": "wrap",
     "content_css": ["dark", "/static/blog/css/tinymce-content.css"],
     "skin": "oxide-dark",
@@ -48,7 +53,6 @@ TINYMCE_DEFAULT_CONFIG = {
     "file_picker_types": "media",
     "file_picker_callback": "upload_media_handler",
     "image_dimensions": False,
-    "block_formats": "Parágrafo=p; Título 2=h2; Título 3=h3; Citação=blockquote",
     "codesample_languages": [
         {"text": "Arduino", "value": "arduino"},
         {"text": "ARM Assembly", "value": "armasm"},
@@ -73,6 +77,7 @@ TINYMCE_DEFAULT_CONFIG = {
         {"text": "Treeview", "value": "treeview"},
     ],
 }
+
 
 TINYMCE_EXTRA_MEDIA = {
     'js': [
