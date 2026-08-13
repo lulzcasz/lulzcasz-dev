@@ -144,8 +144,14 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
         from django.urls import reverse
 
         lang = obj.get_current_language()
-        
+
         slug = obj.safe_translation_getter('slug', language_code=lang) or obj.slug
+
+        if not slug:
+            return None
             
-        with translation.override(lang):
-            return reverse("article-detail", kwargs={"article_slug": slug})
+        try:
+            with translation.override(lang):
+                return reverse("article-detail", kwargs={"article_slug": slug})
+        except reverse.NoReverseMatch:
+            return None

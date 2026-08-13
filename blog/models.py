@@ -134,14 +134,21 @@ class Article(TranslatableModel):
         return []
 
     def get_absolute_url(self):
-        current_lang = get_language()
+        from django.urls import reverse, NoReverseMatch
         
+        current_lang = get_language()
         slug = self.safe_translation_getter('slug', language_code=current_lang)
 
         if not slug:
-            slug = self.slug 
+            slug = getattr(self, 'slug', None)
 
-        return reverse("article-detail", kwargs={"article_slug": slug})
+        if not slug:
+            return "#"
+
+        try:
+            return reverse("article-detail", kwargs={"article_slug": slug})
+        except NoReverseMatch:
+            return "#"
 
     def __str__(self):
         return self.title
