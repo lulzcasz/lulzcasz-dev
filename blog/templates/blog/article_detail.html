@@ -136,7 +136,6 @@
                         return { id: el.id, text: el.textContent, tag: el.tagName.toLowerCase() };
                     });
                     
-                    // Dispara um evento global avisando que o TOC terminou de montar
                     $nextTick(() => {
                         $dispatch('toc-loaded');
                     });

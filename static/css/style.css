@@ -1,12 +1,11 @@
 @import "tailwindcss";
 
-@import "prismjs/plugins/toolbar/prism-toolbar.min.css";
-@import "prismjs/plugins/treeview/prism-treeview.min.css";
-@import "prism-themes/themes/prism-coldark-dark.min.css";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @import "@fontsource/inter"; 
 @import "@fontsource/cascadia-code";
+
+@import "highlight.js/styles/atom-one-dark.css";
 
 @theme {
   --color-brand-black: #101010;
@@ -66,17 +65,24 @@
     @apply mb-0; 
   }
 
-  pre[class*="language-"],
-  :not(pre) > code[class*="language-"] {
+/* Container principal do código */
+  pre {
     background: var(--color-brand-gray) !important;
-    border: none !important;
-    box-shadow: none !important;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid #2d2d2d;
+    overflow-x: auto;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
-  code[class*="language-"],
-  pre[class*="language-"] {
-    font-family: var(--font-mono) !important; 
-    font-size: 1rem !important;
+  /* A fonte colorida dentro da caixa */
+  pre code {
+    background: none !important;
+    padding: 0;
+    color: inherit;
+    font-family: var(--font-mono) !important;
+    font-size: 0.95rem !important;
     line-height: 1.5 !important;
   }
 

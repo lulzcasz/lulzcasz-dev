@@ -21,12 +21,77 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django.contrib.sites",
     'django.contrib.sitemaps',
-    'tinymce',
     "django_htmx",
     'parler',
     'products',
     'blog',
 ]
+
+UNFOLD = {
+    "SITE_TITLE": "lulzcasz.dev",
+    "SITE_HEADER": "Admin",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Blog",
+                "icon": "article",
+                "items": [
+                    {"title": "Articles", "icon": "description", "link": "/admin/blog/article/"},
+                    {"title": "Categories", "icon": "category", "link": "/admin/blog/category/"},
+                    {"title": "Sections", "icon": "folder", "link": "/admin/blog/section/"},
+                    {"title": "Tags", "icon": "tag", "link": "/admin/blog/tag/"},
+                ],
+            },
+            {
+                "title": "Products",
+                "icon": "inventory_2",
+                "items": [
+                    {"title": "Products", "icon": "shopping_bag", "link": "/admin/products/product/"},
+                    {"title": "Stores", "icon": "store", "link": "/admin/products/store/"},
+                    {"title": "Affiliate Links", "icon": "link", "link": "/admin/products/affiliatelink/"},
+                ],
+            },
+            {
+                "title": "Access",
+                "icon": "security",
+                "items": [
+                    {"title": "Users", "icon": "group", "link": "/admin/auth/user/"},
+                    {"title": "Groups", "icon": "badge", "link": "/admin/auth/group/"},
+                ],
+            },
+        ],
+    },
+    "COLORS": {
+        "primary": {
+            "50": "230 253 250",
+            "100": "204 252 244",
+            "200": "153 249 233",
+            "300": "102 245 221",
+            "400": "51 242 210",
+            "500": "0 234 193",
+            "600": "0 187 154",
+            "700": "0 140 116",
+            "800": "0 94 77",
+            "900": "0 47 39",
+            "950": "0 23 19",
+        },
+        "base": {
+            "50": "250 250 250",
+            "100": "244 244 245",
+            "200": "228 228 231",
+            "300": "212 212 216",
+            "400": "161 161 170",
+            "500": "113 113 122",
+            "600": "82 82 91",
+            "700": "63 63 70",
+            "800": "31 28 27",
+            "900": "16 16 16",
+            "950": "9 9 11",
+        },
+    },
+}
 
 INTERNAL_IPS = []
 
@@ -37,54 +102,6 @@ except Exception:
     pass
 
 SITE_ID = 1
-
-TINYMCE_DEFAULT_CONFIG = {
-    "height": "800px",
-    "width": "100%",
-    "language": "en_US",
-    "menubar": False,
-    "plugins": "image codesample directionality fullscreen link lists advlist media preview table code",
-    "toolbar": "h2 h3 | undo redo | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent | forecolor backcolor removeformat | charmap emoticons | code fullscreen | pagebreak anchor codesample ltr rtl",
-    "toolbar_mode": "wrap",
-    "content_css": ["dark", "/static/blog/css/tinymce-content.css"],
-    "skin": "oxide-dark",
-    "license_key": "gpl",
-    "images_upload_handler": "upload_image",
-    "file_picker_types": "media",
-    "file_picker_callback": "upload_media_handler",
-    "image_dimensions": False,
-    "codesample_languages": [
-        {"text": "Arduino", "value": "arduino"},
-        {"text": "ARM Assembly", "value": "armasm"},
-        {"text": "Atmel AVR Assembly", "value": "asmatmel"},
-        {"text": "Bash", "value": "bash"},
-        {"text": "C", "value": "c"},
-        {"text": "CMake", "value": "cmake"},
-        {"text": "C++", "value": "cpp"},
-        {"text": "CSS", "value": "css"},
-        {"text": "Django/Jinja2", "value": "django"},
-        {"text": "Docker", "value": "docker"},
-        {"text": "JavaScript", "value": "javascript"},
-        {"text": "JSON", "value": "json"},
-        {"text": "Makefile", "value": "makefile"},
-        {"text": "MongoDB", "value": "mongodb"},
-        {"text": "NASM", "value": "nasm"},
-        {"text": "PowerShell", "value": "powershell"},
-        {"text": "Python", "value": "python"},
-        {"text": "SQL", "value": "sql"},
-        {"text": "TOML", "value": "toml"},
-        {"text": "YAML", "value": "yaml"},
-        {"text": "Treeview", "value": "treeview"},
-    ],
-}
-
-
-TINYMCE_EXTRA_MEDIA = {
-    'js': [
-        'blog/js/tinymce-upload-image.js',
-        'blog/js/tinymce-upload-media.js',
-    ],
-}
 
 TAGGIT_CASE_INSENSITIVE = True
 

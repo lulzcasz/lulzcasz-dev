@@ -17,7 +17,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         'main': 'static/js/main.js',
-        'style': 'static/css/style.css'
+        'admin-editor': 'static/js/admin-editor.js',
+        'style': 'static/css/style.css',
+        'admin-style': 'static/css/admin-editor.css',
       }, 
       output: {
         entryFileNames: 'js/[name].js',

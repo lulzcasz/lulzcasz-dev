@@ -1,13 +1,14 @@
+from django import forms
 from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 from parler.admin import TranslatableAdmin
+from parler.forms import TranslatableModelForm
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
-from tinymce.widgets import TinyMCE
-from django.db import models
 
-from blog.models import Section, Category, Tag, Article
+from blog.models import Article, Category, Section, Tag
+from .widgets import TiptapWidget
 
 @admin.register(Section)
 class SectionAdmin(ModelAdmin, TranslatableAdmin):
@@ -24,8 +25,22 @@ class TagAdmin(ModelAdmin, TranslatableAdmin):
     list_display = ('name', 'slug')
     search_fields = ('translations__name', 'translations__slug')
 
+UNFOLD_INPUT_CLASSES = "border border-base-200 bg-white font-medium rounded-default shadow-xs text-font-default-light text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 dark:bg-base-900 dark:border-base-700 dark:text-font-default-dark px-3 py-2 w-full"
+
+class ArticleAdminForm(TranslatableModelForm):
+    class Meta:
+        model = Article
+        fields = '__all__'
+        widgets = {
+            'content': TiptapWidget(),
+            'title': forms.TextInput(attrs={'class': UNFOLD_INPUT_CLASSES}),
+            'slug': forms.TextInput(attrs={'class': UNFOLD_INPUT_CLASSES}),
+            'description': forms.Textarea(attrs={'class': UNFOLD_INPUT_CLASSES, 'rows': 3}),
+        }
+
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin, TranslatableAdmin):
+    form = ArticleAdminForm
     list_display = ('id', 'title', 'article_status', 'published_at', 'section', 'category', 'is_featured')
     list_display_links = ('id', 'title')
     list_filter = ('section', 'category')
@@ -38,12 +53,6 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
         'get_slug_en', 'get_slug_pt',
         'get_description_en', 'get_description_pt'
     )
-
-    formfield_overrides = {
-        models.TextField: {
-            "widget": TinyMCE,
-        }
-    }
 
     fieldsets = (
         ("Overview", {
@@ -144,7 +153,6 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
         from django.urls import reverse
 
         lang = obj.get_current_language()
-
         slug = obj.safe_translation_getter('slug', language_code=lang) or obj.slug
 
         if not slug:

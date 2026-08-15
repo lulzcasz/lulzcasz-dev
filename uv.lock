@@ -244,18 +244,6 @@ s3 = [
 ]
 
 [[package]]
-name = "django-tinymce"
-version = "5.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0a/71/e9556c8bc1d99c0cb4081af0abc6440d7cf53c87b6c7da7b117f2de24881/django_tinymce-5.0.0.tar.gz", hash = "sha256:6257669ed596accf5fa967ff3061276b2c5352baac1bbc658fcd8252b12ca38a", size = 1161002, upload-time = "2025-10-21T19:25:25.831Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/22/b7b9299b40995b524bb2f6d61ae55bd690858630ff5e0ba9a06210313195/django_tinymce-5.0.0-py3-none-any.whl", hash = "sha256:c2e9c5efd2cc6c036f4c57e602b133180433e2bd1513b897089d3c4fb4e20579", size = 1400312, upload-time = "2025-10-21T19:25:24.113Z" },
-]
-
-[[package]]
 name = "django-unfold"
 version = "0.104.1"
 source = { registry = "https://pypi.org/simple" }
@@ -360,7 +348,7 @@ wheels = [
 
 [[package]]
 name = "lulzcasz-dev"
-version = "0.0.0"
+version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "celery" },
@@ -369,7 +357,6 @@ dependencies = [
     { name = "django-parler" },
     { name = "django-redis" },
     { name = "django-storages", extra = ["s3"] },
-    { name = "django-tinymce" },
     { name = "django-unfold" },
     { name = "gunicorn" },
     { name = "pillow" },
@@ -393,7 +380,6 @@ requires-dist = [
     { name = "django-parler", specifier = "==2.4" },
     { name = "django-redis", specifier = "==7.0.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
-    { name = "django-tinymce", specifier = "==5.0.0" },
     { name = "django-unfold", specifier = "==0.104.1" },
     { name = "gunicorn", specifier = "==26.0.0" },
     { name = "pillow", specifier = "==12.2.0" },

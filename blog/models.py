@@ -1,24 +1,26 @@
+from uuid import uuid4
+
 from django.db.models import (
     SET_NULL,
-    Count,
-    ForeignKey,
-    Q,
     BooleanField,
     CharField,
-    SlugField,
+    Count,
     DateTimeField,
+    ForeignKey,
     ImageField,
-    UUIDField,
     ManyToManyField,
+    Q,
+    SlugField,
+    TextField,
+    UUIDField,
 )
-from django.urls import reverse
-from tinymce.models import HTMLField
-from uuid import uuid4
-from django.utils.text import slugify
+from django.urls import NoReverseMatch, reverse
 from django.utils import timezone
-from blog.utils.upload_to import article_image_path
-from parler.models import TranslatableModel, TranslatedFields
+from django.utils.text import slugify
 from django.utils.translation import get_language
+from parler.models import TranslatableModel, TranslatedFields
+
+from blog.utils.upload_to import article_image_path
 
 
 class BaseTaxonomy(TranslatableModel):
@@ -26,10 +28,10 @@ class BaseTaxonomy(TranslatableModel):
         abstract = True
 
     def __str__(self):
-        return self.name
+        return self.safe_translation_getter("name", any_language=True) or f"{self.__class__.__name__} #{self.pk}"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug and self.name:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
@@ -39,8 +41,11 @@ class Section(BaseTaxonomy):
         name=CharField(max_length=32),
         slug=SlugField(max_length=32, blank=True),
         meta={
-            'unique_together': [('language_code', 'name'), ('language_code', 'slug')]
-        }
+            "unique_together": [
+                ("language_code", "name"),
+                ("language_code", "slug"),
+            ]
+        },
     )
 
 
@@ -49,12 +54,15 @@ class Category(BaseTaxonomy):
         name=CharField(max_length=32),
         slug=SlugField(max_length=32, blank=True),
         meta={
-            'unique_together': [('language_code', 'name'), ('language_code', 'slug')]
-        }
+            "unique_together": [
+                ("language_code", "name"),
+                ("language_code", "slug"),
+            ]
+        },
     )
 
     class Meta:
-        verbose_name_plural = 'categories'
+        verbose_name_plural = "categories"
 
 
 class Tag(BaseTaxonomy):
@@ -62,8 +70,11 @@ class Tag(BaseTaxonomy):
         name=CharField(max_length=32),
         slug=SlugField(max_length=32, blank=True),
         meta={
-            'unique_together': [('language_code', 'name'), ('language_code', 'slug')]
-        }
+            "unique_together": [
+                ("language_code", "name"),
+                ("language_code", "slug"),
+            ]
+        },
     )
 
 
@@ -74,25 +85,39 @@ class Article(TranslatableModel):
     updated_at = DateTimeField(auto_now=True)
     published_at = DateTimeField(null=True, blank=True)
     is_featured = BooleanField(default=False)
-    
+
     translations = TranslatedFields(
-        title = CharField(max_length=60, unique=True),
-        slug = SlugField(max_length=60, unique=True, blank=True),
-        description = CharField(max_length=160, blank=True),
-        content = HTMLField(blank=True),
+        title=CharField(max_length=60),
+        slug=SlugField(max_length=60, blank=True),
+        description=CharField(max_length=160, blank=True),
+        content=TextField(blank=True),
+        meta={
+            "unique_together": [
+                ("language_code", "title"),
+                ("language_code", "slug"),
+            ]
+        },
     )
-    
+
     cover = ImageField(upload_to=article_image_path, blank=True)
     section = ForeignKey(
-        Section, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
+        Section,
+        on_delete=SET_NULL,
+        null=True,
+        blank=True,
+        related_name="articles",
     )
     category = ForeignKey(
-        Category, on_delete=SET_NULL, null=True, blank=True, related_name="articles",
+        Category,
+        on_delete=SET_NULL,
+        null=True,
+        blank=True,
+        related_name="articles",
     )
     tags = ManyToManyField(Tag, blank=True)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug and self.title:
             self.slug = slugify(self.title)
 
         self._cover_changed = False
@@ -125,7 +150,7 @@ class Article(TranslatableModel):
             )
             .exclude(pk=self.pk)
             .annotate(shared_tag_count=Count("tags", filter=Q(tags__in=tag_ids)))
-            .order_by("-shared_tag_count")[:3] 
+            .order_by("-shared_tag_count")[:3]
         )
 
     def get_published_languages(self):
@@ -134,13 +159,11 @@ class Article(TranslatableModel):
         return []
 
     def get_absolute_url(self):
-        from django.urls import reverse, NoReverseMatch
-        
         current_lang = get_language()
-        slug = self.safe_translation_getter('slug', language_code=current_lang)
+        slug = self.safe_translation_getter("slug", language_code=current_lang)
 
         if not slug:
-            slug = getattr(self, 'slug', None)
+            slug = getattr(self, "slug", None)
 
         if not slug:
             return "#"
@@ -151,4 +174,4 @@ class Article(TranslatableModel):
             return "#"
 
     def __str__(self):
-        return self.title
+        return self.safe_translation_getter("title", any_language=True) or f"Article #{self.pk}"

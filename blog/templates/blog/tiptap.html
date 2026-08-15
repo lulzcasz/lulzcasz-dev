@@ -1,0 +1,130 @@
+{% load static %}
+<div x-data="{
+        updatedAt: Date.now(),
+        isFullscreen: false,
+        init() {
+            const el = this.$refs.editorElement;
+            const hidden = this.$refs.hiddenInput;
+            const initialContent = `{{ widget.value|escapejs }}`;
+
+            const start = () => {
+                if (!window.createTiptapEditor || el._tiptap) return;
+                el._tiptap = window.createTiptapEditor({
+                    element: el,
+                    content: initialContent,
+                    onUpdate: (html) => { hidden.value = html; this.updatedAt = Date.now(); },
+                    onSelectionUpdate: () => { this.updatedAt = Date.now(); }
+                });
+                hidden.value = initialContent;
+            };
+
+            if (window.createTiptapEditor) start();
+            else window.addEventListener('tiptap:ready', start, { once: true });
+        },
+        getEditor() { return this.$refs.editorElement?._tiptap; },
+        isActive(t, o = {}) { this.updatedAt; return this.getEditor()?.isActive(t, o) || false; },
+        
+        cmd(action, param = null) {
+            const ed = this.getEditor();
+            if (!ed) return;
+            ed.chain().focus()[action](param).run();
+            this.updatedAt = Date.now();
+        },
+
+        triggerImageUpload() {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = 'image/*';
+            input.onchange = async (e) => {
+                document.body.style.cursor = 'wait';
+                try {
+                    const url = await window.uploadTiptapImage(e.target.files[0]);
+                    this.cmd('setImage', { src: url });
+                } catch(err) { alert('Erro no upload de imagem'); }
+                document.body.style.cursor = 'default';
+            };
+            input.click();
+        },
+
+        triggerVideoUpload() {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = 'video/mp4,video/webm,video/ogg';
+            input.onchange = async (e) => {
+                document.body.style.cursor = 'wait';
+                try {
+                    const url = await window.uploadTiptapVideo(e.target.files[0]);
+                    this.cmd('setVideo', { src: url });
+                } catch(err) { alert('Erro no upload de vídeo'); }
+                document.body.style.cursor = 'default';
+            };
+            input.click();
+        },
+
+        setLink() {
+            const url = window.prompt('URL do Link:');
+            if (url === null) return;
+            if (url === '') this.cmd('unsetLink');
+            else this.cmd('setLink', { href: url });
+        },
+
+        toggleFullscreen() {
+            this.isFullscreen = !this.isFullscreen;
+        }
+    }" 
+    :class="isFullscreen ? 'fixed inset-0 z-[9999] bg-brand-black p-4 overflow-y-auto' : 'w-full block'">
+
+    <input type="hidden" name="{{ widget.name }}" x-ref="hiddenInput" {% include "django/forms/widgets/attrs.html" %}>
+
+    <div class="flex flex-wrap items-center gap-1 p-2 bg-brand-gray border border-gray-800 rounded-t-md sticky top-0 z-10">
+        
+        <button type="button" @click="cmd('undo')" class="px-2 py-1.5 text-brand-light hover:text-brand-yellow"><i class="fas fa-undo"></i></button>
+        <button type="button" @click="cmd('redo')" class="px-2 py-1.5 text-brand-light hover:text-brand-yellow"><i class="fas fa-redo"></i></button>
+        <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
+
+        <button type="button" @click="cmd('toggleHeading', { level: 2 })" :class="isActive('heading', { level: 2 }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2 font-bold">H2</button>
+        <button type="button" @click="cmd('toggleHeading', { level: 3 })" :class="isActive('heading', { level: 3 }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2 font-bold">H3</button>
+        <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
+
+        <button type="button" @click="cmd('toggleBold')" :class="isActive('bold') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-bold"></i></button>
+        <button type="button" @click="cmd('toggleItalic')" :class="isActive('italic') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-italic"></i></button>
+        <button type="button" @click="cmd('toggleUnderline')" :class="isActive('underline') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-underline"></i></button>
+        <button type="button" @click="cmd('toggleStrike')" :class="isActive('strike') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-strikethrough"></i></button>
+        <button type="button" @click="cmd('unsetAllMarks')" class="px-2 text-brand-pink" title="Remove Format"><i class="fas fa-eraser"></i></button>
+        <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
+
+        <button type="button" @click="cmd('setTextAlign', 'left')" :class="isActive({ textAlign: 'left' }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-align-left"></i></button>
+        <button type="button" @click="cmd('setTextAlign', 'center')" :class="isActive({ textAlign: 'center' }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-align-center"></i></button>
+        <button type="button" @click="cmd('setTextAlign', 'right')" :class="isActive({ textAlign: 'right' }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-align-right"></i></button>
+        <button type="button" @click="cmd('setTextAlign', 'justify')" :class="isActive({ textAlign: 'justify' }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-align-justify"></i></button>
+        <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
+
+        <button type="button" @click="cmd('toggleBulletList')" :class="isActive('bulletList') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-list-ul"></i></button>
+        <button type="button" @click="cmd('toggleOrderedList')" :class="isActive('orderedList') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-list-ol"></i></button>
+        <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
+
+        <button type="button" @click="setLink()" :class="isActive('link') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-link"></i></button>
+        <button type="button" @click="triggerImageUpload()" class="px-2 text-brand-light hover:text-brand-yellow"><i class="fas fa-image"></i></button>
+        <button type="button" @click="triggerVideoUpload()" class="px-2 text-brand-light hover:text-brand-yellow"><i class="fas fa-video"></i></button>
+        <button type="button" @click="cmd('toggleCodeBlock')" :class="isActive('codeBlock') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-code"></i></button>
+        <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
+
+        <button type="button" @click="cmd('insertTable', { rows: 3, cols: 3, withHeaderRow: true })" class="px-2 text-brand-light hover:text-brand-yellow"><i class="fas fa-table"></i></button>
+        
+        <div class="flex-grow"></div>
+
+        <button type="button" @click="toggleFullscreen()" class="px-2 text-brand-light hover:text-brand-yellow">
+            <i class="fas" :class="isFullscreen ? 'fa-compress' : 'fa-expand'"></i>
+        </button>
+    </div>
+
+    <div x-ref="editorElement" 
+         @click="getEditor()?.chain().focus().run()"
+         class="article-content bg-brand-black border border-t-0 border-gray-800 rounded-b-md p-4 text-brand-light focus:outline-none cursor-text"
+         :class="isFullscreen ? 'min-h-[90vh]' : 'min-h-[500px]'">
+    </div>
+</div>
+
+{% if debug %}
+  <script type="module" src="http://localhost:5173/static/js/admin-editor.js"></script>
+{% else %}
+  <script type="module" src="{% static 'dist/js/admin-editor.js' %}"></script>
+{% endif %}
