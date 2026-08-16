@@ -1,7 +1,6 @@
 {% load static %}
 <div x-data="{
         updatedAt: Date.now(),
-        isFullscreen: false,
         init() {
             const el = this.$refs.editorElement;
             const hidden = this.$refs.hiddenInput;
@@ -35,7 +34,7 @@
             const ed = this.getEditor();
             if (!ed) return;
             if (!ed.isActive('image')) {
-                alert('Clique em cima da imagem no editor antes de alinhar.');
+                alert('Click on the image in the editor before aligning it.');
                 return;
             }
             ed.chain().focus().updateAttributes('image', { alignment: align }).run();
@@ -55,7 +54,7 @@
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-                const customAlt = prompt('Digite o texto alternativo (alt):');
+                const customAlt = prompt('Enter the alt text:');
                 document.body.style.cursor = 'wait';
                 try {
                     const url = await window.uploadTiptapImage(file);
@@ -64,7 +63,7 @@
                         ed.chain().focus().setImage({ src: url, alt: customAlt || '', alignment: 'left' }).run();
                         this.updatedAt = Date.now();
                     }
-                } catch(err) { alert('Erro no upload'); }
+                } catch(err) { alert('Upload failed'); }
                 document.body.style.cursor = 'default';
             };
             input.click();
@@ -74,11 +73,11 @@
             const ed = this.getEditor();
             if (!ed) return;
             if (!ed.isActive('image')) {
-                alert('Clique em cima da imagem no editor antes de alterar o alt.');
+                alert('Click on the image in the editor before editing its alt text.');
                 return;
             }
             const currentAlt = ed.getAttributes('image').alt || '';
-            const newAlt = prompt('Editar texto alternativo (alt) da imagem:', currentAlt);
+            const newAlt = prompt('Edit the image alt text:', currentAlt);
             if (newAlt !== null) {
                 ed.chain().focus().updateAttributes('image', { alt: newAlt }).run();
                 this.updatedAt = Date.now();
@@ -93,14 +92,14 @@
                 try {
                     const url = await window.uploadTiptapVideo(e.target.files[0]);
                     this.cmd('setVideo', { src: url });
-                } catch(err) { alert('Erro no upload'); }
+                } catch(err) { alert('Upload failed'); }
                 document.body.style.cursor = 'default';
             };
             input.click();
         },
 
         setLink() {
-            const url = window.prompt('URL do Link:');
+            const url = window.prompt('Link URL:');
             if (url === null) return;
             if (url === '') this.cmd('unsetLink');
             else this.cmd('setLink', { href: url });
@@ -124,16 +123,40 @@
             return ed.getAttributes('highlight').color || '#00eac1';
         },
 
-        toggleFullscreen() {
-            this.isFullscreen = !this.isFullscreen;
+        showSourceCode: false,
+        sourceCode: '',
+
+        toggleSourceCode() {
+            const ed = this.getEditor();
+            if (!ed) return;
+            if (!this.showSourceCode) {
+                this.sourceCode = ed.getHTML();
+                this.showSourceCode = true;
+            } else {
+                this.showSourceCode = false;
+            }
+        },
+
+        applySourceCode() {
+            const ed = this.getEditor();
+            if (!ed) return;
+            ed.commands.setContent(this.sourceCode, true);
+            this.$refs.hiddenInput.value = ed.getHTML();
+            this.updatedAt = Date.now();
+            this.showSourceCode = false;
+        },
+
+        cancelSourceCode() {
+            this.showSourceCode = false;
         }
     }" 
-    :class="isFullscreen ? 'fixed inset-0 z-[9999] bg-brand-black p-4 overflow-y-auto' : 'w-full block'">
+    class="w-full block">
 
     <input type="hidden" name="{{ widget.name }}" x-ref="hiddenInput" {% include "django/forms/widgets/attrs.html" %}>
 
-    <!-- Barra de ferramentas fixa no topo do editor -->
+    <!-- Fixed toolbar at the top of the editor -->
     <div class="editor-toolbar flex flex-wrap items-center gap-1 p-2 bg-brand-gray border border-gray-800 rounded-t-md sticky top-0 z-20 shadow-md">
+    <div class="flex flex-wrap items-center gap-1" x-show="!showSourceCode">
         <button type="button" @click="cmd('undo')" class="px-2 py-1.5 text-brand-light hover:text-brand-yellow"><i class="fas fa-undo"></i></button>
         <button type="button" @click="cmd('redo')" class="px-2 py-1.5 text-brand-light hover:text-brand-yellow"><i class="fas fa-redo"></i></button>
         <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
@@ -155,9 +178,9 @@
         <button type="button" @click="cmd('setTextAlign', 'justify')" :class="isActive({ textAlign: 'justify' }) ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-align-justify"></i></button>
         <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
 
-        <button type="button" @click="setImageAlignment('left')" :disabled="!isActive('image')" :class="[isImageAligned('left') ? 'text-brand-yellow' : 'text-brand-light', isActive('image') ? '' : 'opacity-30']" class="px-2 disabled:cursor-not-allowed" title="Alinhar Imagem à Esquerda"><i class="fas fa-outdent"></i></button>
-        <button type="button" @click="setImageAlignment('center')" :disabled="!isActive('image')" :class="[isImageAligned('center') ? 'text-brand-yellow' : 'text-brand-light', isActive('image') ? '' : 'opacity-30']" class="px-2 disabled:cursor-not-allowed" title="Centralizar Imagem"><i class="fas fa-align-center"></i></button>
-        <button type="button" @click="setImageAlignment('right')" :disabled="!isActive('image')" :class="[isImageAligned('right') ? 'text-brand-yellow' : 'text-brand-light', isActive('image') ? '' : 'opacity-30']" class="px-2 disabled:cursor-not-allowed" title="Alinhar Imagem à Direita"><i class="fas fa-indent"></i></button>
+        <button type="button" @click="setImageAlignment('left')" :disabled="!isActive('image')" :class="[isImageAligned('left') ? 'text-brand-yellow' : 'text-brand-light', isActive('image') ? '' : 'opacity-30']" class="px-2 disabled:cursor-not-allowed" title="Align Image Left"><i class="fas fa-outdent"></i></button>
+        <button type="button" @click="setImageAlignment('center')" :disabled="!isActive('image')" :class="[isImageAligned('center') ? 'text-brand-yellow' : 'text-brand-light', isActive('image') ? '' : 'opacity-30']" class="px-2 disabled:cursor-not-allowed" title="Center Image"><i class="fas fa-align-center"></i></button>
+        <button type="button" @click="setImageAlignment('right')" :disabled="!isActive('image')" :class="[isImageAligned('right') ? 'text-brand-yellow' : 'text-brand-light', isActive('image') ? '' : 'opacity-30']" class="px-2 disabled:cursor-not-allowed" title="Align Image Right"><i class="fas fa-indent"></i></button>
         <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
 
         <button type="button" @click="cmd('toggleBulletList')" :class="isActive('bulletList') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-list-ul"></i></button>
@@ -165,57 +188,68 @@
         <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
 
         <button type="button" @click="setLink()" :class="isActive('link') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-link"></i></button>
-        <button type="button" @click="triggerImageUpload()" class="px-2 text-brand-light hover:text-brand-yellow" title="Inserir Imagem"><i class="fas fa-image"></i></button>
-        <button type="button" @click="editSelectedImageAlt()" class="px-2 text-brand-light hover:text-brand-yellow" title="Editar Alt da Imagem"><i class="fas fa-comment-alt"></i></button>
-        <button type="button" @click="triggerVideoUpload()" class="px-2 text-brand-light hover:text-brand-yellow"><i class="fas fa-video"></i></button>
+        <button type="button" @click="triggerImageUpload()" class="px-2 text-brand-light hover:text-brand-yellow" title="Insert Image"><i class="fas fa-image"></i></button>
+        <button type="button" @click="editSelectedImageAlt()" class="px-2 text-brand-light hover:text-brand-yellow" title="Edit Image Alt Text"><i class="fas fa-comment-alt"></i></button>
+        <button type="button" @click="triggerVideoUpload()" class="px-2 text-brand-light hover:text-brand-yellow" title="Insert Video"><i class="fas fa-video"></i></button>
         <button type="button" @click="cmd('toggleCodeBlock')" :class="isActive('codeBlock') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-code"></i></button>
         <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
 
-        <button type="button" @click="cmd('insertTable', { rows: 3, cols: 3, withHeaderRow: true })" class="px-2 text-brand-light hover:text-brand-yellow" title="Inserir Tabela"><i class="fas fa-table"></i></button>
+        <button type="button" @click="cmd('insertTable', { rows: 3, cols: 3, withHeaderRow: true })" class="px-2 text-brand-light hover:text-brand-yellow" title="Insert Table"><i class="fas fa-table"></i></button>
 
         <template x-if="isActive('table')">
             <div class="flex flex-wrap items-center gap-1">
                 <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
-                <button type="button" @click="cmd('addColumnBefore')" class="px-2 text-brand-light hover:text-brand-yellow" title="Adicionar Coluna à Esquerda"><i class="fas fa-table-columns"></i><i class="fas fa-arrow-left fa-xs"></i></button>
-                <button type="button" @click="cmd('addColumnAfter')" class="px-2 text-brand-light hover:text-brand-yellow" title="Adicionar Coluna à Direita"><i class="fas fa-table-columns"></i><i class="fas fa-arrow-right fa-xs"></i></button>
-                <button type="button" @click="cmd('deleteColumn')" class="px-2 text-brand-pink" title="Remover Coluna"><i class="fas fa-table-columns"></i><i class="fas fa-xmark fa-xs"></i></button>
+                <button type="button" @click="cmd('addColumnBefore')" class="px-2 text-brand-light hover:text-brand-yellow" title="Add Column Before"><i class="fas fa-table-columns"></i><i class="fas fa-arrow-left fa-xs"></i></button>
+                <button type="button" @click="cmd('addColumnAfter')" class="px-2 text-brand-light hover:text-brand-yellow" title="Add Column After"><i class="fas fa-table-columns"></i><i class="fas fa-arrow-right fa-xs"></i></button>
+                <button type="button" @click="cmd('deleteColumn')" class="px-2 text-brand-pink" title="Delete Column"><i class="fas fa-table-columns"></i><i class="fas fa-xmark fa-xs"></i></button>
                 <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
-                <button type="button" @click="cmd('addRowBefore')" class="px-2 text-brand-light hover:text-brand-yellow" title="Adicionar Linha Acima"><i class="fas fa-arrow-up"></i></button>
-                <button type="button" @click="cmd('addRowAfter')" class="px-2 text-brand-light hover:text-brand-yellow" title="Adicionar Linha Abaixo"><i class="fas fa-arrow-down"></i></button>
-                <button type="button" @click="cmd('deleteRow')" class="px-2 text-brand-pink" title="Remover Linha"><i class="fas fa-minus"></i></button>
+                <button type="button" @click="cmd('addRowBefore')" class="px-2 text-brand-light hover:text-brand-yellow" title="Add Row Above"><i class="fas fa-arrow-up"></i></button>
+                <button type="button" @click="cmd('addRowAfter')" class="px-2 text-brand-light hover:text-brand-yellow" title="Add Row Below"><i class="fas fa-arrow-down"></i></button>
+                <button type="button" @click="cmd('deleteRow')" class="px-2 text-brand-pink" title="Delete Row"><i class="fas fa-minus"></i></button>
                 <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
-                <button type="button" @click="cmd('deleteTable')" class="px-2 text-brand-pink" title="Remover Tabela"><i class="fas fa-trash"></i></button>
+                <button type="button" @click="cmd('deleteTable')" class="px-2 text-brand-pink" title="Delete Table"><i class="fas fa-trash"></i></button>
             </div>
         </template>
         <div class="w-[1px] h-6 bg-gray-700 mx-1"></div>
 
-        <div class="flex items-center gap-1" title="Cor do Texto">
+        <div class="flex items-center gap-1" title="Text Color">
             <label class="relative flex items-center px-1 text-brand-light hover:text-brand-yellow cursor-pointer">
                 <i class="fas fa-font"></i>
                 <input type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :value="getColor()" @input="setColor($event.target.value)">
             </label>
-            <button type="button" @click="unsetColor()" class="px-1 text-brand-light hover:text-brand-pink" title="Remover Cor do Texto"><i class="fas fa-eraser fa-xs"></i></button>
+            <button type="button" @click="unsetColor()" class="px-1 text-brand-light hover:text-brand-pink" title="Remove Text Color"><i class="fas fa-eraser fa-xs"></i></button>
         </div>
 
-        <div class="flex items-center gap-1" title="Cor de Fundo (Highlight)">
+        <div class="flex items-center gap-1" title="Highlight Color">
             <label class="relative flex items-center px-1 text-brand-light hover:text-brand-yellow cursor-pointer">
                 <i class="fas fa-highlighter"></i>
                 <input type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" :value="getHighlight()" @input="setHighlight($event.target.value)">
             </label>
-            <button type="button" @click="unsetHighlight()" class="px-1 text-brand-light hover:text-brand-pink" title="Remover Cor de Fundo"><i class="fas fa-eraser fa-xs"></i></button>
+            <button type="button" @click="unsetHighlight()" class="px-1 text-brand-light hover:text-brand-pink" title="Remove Highlight"><i class="fas fa-eraser fa-xs"></i></button>
         </div>
+    </div>
 
         <div class="flex-grow"></div>
 
-        <button type="button" @click="toggleFullscreen()" class="px-2 text-brand-light hover:text-brand-yellow">
-            <i class="fas" :class="isFullscreen ? 'fa-compress' : 'fa-expand'"></i>
+        <button type="button" @click="toggleSourceCode()" :class="showSourceCode ? 'text-brand-yellow' : 'text-brand-light'" class="px-2 hover:text-brand-yellow" title="View/Edit Source Code">
+            <i class="fas fa-file-code"></i>
         </button>
     </div>
 
 <div x-ref="editorElement" 
+         x-show="!showSourceCode"
          @click="getEditor()?.chain().focus().run()"
-         class="article-content bg-brand-black border border-t-0 border-gray-800 rounded-b-md p-4 text-brand-light focus:outline-none cursor-text overflow-y-auto"
-         :class="isFullscreen ? 'min-h-[90vh]' : 'h-[700px] max-h-[700px]'">
+         class="article-content bg-brand-black border border-t-0 border-gray-800 rounded-b-md p-4 text-brand-light focus:outline-none cursor-text overflow-y-auto h-[700px] max-h-[700px]">
+    </div>
+
+    <div x-show="showSourceCode" x-cloak class="source-code-view">
+        <textarea x-model="sourceCode"
+                  spellcheck="false"
+                  class="source-code-textarea w-full bg-brand-black border border-t-0 border-gray-800 rounded-b-none p-4 text-brand-light focus:outline-none resize-none h-[700px] max-h-[700px]"></textarea>
+        <div class="flex gap-2 justify-end p-2 bg-brand-gray border border-t-0 border-gray-800 rounded-b-md">
+            <button type="button" @click="cancelSourceCode()" class="px-4 py-1.5 text-brand-light border border-gray-700 rounded hover:bg-white/5">Cancel</button>
+            <button type="button" @click="applySourceCode()" class="px-4 py-1.5 bg-brand-yellow text-brand-black rounded font-bold hover:opacity-90">Apply Code</button>
+        </div>
     </div>
 
 {% if debug %}

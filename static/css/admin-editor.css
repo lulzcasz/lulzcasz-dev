@@ -42,7 +42,7 @@
     margin-bottom: 1.5rem;
     border-radius: 0.5rem;
     max-height: 75vh;
-    max-width: 100%;
+    max-width: min(960px, 100%);
     background-color: #1f1c1b;
 }
 
@@ -156,4 +156,17 @@
     max-height: 700px !important;
     min-height: 700px !important;
     overflow-y: auto !important;
+}
+
+[x-cloak] { display: none !important; }
+
+.source-code-textarea {
+    font-family: 'Cascadia Code', Consolas, Monaco, monospace !important;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    tab-size: 2;
+}
+
+.source-code-textarea:focus {
+    background-color: #151515;
 }

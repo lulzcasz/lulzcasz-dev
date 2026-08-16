@@ -85,7 +85,7 @@ const Video = Node.create({
         return [{ tag: 'video' }];
     },
     renderHTML({ HTMLAttributes }) {
-        return ['video', mergeAttributes(HTMLAttributes, { controls: true, style: 'max-width: 100%; border-radius: 8px;' })];
+        return ['video', mergeAttributes(HTMLAttributes, { controls: true, style: 'max-width: min(960px, 100%); border-radius: 8px;' })];
     },
     addCommands() {
         return {
