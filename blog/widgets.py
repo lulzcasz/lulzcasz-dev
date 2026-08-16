@@ -7,7 +7,7 @@ class TiptapWidget(widgets.Widget):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context['widget']['value'] = value or ''
-        context['debug'] = settings.DEBUG  # Envia se estamos em dev ou prod
+        context['debug'] = settings.DEBUG
         return context
 
     @property
@@ -15,14 +15,12 @@ class TiptapWidget(widgets.Widget):
         if settings.DEBUG:
             return widgets.Media(
                 css={
-                    # Troque "style.css" por "admin-editor.css"
                     'all': ('http://localhost:5173/static/css/admin-editor.css',),
                 }
             )
         else:
             return widgets.Media(
                 css={
-                    # Troque "style.css" por "admin-editor.css"
-                    'all': ('dist/css/admin-editor.css',),
+                    'all': ('dist/css/admin-style.css',),
                 }
             )
