@@ -23,7 +23,15 @@ export default defineConfig({
       }, 
       output: {
         entryFileNames: 'js/[name].js',
-        assetFileNames: 'css/[name].[ext]',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'css/[name].[ext]';
+          }
+          if (assetInfo.name && /\.(woff|woff2|eot|ttf|otf)$/.test(assetInfo.name)) {
+            return 'webfonts/[name].[ext]';
+          }
+          return 'assets/[name].[ext]';
+        },
       },
     },
   },
