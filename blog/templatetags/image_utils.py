@@ -41,13 +41,19 @@ def optimize_content_images(content):
 
     content = re.sub(img_pattern, img_replacer, content, flags=re.IGNORECASE)
 
-    video_pattern = r'<video([^>]*)>[\s\S]*?src=["\']([^"\']*?/raw\.(?:mp4|webm|ogg|mov|avi|mkv))["\'][\s\S]*?</video>'
+    video_pattern = r'<video([^>]*?)(?:>[\s\S]*?</video>|/?>)'
     
     def video_replacer(match):
         video_attributes = match.group(1)
-        raw_src = match.group(2)
-        base_path = raw_src.rsplit('/', 1)[0]
         
+        src_match = re.search(r'src=["\']([^"\']+)["\']', video_attributes, re.IGNORECASE)
+        if not src_match:
+            return match.group(0)
+            
+        current_src = src_match.group(1)
+        
+        base_path = current_src.rsplit('/', 1)[0]
+        raw_src = f"{base_path}/raw.webm" if 'raw' in current_src else current_src.replace('processed.webm', 'raw.webm')
         webm_src = f"{base_path}/processed.webm"
 
         width_match = re.search(r'width=["\'](\d+)(?:px)?["\']', video_attributes, re.IGNORECASE)
@@ -64,9 +70,12 @@ def optimize_content_images(content):
         else:
             container_style = "width: 100%; max-width: 960px;"
 
+        clean_attrs = re.sub(r'src=["\'][^"\']+["\']', '', video_attributes, flags=re.IGNORECASE)
+        clean_attrs = re.sub(r'controls=["\']?true["\']?', '', clean_attrs, flags=re.IGNORECASE)
+
         return f"""
         <div class="relative my-4 mx-auto" style="{container_style}">
-            <video autoplay loop muted playsinline class="w-full h-auto rounded-xl shadow-sm" style="background-color: #1E1E1E;">
+            <video{clean_attrs} autoplay loop muted playsinline class="w-full h-auto rounded-xl shadow-sm" style="background-color: #1E1E1E;">
                 <source src="{webm_src}" type="video/webm; codecs=av1">
                 <source src="{raw_src}" type="video/mp4">
                 Seu navegador não suporta a tag de vídeo HTML5.

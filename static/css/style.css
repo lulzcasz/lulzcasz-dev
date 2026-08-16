@@ -65,7 +65,13 @@
     @apply mb-0; 
   }
 
-/* Container principal do código */
+  mark {
+    padding: 0.05em 0.2em;
+    border-radius: 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
   pre {
     background: var(--color-brand-gray) !important;
     padding: 1.25rem;
@@ -76,7 +82,6 @@
     margin-bottom: 1.5rem;
   }
 
-  /* A fonte colorida dentro da caixa */
   pre code {
     background: none !important;
     padding: 0;
@@ -87,9 +92,26 @@
   }
 
   table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
     max-width: 100%;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  table td,
+  table th {
+    min-width: 1em;
+    border: 2px solid #374151;
+    padding: 6px 8px;
+    vertical-align: top;
+    box-sizing: border-box;
+  }
+
+  table th {
+    background-color: var(--color-brand-gray);
   }
 
   table th,
@@ -106,6 +128,15 @@
     display: inline-block;
     padding: 0.125rem 0.5rem !important;
     border-radius: 0.25rem !important; 
+  }
+
+  img[style*="text-align: center"],
+  div[style*="text-align: center"] > img,
+  p[style*="text-align: center"] > img,
+  .text-center img {
+    display: block;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   img:not(.affiliate-logo),

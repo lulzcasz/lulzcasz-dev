@@ -35,7 +35,7 @@ UNFOLD = {
         "show_all_applications": False,
         "navigation": [
             {
-                "title": "Blog",
+                "title": "Articles",
                 "icon": "article",
                 "items": [
                     {"title": "Articles", "icon": "description", "link": "/admin/blog/article/"},
@@ -50,7 +50,6 @@ UNFOLD = {
                 "items": [
                     {"title": "Products", "icon": "shopping_bag", "link": "/admin/products/product/"},
                     {"title": "Stores", "icon": "store", "link": "/admin/products/store/"},
-                    {"title": "Affiliate Links", "icon": "link", "link": "/admin/products/affiliatelink/"},
                 ],
             },
             {

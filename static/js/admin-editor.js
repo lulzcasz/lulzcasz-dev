@@ -1,6 +1,5 @@
 import { Editor, Node, mergeAttributes } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
-
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { createLowlight } from 'lowlight'
 
@@ -37,6 +36,7 @@ import { TableHeader } from '@tiptap/extension-table-header'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
 import { Highlight } from '@tiptap/extension-highlight'
+import { FileHandler } from '@tiptap/extension-file-handler'
 
 const lowlight = createLowlight();
 lowlight.register({
@@ -45,6 +45,32 @@ lowlight.register({
     sql, yaml, shell, plaintext,
     nasm: x86asm,
     toml: ini 
+});
+
+const CustomImage = Image.extend({
+    addAttributes() {
+        return {
+            ...this.parent?.(),
+            alt: { default: null },
+            alignment: {
+                default: 'left',
+                parseHTML: element => element.getAttribute('data-alignment') || 'left',
+                renderHTML: attributes => {
+                    if (!attributes.alignment) return {};
+                    if (attributes.alignment === 'center') {
+                        return { 'data-alignment': 'center', style: 'display: block; margin-left: auto; margin-right: auto;' };
+                    }
+                    if (attributes.alignment === 'left') {
+                        return { 'data-alignment': 'left', style: 'display: block; margin-left: 0; margin-right: auto;' };
+                    }
+                    if (attributes.alignment === 'right') {
+                        return { 'data-alignment': 'right', style: 'display: block; margin-left: auto; margin-right: 0;' };
+                    }
+                    return {};
+                },
+            },
+        }
+    }
 });
 
 const Video = Node.create({
@@ -101,14 +127,10 @@ window.createTiptapEditor = function({ element, content, onUpdate, onSelectionUp
             },
         },
         extensions: [
-            StarterKit.configure({
-                codeBlock: false,
-            }),
-            CodeBlockLowlight.configure({
-                lowlight,
-            }),
+            StarterKit.configure({ codeBlock: false }),
+            CodeBlockLowlight.configure({ lowlight }),
             Underline,
-            Image.configure({ inline: true }),
+            CustomImage.configure({ inline: false }),
             Video,
             Link.configure({ openOnClick: false }),
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
@@ -118,7 +140,26 @@ window.createTiptapEditor = function({ element, content, onUpdate, onSelectionUp
             TableCell,
             TextStyle,
             Color,
-            Highlight.configure({ multicolor: true })
+            Highlight.configure({ multicolor: true }),
+            FileHandler.configure({
+                allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+                onDrop: async (currentEditor, files, pos) => {
+                    files.forEach(async (file) => {
+                        try {
+                            const url = await window.uploadTiptapImage(file);
+                            currentEditor.chain().setNodeSelection(pos).setImage({ src: url }).run();
+                        } catch (err) {}
+                    });
+                },
+                onPaste: async (currentEditor, files) => {
+                    files.forEach(async (file) => {
+                        try {
+                            const url = await window.uploadTiptapImage(file);
+                            currentEditor.chain().setImage({ src: url }).run();
+                        } catch (err) {}
+                    });
+                },
+            })
         ],
         content: content,
         onUpdate: ({ editor }) => { if (onUpdate) onUpdate(editor.getHTML()); },
@@ -131,20 +172,17 @@ window.uploadTiptapImage = function(file) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/tinymce/upload-image/');
         xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
-
         xhr.onload = () => {
-            if (xhr.status < 200 || xhr.status >= 300) return reject('HTTP Error: ' + xhr.status);
+            if (xhr.status < 200 || xhr.status >= 300) return reject();
             const json = JSON.parse(xhr.responseText);
-            if (!json || typeof json.location != 'string') return reject('Invalid JSON');
+            if (!json || typeof json.location != 'string') return reject();
             resolve(json.location);
         };
-        xhr.onerror = () => reject('Image upload failed');
-
+        xhr.onerror = () => reject();
         const formData = new FormData();
         formData.append('file', file);
         const uuid = getArticleUuid();
         if (uuid) formData.append('article_uuid', uuid);
-
         xhr.send(formData);
     });
 };
@@ -154,16 +192,15 @@ window.uploadTiptapVideo = function(file) {
     formData.append('file', file);
     const uuid = getArticleUuid();
     if (uuid) formData.append('article_uuid', uuid);
-
     return fetch('/tinymce/upload-video/', {
         method: 'POST',
         headers: { 'X-CSRFToken': getCookie('csrftoken') },
         body: formData
     }).then(res => {
-        if (!res.ok) throw new Error('HTTP Error');
+        if (!res.ok) throw new Error();
         return res.json();
     }).then(json => {
-        if (!json || typeof json.location != 'string') throw new Error('Invalid JSON');
+        if (!json || typeof json.location != 'string') throw new Error();
         return json.location;
     });
 };

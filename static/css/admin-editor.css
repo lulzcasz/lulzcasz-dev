@@ -62,3 +62,98 @@
     font-family: 'Cascadia Code', Consolas, Monaco, monospace !important;
     font-size: 0.95rem;
 }
+
+.article-content img[style*="text-align: center"],
+.article-content div[style*="text-align: center"] > img,
+.article-content p[style*="text-align: center"] > img,
+.article-content .text-center img {
+    display: block;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.article-content table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.article-content table td,
+.article-content table th {
+    min-width: 1em;
+    border: 2px solid #374151;
+    padding: 6px 8px;
+    vertical-align: top;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.article-content table th {
+    font-weight: bold;
+    background-color: #1f1c1b;
+    color: #00eac1;
+}
+
+.article-content mark {
+    padding: 0.05em 0.2em;
+    border-radius: 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.editor-toolbar button[type="button"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    min-height: 2rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+}
+
+.editor-toolbar button[type="button"]:hover:not(:disabled) {
+    background-color: rgba(237, 237, 240, 0.08);
+}
+
+.editor-toolbar button[type="button"]:disabled {
+    cursor: not-allowed;
+}
+
+.editor-toolbar i.fas,
+.editor-toolbar i.far {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.editor-toolbar i.fa-xs {
+    font-size: 0.65rem !important;
+}
+
+.editor-toolbar label i.fas {
+    font-size: 1.1rem;
+}
+
+.editor-toolbar .fa-comment-alt + i,
+.editor-toolbar i.fas + i.fas.fa-xs {
+    margin-left: -0.15rem;
+}
+
+.article-content table .selectedCell:after {
+    z-index: 2;
+    position: absolute;
+    content: "";
+    left: 0; right: 0; top: 0; bottom: 0;
+    background: rgba(0, 234, 193, 0.1);
+    pointer-events: none;
+}
+
+.ProseMirror {
+    height: 700px !important;
+    max-height: 700px !important;
+    min-height: 700px !important;
+    overflow-y: auto !important;
+}
