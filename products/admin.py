@@ -3,11 +3,10 @@ from parler.admin import TranslatableTabularInline
 from unfold.admin import ModelAdmin, TabularInline
 from .models import Store, Product, AffiliateLink
 
-class AffiliateLinkInline(TabularInline, TranslatableTabularInline):
+class AffiliateLinkInline(TranslatableTabularInline, TabularInline):
     model = AffiliateLink
     extra = 0
     fields = ('store', 'url')
-    tab = True
 
 @admin.register(Store)
 class StoreAdmin(ModelAdmin):
