@@ -21,6 +21,7 @@ from django.utils.translation import get_language
 from parler.models import TranslatableModel, TranslatedFields
 
 from blog.utils.upload_to import article_image_path
+from sponsors.models import Sponsor
 
 
 class BaseTaxonomy(TranslatableModel):
@@ -53,6 +54,7 @@ class Category(BaseTaxonomy):
     translations = TranslatedFields(
         name=CharField(max_length=32),
         slug=SlugField(max_length=32, blank=True),
+        sponsor=ForeignKey(Sponsor, on_delete=SET_NULL, null=True, blank=True),
         meta={
             "unique_together": [
                 ("language_code", "name"),

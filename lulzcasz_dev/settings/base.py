@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "django_htmx",
     'parler',
     'products',
+    'sponsors',
     'blog',
 ]
 
@@ -35,7 +36,7 @@ UNFOLD = {
         "show_all_applications": False,
         "navigation": [
             {
-                "title": "Articles",
+                "title": "Blog",
                 "icon": "article",
                 "items": [
                     {"title": "Articles", "icon": "description", "link": "/admin/blog/article/"},
@@ -53,10 +54,17 @@ UNFOLD = {
                 ],
             },
             {
-                "title": "Access",
-                "icon": "security",
+                "title": "Sponsors",
+                "icon": "handshake",
                 "items": [
-                    {"title": "Users", "icon": "group", "link": "/admin/auth/user/"},
+                    {"title": "Sponsors", "icon": "favorite", "link": "/admin/sponsors/sponsor/"},
+                ],
+            },
+            {
+                "title": "Users",
+                "icon": "group",
+                "items": [
+                    {"title": "Users", "icon": "person", "link": "/admin/auth/user/"},
                     {"title": "Groups", "icon": "badge", "link": "/admin/auth/group/"},
                 ],
             },

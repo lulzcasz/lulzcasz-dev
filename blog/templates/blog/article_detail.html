@@ -165,6 +165,21 @@
       </ul>
     </div>
 
+    {% if article.category.sponsor %}
+    <div class="mb-5 block">
+      <a {% if article.category.sponsor.url %}href="{{ article.category.sponsor.url }}" target="_blank" rel="sponsored noopener"{% endif %} 
+         class="block group rounded-md overflow-hidden bg-brand-gray aspect-[6/5]">
+         
+        <img alt="Patrocinador: {{ article.category.sponsor.name }}" 
+             src="{{ article.category.sponsor.banner.url }}" 
+             width="600" 
+             height="500"
+             loading="lazy"
+             class="w-full h-auto transition-transform duration-300 group-hover:scale-105 group-hover:opacity-90">
+      </a>
+    </div>
+    {% endif %}
+
     <div class="flex flex-wrap gap-2 mb-5">
       {% for tag in article.tags.all %}
         <a href="{% url 'articles-by-tag' tag_slug=tag.slug %}" class="grow text-center px-3 py-1 text-brand-light bg-brand-gray transition-colors hover:opacity-80">
