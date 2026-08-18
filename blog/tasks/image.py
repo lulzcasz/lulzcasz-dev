@@ -11,10 +11,10 @@ def process_image(self, relative_path, section):
     with download_to_temp(relative_path) as input_path:
         if section == "cover":
             versions = [
-                {"size": "raw", "ext": "webp", "w": 2400, "h": 1260, "q": "95"},
-                {"size": "large", "ext": "jpg", "w": 1200, "h": 630, "q": "3"},
-                {"size": "medium", "ext": "avif", "w": 960, "h": 504, "crf": "26"},
-                {"size": "small", "ext": "avif", "w": 480, "h": 252, "crf": "32"},
+                {"size": "og", "ext": "jpg", "w": 1200, "h": 630, "q": "3"},
+                {"size": "large", "ext": "avif", "w": 2400, "h": 1260, "crf": "22"},
+                {"size": "medium", "ext": "avif", "w": 1920, "h": 1008, "crf": "26"},
+                {"size": "small", "ext": "avif", "w": 960, "h": 504, "crf": "32"},
             ]
 
             for config in versions:
@@ -29,19 +29,6 @@ def process_image(self, relative_path, section):
                         vf_scale_crop,
                         "-threads",
                         "2",
-                        "-q:v",
-                        config["q"],
-                        "-pix_fmt",
-                        "yuv420p",
-                    ]
-                elif config["ext"] == "webp":
-                    args = [
-                        "-vf",
-                        vf_scale_crop,
-                        "-threads",
-                        "2",
-                        "-c:v",
-                        "libwebp",
                         "-q:v",
                         config["q"],
                         "-pix_fmt",
@@ -68,24 +55,7 @@ def process_image(self, relative_path, section):
                 process_and_save_image(input_path, final_path, args)
 
         elif section == "content_image":
-            vf_raw = "scale='min(1920,iw)':-2"
-            path_raw = os.path.join(directory, "raw.webp")
-
-            args_raw = [
-                "-vf",
-                vf_raw,
-                "-threads",
-                "2",
-                "-c:v",
-                "libwebp",
-                "-q:v",
-                "95",
-                "-pix_fmt",
-                "yuv420p",
-            ]
-            process_and_save_image(input_path, path_raw, args_raw)
-
-            vf_inline = "scale='min(960,iw)':-2"
+            vf_inline = "scale='min(1920,iw)':-2"
             path_inline = os.path.join(directory, "processed.avif")
 
             args_inline = [

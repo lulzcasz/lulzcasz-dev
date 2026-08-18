@@ -30,7 +30,7 @@
   <meta property="og:description" content="{{ article.description }}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'article-detail' article_slug=article.slug %}">
-  <meta property="og:image" content="{{ article.cover|variant:'large.jpg' }}">
+  <meta property="og:image" content="{{ article.cover|variant:'og.jpg' }}">
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
   <meta property="og:site_name" content="lulzcasz.dev">
@@ -42,13 +42,25 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta name="twitter:description" content="{{ article.description }}" />
-  <meta name="twitter:image" content="{{ article.cover|variant:'large.jpg' }}" />
+  <meta name="twitter:image" content="{{ article.cover|variant:'og.jpg' }}" />
   
   <meta property="article:tag" content="{{ article.category }}" />
   <meta property="article:tag" content="{{ article.section }}" />
   {% for tag in article.tags.all %}
     <meta property="article:tag" content="{{ tag.name }}" />
   {% endfor %}
+
+  <style>
+    [x-cloak] { 
+        display: none !important; 
+    }
+    .article-content iframe {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        border-radius: 0.5rem;
+    }
+  </style>
 
   <script type="application/ld+json">
     {
@@ -61,7 +73,7 @@
       "headline": "{{ article.title|escapejs }}",
       "description": "{{ article.description|escapejs }}",
       "image": [
-        "{{ article.cover|variant:'large.jpg' }}"
+        "{{ article.cover|variant:'og.jpg' }}"
       ],
       "datePublished": "{{ article.published_at|date:'c' }}",
       "dateModified": "{{ article.updated_at|date:'c' }}",
@@ -98,10 +110,14 @@
     {% endif %}
   </div>
 
-<div class="mb-5 mt-3" x-data>
+  <div class="mb-5 mt-3" x-data>
     <img alt="{{ article.title }}" 
-         src="{{ article.cover|variant:'large.jpg' }}" 
-         class="w-full rounded-4 shadow-sm cursor-zoom-in hover:opacity-95 transition-opacity"
+         src="{{ article.cover|variant:'large.avif' }}" 
+         width="2400" 
+         height="1260" 
+         fetchpriority="high"
+         decoding="sync"
+         class="w-full h-auto rounded-4 shadow-sm cursor-zoom-in hover:opacity-95 transition-opacity"
          @click="$dispatch('open-lightbox', '{{ article.cover.url }}')">
   </div>
 
@@ -169,12 +185,12 @@
     <div class="mb-5 block">
       <a {% if article.category.sponsor.url %}href="{{ article.category.sponsor.url }}" target="_blank" rel="sponsored noopener"{% endif %} 
          class="block group rounded-md overflow-hidden bg-brand-gray aspect-[6/5]">
-         
         <img alt="Patrocinador: {{ article.category.sponsor.name }}" 
              src="{{ article.category.sponsor.banner.url }}" 
              width="600" 
              height="500"
              loading="lazy"
+             decoding="async"
              class="w-full h-auto transition-transform duration-300 group-hover:scale-105 group-hover:opacity-90">
       </a>
     </div>
@@ -193,7 +209,7 @@
         <a href="{% url 'article-detail' article_slug=related_article.slug %}" class="related-article-item hidden mb-6 group">
           <picture>
             <source srcset="{{ related_article.cover|variant:'small.avif' }}" type="image/avif">
-            <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" class="aspect-1200/630 w-full transition-transform group-hover:opacity-80">
+            <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" width="960" height="504" loading="lazy" decoding="async" class="w-full h-auto transition-transform group-hover:opacity-80">
           </picture>
           <h4 class="text-brand-light">{{ related_article.title }}</h4>
           <p class="text-sm text-brand-light">{{ article.description }}</p>
@@ -222,7 +238,6 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
 >
-
     <img 
         :src="imgSrc" 
         class="max-w-[95vw] max-h-[95vh] object-contain rounded-lg shadow-2xl"

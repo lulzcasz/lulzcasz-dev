@@ -101,7 +101,7 @@ class Article(TranslatableModel):
         },
     )
 
-    cover = ImageField(upload_to=article_image_path, blank=True)
+    cover = ImageField(upload_to=article_image_path, blank=True, max_length=255)
     section = ForeignKey(
         Section,
         on_delete=SET_NULL,

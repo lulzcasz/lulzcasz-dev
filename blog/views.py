@@ -133,7 +133,10 @@ def tinymce_upload_image(request):
             folder_path = f"images/content/unassigned/{date_path}"
 
         image_token = str(uuid.uuid4())
-        relative_path = f"{folder_path}/{image_token}/raw.webp"
+        
+        ext = upload.name.split('.')[-1].lower() if '.' in upload.name else 'img'
+        relative_path = f"{folder_path}/{image_token}/original.{ext}"
+        
         saved_path = default_storage.save(relative_path, upload)
         file_url = default_storage.url(saved_path)
         process_image.delay(saved_path, 'content_image')
@@ -156,7 +159,10 @@ def tinymce_upload_video(request):
             folder_path = f"videos/content/unassigned/{date_path}"
 
         video_token = str(uuid.uuid4())
-        relative_path = f"{folder_path}/{video_token}/raw.webm"
+        
+        ext = upload.name.split('.')[-1].lower() if '.' in upload.name else 'vid'
+        relative_path = f"{folder_path}/{video_token}/original.{ext}"
+        
         saved_path = default_storage.save(relative_path, upload)
         file_url = default_storage.url(saved_path)
         process_video.delay(saved_path, 'content_video')

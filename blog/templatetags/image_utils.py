@@ -18,22 +18,23 @@ def optimize_content_images(content):
     if not content:
         return content
 
-    img_pattern = r'(<img[^>]*?src=["\'])([^"\']*?/raw\.(?:jpg|jpeg|png|gif|webp|avif))(["\'][^>]*?>)'
+    img_pattern = r'(<img[^>]*?src=["\'])([^"\']*?/original\.(?:jpg|jpeg|png|gif|webp|avif))(["\'][^>]*?>)'
     
     def img_replacer(match):
         start_tag = match.group(1)
-        raw_src = match.group(2)
+        original_src = match.group(2)
         end_tag = match.group(3)
 
-        base_path = raw_src.rsplit('/', 1)[0]
-        avif_src = f"{base_path}/processed.avif"
+        base_path = original_src.rsplit('/', 1)[0]
 
-        tag_without_close = f'{start_tag}{raw_src}{end_tag}'.rstrip('>').rstrip('/')
+        processed_src = f"{base_path}/processed.avif"
+
+        tag_without_close = f'{start_tag}{original_src}{end_tag}'.rstrip('>').rstrip('/')
         
-        img_tag = f'{tag_without_close} loading="lazy" class="cursor-zoom-in hover:opacity-95 transition-opacity" @click="$dispatch(\'open-lightbox\', \'{raw_src}\')">'
+        img_tag = f'{tag_without_close} loading="lazy" class="cursor-zoom-in hover:opacity-95 transition-opacity" @click="$dispatch(\'open-lightbox\', \'{original_src}\')">'
 
         picture_tag = f"""<picture>
-            <source srcset="{avif_src}" type="image/avif">
+            <source srcset="{processed_src}" type="image/avif">
             {img_tag}
         </picture>"""
         
@@ -53,31 +54,46 @@ def optimize_content_images(content):
         current_src = src_match.group(1)
         
         base_path = current_src.rsplit('/', 1)[0]
-        raw_src = f"{base_path}/raw.webm" if 'raw' in current_src else current_src.replace('processed.webm', 'raw.webm')
+        
+        original_src = f"{base_path}/original.mp4" if 'original' in current_src else current_src.replace('processed.webm', 'original.mp4')
         webm_src = f"{base_path}/processed.webm"
+        poster_src = f"{base_path}/poster.avif"
 
         width_match = re.search(r'width=["\'](\d+)(?:px)?["\']', video_attributes, re.IGNORECASE)
+        height_match = re.search(r'height=["\'](\d+)(?:px)?["\']', video_attributes, re.IGNORECASE)
+        
         width_val = int(width_match.group(1)) if width_match else None
+        height_val = int(height_match.group(1)) if height_match else None
         
         if not width_val:
             style_width = re.search(r'width:\s*(\d+)px', video_attributes, re.IGNORECASE)
             if style_width:
                 width_val = int(style_width.group(1))
+                
+        if not height_val:
+            style_height = re.search(r'height:\s*(\d+)px', video_attributes, re.IGNORECASE)
+            if style_height:
+                height_val = int(style_height.group(1))
 
+        container_style = "width: 100%;"
+        aspect_ratio_style = ""
+        
         if width_val:
             max_allowed_width = min(width_val, 960)
-            container_style = f"width: 100%; max-width: {max_allowed_width}px;"
+            container_style += f" max-width: {max_allowed_width}px;"
+            if height_val:
+                aspect_ratio_style = f"aspect-ratio: {width_val} / {height_val};"
         else:
-            container_style = "width: 100%; max-width: 960px;"
+            container_style += " max-width: 960px;"
 
         clean_attrs = re.sub(r'src=["\'][^"\']+["\']', '', video_attributes, flags=re.IGNORECASE)
         clean_attrs = re.sub(r'controls=["\']?true["\']?', '', clean_attrs, flags=re.IGNORECASE)
 
         return f"""
         <div class="relative my-4 mx-auto" style="{container_style}">
-            <video{clean_attrs} autoplay loop muted playsinline class="w-full h-auto rounded-xl shadow-sm" style="background-color: #1E1E1E;">
+            <video{clean_attrs} autoplay loop muted playsinline poster="{poster_src}" class="w-full h-auto rounded-xl shadow-sm" style="background-color: #1E1E1E; {aspect_ratio_style}">
                 <source src="{webm_src}" type="video/webm; codecs=av1">
-                <source src="{raw_src}" type="video/mp4">
+                <source src="{original_src}" type="video/mp4">
                 Seu navegador não suporta a tag de vídeo HTML5.
             </video>
             
@@ -92,7 +108,7 @@ def optimize_content_images(content):
                     <i class="fa-solid fa-volume-xmark text-white"></i>
                 </button>
 
-                <a href="{raw_src}" target="_blank" rel="noopener noreferrer" 
+                <a href="{original_src}" target="_blank" rel="noopener noreferrer" 
                    class="no-underline rounded-full border border-gray-600 shadow flex items-center gap-2 px-3 text-white" 
                    style="height: 36px; background-color: rgba(30,30,30,0.75); backdrop-filter: blur(4px); transition: all 0.2s ease;"
                    onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='rgba(30,30,30,1)';"

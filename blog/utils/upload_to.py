@@ -1,5 +1,6 @@
 from uuid import uuid4
 
-
 def article_image_path(instance, filename):
-    return f'articles/{instance.uuid}/cover/{uuid4()}/raw.webp'
+    ext = filename.split('.')[-1].lower() if '.' in filename else 'img'
+    
+    return f'articles/{instance.uuid}/cover/{uuid4()}/original.{ext}'
