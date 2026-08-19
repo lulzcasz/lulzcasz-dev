@@ -81,7 +81,7 @@
       "keywords": "{% if article.category %}{{ article.category.name|escapejs }}, {% endif %}{% if article.section %}{{ article.section.name|escapejs }}, {% endif %}{% for tech in article.technologies.all %}{{ tech.name|escapejs }}, {% endfor %}{% for tag in article.tags.all %}{{ tag.name|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
       "author": {
         "@type": "Person",
-        "name": "{{ profile.name|escapejs }}",
+        "name": "Lucas Reis",
         "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}"
       },
       "publisher": {
@@ -212,7 +212,7 @@
             <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" width="960" height="504" loading="lazy" decoding="async" class="w-full h-auto transition-transform group-hover:opacity-80">
           </picture>
           <h4 class="text-brand-light">{{ related_article.title }}</h4>
-          <p class="text-sm text-brand-light">{{ article.description }}</p>
+          <p class="text-sm text-brand-light">{{ related_article.description }}</p>
           <time class="text-sm text-gray-400 block mt-1" datetime="{{ related_article.published_at|date:'Y-m-d' }}">
             {{ related_article.published_at|date }}
           </time>
