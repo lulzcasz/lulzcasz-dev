@@ -84,6 +84,15 @@
     margin-bottom: 1.5rem;
   }
 
+  code {
+    @apply bg-brand-gray text-brand-yellow px-1.5 py-0.5 rounded text-sm;
+    font-family: var(--font-mono);
+  }
+
+  a {
+    @apply text-brand-yellow underline underline-offset-4 decoration-brand-yellow/60 hover:decoration-brand-yellow transition-all duration-200 cursor-pointer;
+  }
+
   pre code {
     background: none !important;
     padding: 0;

@@ -154,7 +154,6 @@
 
     <input type="hidden" name="{{ widget.name }}" x-ref="hiddenInput" {% include "django/forms/widgets/attrs.html" %}>
 
-    <!-- Fixed toolbar at the top of the editor -->
     <div class="editor-toolbar flex flex-wrap items-center gap-1 p-2 bg-brand-gray border border-gray-800 rounded-t-md sticky top-0 z-20 shadow-md">
     <div class="flex flex-wrap items-center gap-1" x-show="!showSourceCode">
         <button type="button" @click="cmd('undo')" class="px-2 py-1.5 text-brand-light hover:text-brand-yellow"><i class="fas fa-undo"></i></button>
@@ -167,6 +166,7 @@
 
         <button type="button" @click="cmd('toggleBold')" :class="isActive('bold') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-bold"></i></button>
         <button type="button" @click="cmd('toggleItalic')" :class="isActive('italic') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-italic"></i></button>
+        <button type="button" @click="cmd('toggleCode')" :class="isActive('code') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2" title="Inline Code"><i class="fas fa-terminal"></i></button>
         <button type="button" @click="cmd('toggleUnderline')" :class="isActive('underline') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-underline"></i></button>
         <button type="button" @click="cmd('toggleStrike')" :class="isActive('strike') ? 'text-brand-yellow' : 'text-brand-light'" class="px-2"><i class="fas fa-strikethrough"></i></button>
         <button type="button" @click="cmd('unsetAllMarks')" class="px-2 text-brand-pink"><i class="fas fa-eraser"></i></button>

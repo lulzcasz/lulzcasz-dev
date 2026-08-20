@@ -55,12 +55,28 @@
     margin-bottom: 1.5rem;
 }
 
+.article-content code {
+    background-color: #1f1c1b;
+    color: #00eac1;
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+    font-family: 'Cascadia Code', Consolas, Monaco, monospace;
+    font-size: 0.9em;
+}
+
 .article-content pre code {
     background: none !important;
     padding: 0;
     color: inherit;
     font-family: 'Cascadia Code', Consolas, Monaco, monospace !important;
     font-size: 0.95rem;
+}
+
+.article-content a {
+    color: #00eac1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
 }
 
 .article-content img[style*="text-align: center"],
