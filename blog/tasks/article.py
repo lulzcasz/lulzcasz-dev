@@ -38,10 +38,15 @@ def generate_full_article_task(article_id):
     - Headings in sentence case (only first word and proper nouns capitalized).
     - You may add better explanations inside existing <li> items, but never add new <li> items.
     - The article title is rendered separately as the H1. Start the content directly with the introduction paragraph(s) — do NOT add a heading (like "Introduction") before it. The first <h2> only appears when the first real section begins.
+    - You're free to reorder the draft's information into whatever sequence reads best as a tutorial — the draft's order is raw notes, not a fixed outline. Break content into <h2> and <h3> sections as often as makes sense; don't force everything under one heading or leave long unstructured stretches just because the draft wasn't split that way.
 
-    Preserve exactly as given, with zero changes: <pre><code> blocks, <table> contents, <img> tags (including every attribute like data-alignment, style, src — never wrap them in <p>), and shortcodes like [product-id].
+    Preserve exactly as given, with zero changes: <pre><code> blocks, <table> contents, <img> tags (including every attribute like data-alignment, style, src — never wrap them in <p>).
 
     Image alt text: in the draft, each <img>'s `alt` attribute already contains a rough, informally written description of what the image shows. Read that raw alt text and rewrite it into a proper, concise `alt` attribute using plain, everyday words (e.g. "photo", "screenshot", "diagram" — not "photograph" or "visual representation"). Every other attribute (src, style, data-alignment, etc.) stays untouched. If it helps the reader, you may also add a short sentence before or after the image describing what it shows — but this is optional, not mandatory.
+
+    Shortcodes (preserve each one exactly, character for character — never alter, wrap in <p>, or move them from their position):
+    - [article-id]: renders as a block-level card (cover image, title, description) linking to another article. Never wrap it in <p> or inline text around it. Write a natural one or two sentence lead-in before it explaining why the reader might want to check that reference out — never just copy a raw draft label like "MicroPython implementation:" verbatim.
+    - [product-id]: renders as a horizontal row of marketplace buttons to buy an item — it shows NO product name or description, only the buttons. Since the shortcode itself won't tell the reader what they're buying, the sentence right before it MUST name the product and briefly say what it's for, so the buttons aren't floating with zero context.
 
     Return only this XML, nothing else:
     <description>SEO meta description, plain text, max 160 characters</description>
