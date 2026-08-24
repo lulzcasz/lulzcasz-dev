@@ -6,6 +6,8 @@ from parler.admin import TranslatableAdmin
 from parler.forms import TranslatableModelForm
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
+from django.db import transaction
+from blog.tasks.article import generate_full_article_task, translate_en_to_pt_task
 
 from blog.models import Article, Category, Section, Tag
 from .widgets import TiptapWidget
@@ -32,6 +34,7 @@ class ArticleAdminForm(TranslatableModelForm):
         model = Article
         fields = '__all__'
         widgets = {
+            'draft': TiptapWidget(),
             'content': TiptapWidget(),
             'title': forms.TextInput(attrs={'class': UNFOLD_INPUT_CLASSES}),
             'slug': forms.TextInput(attrs={'class': UNFOLD_INPUT_CLASSES}),
@@ -46,10 +49,10 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
     list_filter = ('section', 'category')
     search_fields = ('translations__title', 'translations__description')
     filter_horizontal = ('tags',)
-    
+
     readonly_fields = (
         'id', 'get_uuid', 'created_at', 'updated_at', 'cover_preview',
-        'get_title_en', 'get_title_pt', 
+        'get_title_en', 'get_title_pt',
         'get_slug_en', 'get_slug_pt',
         'get_description_en', 'get_description_pt'
     )
@@ -63,7 +66,7 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
             ),
         }),
         ("Content", {
-            "fields": ('title', 'slug', 'description', 'content'),
+            "fields": ('title', 'slug', 'description', 'draft', 'content'),
         }),
         ("Settings", {
             "fields": (
@@ -157,9 +160,30 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
 
         if not slug:
             return None
-            
+
         try:
             with translation.override(lang):
                 return reverse("article-detail", kwargs={"article_slug": slug})
         except reverse.NoReverseMatch:
             return None
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        current_lang = self.get_form_language(request)
+
+        draft_changed = 'draft' in form.changed_data
+        description_or_content_changed = 'content' in form.changed_data or 'description' in form.changed_data
+
+        has_draft = bool(obj.draft and obj.draft.strip())
+
+        en_content = obj.safe_translation_getter('content', language_code='en') or ""
+        en_description = obj.safe_translation_getter('description', language_code='en') or ""
+
+        content_missing = en_content.strip() in ["", "<p></p>"]
+        description_missing = not en_description.strip()
+
+        if has_draft and (draft_changed or content_missing or description_missing):
+            transaction.on_commit(lambda: generate_full_article_task.delay(obj.pk))
+        elif description_or_content_changed and current_lang == 'en':
+            transaction.on_commit(lambda: translate_en_to_pt_task.delay(obj.pk))

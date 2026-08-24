@@ -82,12 +82,11 @@ class Tag(BaseTaxonomy):
 
 class Article(TranslatableModel):
     uuid = UUIDField(default=uuid4, editable=False, unique=True)
-
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
     published_at = DateTimeField(null=True, blank=True)
     is_featured = BooleanField(default=False)
-
+    draft = TextField(blank=True)
     translations = TranslatedFields(
         title=CharField(max_length=60),
         slug=SlugField(max_length=60, blank=True),
@@ -100,7 +99,6 @@ class Article(TranslatableModel):
             ]
         },
     )
-
     cover = ImageField(upload_to=article_image_path, blank=True, max_length=255)
     section = ForeignKey(
         Section,
