@@ -3,7 +3,6 @@ import re
 from celery import shared_task
 from google import genai
 from google.genai import types
-from google.genai.errors import APIError
 from pydantic import BaseModel
 from ..models import Article
 
@@ -14,7 +13,7 @@ class TranslationOutput(BaseModel):
 
 
 @shared_task(
-    autoretry_for=(APIError, Exception),
+    autoretry_for=(Exception,),
     retry_backoff=10,
     retry_kwargs={'max_retries': 3},
     rate_limit='12/m'
@@ -30,24 +29,23 @@ def generate_full_article_task(article_id):
     tags_list = ", ".join([tag.safe_translation_getter('name', language_code='en') or "" for tag in article.tags.all()])
 
     system_prompt = """
-    You are a senior developer writing a technical blog post for other developers. Your job is to expand a raw skeleton draft into a complete, well-written article ONLY in ENGLISH.
+    You are a senior developer expanding a raw draft into a complete technical tutorial, in English, for other developers.
 
-    You MUST return your response strictly using the following XML tags:
-    <description>SEO meta description (max 160 chars, plain text)</description>
-    <content>Full semantic HTML for Tiptap with preserved codes</content>
+    Write in a pragmatic, dry tone: straight to the point, no marketing fluff, no cheesy transitions. Use plain, everyday words — the way a dev explains something to another dev in a README or a Slack message, not like an encyclopedia entry. Avoid formal/literary vocabulary (e.g. say "photo" or "screenshot", not "photograph"; say "picture", not "visual representation"). If a simpler, more common word exists, use it. Expand every section into full, didactic paragraphs that explain the concepts, wiring, and code — never leave notes unexplained or paragraphs empty.
 
-    Rules for Generating the Content:
-    1. EXPAND AND EXPLAIN: You MUST write complete paragraphs. Do not leave the text empty or just output the raw notes. Take the provided skeleton and explain the concepts, the hardware wiring, and the code clearly. Write enough text to make it a fully fleshed-out, didactic tutorial.
-    2. TONE (PRAGMATIC AND DRY): Write like a senior engineer talking to another dev. Go straight to the point. NO marketing fluff, NO pompous language, NO cheesy transitions. Just state facts clearly (e.g., "Wire the components according to the table below:", "Fritzing diagram:", "Physical circuit on a breadboard:").
-    3. HTML STRUCTURE & FORMATTING: Output strictly semantic HTML (<h2>, <h3>, <p>, <ul>, <ol>, <pre><code>, <table>, <img>).
-    - NEVER output empty paragraphs (<p></p>), orphaned <br> tags, or extra spacing between text and images.
-    - All <h2> and <h3> headings MUST use sentence case (capitalize only the first word and proper nouns).
-    4. PRESERVE MEDIA & CODE (CRITICAL): You MUST PRESERVE 100% of all provided <pre><code>, <table>, <img>, and shortcodes (e.g., [product-id]).
-    - DO NOT wrap <img> tags in <p> tags. Leave the <img> tags completely loose and exactly as they appear in the draft.
-    - DO NOT alter, remove, or modify ANY attributes inside <img> tags. Keep `data-alignment`, `style`, and `src` EXACTLY as provided.
-    - NEVER alter or explain inside code contents, URLs, or table data.
-    5. LIST CONSTRAINT: If the draft contains a list (<ul> or <ol>), you may write better explanations inside the existing items, but you are STRICTLY FORBIDDEN from adding new list items (<li>).
-    6. SUMMARY: Write an SEO-focused meta description with a MAXIMUM of 160 characters. Plain text only.
+    Formatting:
+    - Semantic HTML only (<h2>, <h3>, <p>, <ul>, <ol>, <pre><code>, <table>, <img>). No empty <p></p> or orphaned <br>.
+    - Headings in sentence case (only first word and proper nouns capitalized).
+    - You may add better explanations inside existing <li> items, but never add new <li> items.
+    - The article title is rendered separately as the H1. Start the content directly with the introduction paragraph(s) — do NOT add a heading (like "Introduction") before it. The first <h2> only appears when the first real section begins.
+
+    Preserve exactly as given, with zero changes: <pre><code> blocks, <table> contents, <img> tags (including every attribute like data-alignment, style, src — never wrap them in <p>), and shortcodes like [product-id].
+
+    Image alt text: in the draft, each <img>'s `alt` attribute already contains a rough, informally written description of what the image shows. Read that raw alt text and rewrite it into a proper, concise `alt` attribute using plain, everyday words (e.g. "photo", "screenshot", "diagram" — not "photograph" or "visual representation"). Every other attribute (src, style, data-alignment, etc.) stays untouched. If it helps the reader, you may also add a short sentence before or after the image describing what it shows — but this is optional, not mandatory.
+
+    Return only this XML, nothing else:
+    <description>SEO meta description, plain text, max 160 characters</description>
+    <content>Full semantic HTML article</content>
     """
 
     user_content = f"Title: {article.title}\nSection: {section_name}\nCategory: {category_name}\nTags: {tags_list}\n\nRough Draft (Expand the ideas into well-written paragraphs in English, but preserve the exact codes, tables, and images):\n{base_html}"
@@ -57,7 +55,7 @@ def generate_full_article_task(article_id):
         contents=user_content,
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
-            temperature=0.5,
+            temperature=0.8,
         )
     )
 
@@ -80,7 +78,7 @@ def generate_full_article_task(article_id):
 
 
 @shared_task(
-    autoretry_for=(APIError, Exception),
+    autoretry_for=(Exception,),
     retry_backoff=10,
     retry_kwargs={'max_retries': 3}
 )
@@ -96,14 +94,13 @@ def translate_en_to_pt_task(article_id):
     client = genai.Client()
 
     system_prompt = """
-    You are a specialized technical translator.
-    Translate the HTML content and the meta description from English to Brazilian Portuguese.
+    You are a specialized technical translator, English to Brazilian Portuguese, translating dev-to-dev content.
 
-    Critical Rules:
-    1. CONTENT (content_pt): Keep ALL HTML tags, attributes, classes, URLs, tables, and <pre><code> code blocks EXACTLY the same.
-    - DO NOT wrap <img> tags in <p> tags. Leave them exactly as they are formatted in the source HTML.
-    - All <h2> and <h3> headings must use sentence case in the translation as well (capitalize only the first word and proper nouns).
-    2. SUMMARY (description_pt): Translate the text while keeping its SEO appeal and the 160-character limit. Plain text only, no HTML.
+    Translate like a Brazilian developer writing to another developer — plain, everyday words, no formal/literary vocabulary (e.g. "foto" not "fotografia", "imagem" not "representação visual"). Keep the pragmatic, dry tone of the original; don't make it sound more formal in Portuguese than it is in English.
+
+    content_pt: translate the prose, but keep all HTML tags, attributes, classes, URLs, tables, and <pre><code> blocks exactly as in the source. Never wrap <img> tags in <p>. Keep <h2>/<h3> headings in sentence case. Exception: translate the text inside each <img>'s `alt` attribute to Portuguese — every other attribute (src, style, data-alignment, etc.) stays untouched.
+
+    description_pt: translate keeping its SEO appeal, plain text, max 160 characters.
     """
 
     user_content = f"Meta Description (EN):\n{en_description}\n\nConteúdo HTML (EN):\n{en_content}"
