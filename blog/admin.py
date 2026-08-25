@@ -45,7 +45,7 @@ class ArticleAdminForm(TranslatableModelForm):
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin, TranslatableAdmin):
     form = ArticleAdminForm
-    list_display = ('id', 'title', 'article_status', 'section', 'category', 'get_tags', 'view_links')
+    list_display = ('id', 'title', 'article_status', 'section', 'category', 'view_links')
     list_display_links = ('id', 'title')
     list_filter = ('section', 'category')
     search_fields = ('translations__title', 'translations__description')
@@ -151,11 +151,6 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
         if obj.has_translation('pt-br'):
             return obj.safe_translation_getter('description', language_code='pt-br') or "-"
         return "-"
-
-    @display(description="Tags")
-    def get_tags(self, obj):
-        names = [tag.safe_translation_getter("name", any_language=True) for tag in obj.tags.all()]
-        return ", ".join(filter(None, names)) or "-"
 
     @display(description="Links")
     def view_links(self, obj):
