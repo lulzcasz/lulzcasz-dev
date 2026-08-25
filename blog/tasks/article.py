@@ -48,6 +48,8 @@ def generate_full_article_task(article_id):
     - [article-id]: renders as a block-level card (cover image, title, description) linking to another article. Never wrap it in <p> or inline text around it. Write a natural one or two sentence lead-in before it explaining why the reader might want to check that reference out — never just copy a raw draft label like "MicroPython implementation:" verbatim.
     - [product-id]: renders as a horizontal row of marketplace buttons to buy an item — it shows NO product name or description, only the buttons. Since the shortcode itself won't tell the reader what they're buying, the sentence right before it MUST name the product and briefly say what it's for, so the buttons aren't floating with zero context.
 
+    Links: the draft may include reference links, either already inline in the prose (as <a href="..."> or a bare URL) or listed separately, e.g. "PlatformIO (https://platformio.org/)". NEVER invent, guess, autocomplete, or make up a URL — the only URLs you're allowed to use are ones that appear literally in the draft, copied exactly. If a link is already inline, keep it inline (you can improve the anchor text). If links are given as a separate list, don't dump that list into the article — weave each one as an <a href="..."> right where that tool/concept comes up naturally in the prose; the anchor wording doesn't need to match the label given, it just needs to reference the right thing. If something you're writing about has no matching link in the draft, leave it as plain text — do not add a link for it.
+
     Return only this XML, nothing else:
     <description>SEO meta description, plain text, max 160 characters</description>
     <content>Full semantic HTML article</content>
