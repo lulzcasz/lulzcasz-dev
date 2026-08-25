@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib import admin
-from django.utils import timezone
-from django.utils.html import format_html
+from django.urls import NoReverseMatch, reverse
+from django.utils import timezone, translation
+from django.utils.html import format_html, format_html_join
 from parler.admin import TranslatableAdmin
 from parler.forms import TranslatableModelForm
 from unfold.admin import ModelAdmin
@@ -44,7 +45,7 @@ class ArticleAdminForm(TranslatableModelForm):
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin, TranslatableAdmin):
     form = ArticleAdminForm
-    list_display = ('id', 'title', 'article_status', 'published_at', 'section', 'category', 'is_featured')
+    list_display = ('id', 'title', 'article_status', 'section', 'category', 'get_tags', 'view_links')
     list_display_links = ('id', 'title')
     list_filter = ('section', 'category')
     search_fields = ('translations__title', 'translations__description')
@@ -151,10 +152,37 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
             return obj.safe_translation_getter('description', language_code='pt-br') or "-"
         return "-"
 
-    def view_on_site(self, obj):
-        from django.utils import translation
-        from django.urls import reverse
+    @display(description="Tags")
+    def get_tags(self, obj):
+        names = [tag.safe_translation_getter("name", any_language=True) for tag in obj.tags.all()]
+        return ", ".join(filter(None, names)) or "-"
 
+    @display(description="Links")
+    def view_links(self, obj):
+        buttons = []
+        for lang_code, label in (('en', 'EN'), ('pt-br', 'PT-BR')):
+            if not obj.has_translation(lang_code):
+                continue
+            slug = obj.safe_translation_getter('slug', language_code=lang_code)
+            if not slug:
+                continue
+            try:
+                with translation.override(lang_code):
+                    url = reverse("article-detail", kwargs={"article_slug": slug})
+            except NoReverseMatch:
+                continue
+            buttons.append(format_html(
+                '<a href="{}" target="_blank" rel="noopener" '
+                'class="inline-block px-2 py-1 text-xs rounded bg-primary-600 text-white hover:opacity-80">{}</a>',
+                url, label
+            ))
+
+        if not buttons:
+            return "-"
+
+        return format_html_join(" ", "{}", ((button,) for button in buttons))
+
+    def view_on_site(self, obj):
         lang = obj.get_current_language()
         slug = obj.safe_translation_getter('slug', language_code=lang) or obj.slug
 
@@ -164,7 +192,7 @@ class ArticleAdmin(ModelAdmin, TranslatableAdmin):
         try:
             with translation.override(lang):
                 return reverse("article-detail", kwargs={"article_slug": slug})
-        except reverse.NoReverseMatch:
+        except NoReverseMatch:
             return None
 
     def save_model(self, request, obj, form, change):
