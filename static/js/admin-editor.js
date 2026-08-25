@@ -44,7 +44,7 @@ lowlight.register({
     dockerfile, javascript, json, makefile, powershell, python, 
     sql, yaml, shell, plaintext,
     nasm: x86asm,
-    toml: ini 
+    ini
 });
 
 const CustomImage = Image.extend({

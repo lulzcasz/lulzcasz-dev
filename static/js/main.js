@@ -40,7 +40,7 @@ hljs.registerLanguage('nasm', x86asm);
 hljs.registerLanguage('powershell', powershell);
 hljs.registerLanguage('python', python);
 hljs.registerLanguage('sql', sql);
-hljs.registerLanguage('toml', ini);
+hljs.registerLanguage('ini', ini);
 hljs.registerLanguage('yaml', yaml);
 hljs.registerLanguage('shell', shell);
 hljs.registerLanguage('plaintext', plaintext);
