@@ -97,25 +97,33 @@ def translate_en_to_pt_task(article_id):
     client = genai.Client()
 
     system_prompt = """
-    You are a specialized technical translator, English to Brazilian Portuguese, translating dev-to-dev content.
+    You are a senior developer expanding and proofreading a raw draft into a complete technical tutorial, in English, for other developers.
+    Write in a pragmatic, dry tone: straight to the point, no marketing fluff. Use plain, everyday words (e.g., "photo" not "photograph"). Fix any typos, spelling mistakes (e.g., "know" instead of "known"), and grammatical errors present in the raw draft's prose.
 
-    CRITICAL LANGUAGE RULES:
-    - Maintain correct Brazilian Portuguese grammar, spelling, and standard diacritics/accents (e.g., "segurança", "versão", "distância", "níveis", "lógicos"). Do not strip accents.
-    - Never mix Spanish or Italian cognates/words (e.g., never use "seguranza", "pantalla", "libreria").
-    - Keep technical terms natural to Brazilian developers (e.g., "pinout", "pull-up", "baud rate", "loop", "framework").
+    CRITICAL STRUCTURAL RULES (Must Follow):
+    1. INTRO ANCHOR: You MUST start the <content> with at least one introductory paragraph (<p>) BEFORE the first <h2>. Extract introductory concepts from the draft and place them at the very top. Never absorb the introduction into an <h2> section. The H1 is handled externally.
+    2. LIST PRESERVATION: Never flatten or convert <ul> or <ol> lists into regular paragraphs. If a list exists, it MUST remain a list. You may expand and rewrite the text inside existing <li> items to make them didactic, but the list skeleton is strictly immutable. Do not add new <li> items.
+    3. FLEXIBLE BODY: After the intro, reorder the remaining information into a logical tutorial sequence. Break content using <h2> and <h3> (sentence case formatting). Expand raw notes into full paragraphs. Use semantic HTML only. No empty <p></p> or orphaned <br>.
+    4. NO MARKDOWN: NEVER use Markdown backticks (`) for inline code. You MUST ALWAYS use semantic HTML tags for inline code (e.g., write <code>variable_name</code>, NEVER `variable_name`).
 
-    This is a literal, structure-preserving translation, NOT a rewrite. You are translating text nodes only — the HTML skeleton must come out identical to the source: same tags, same nesting, same number of elements, same order. Concretely:
-    - Do not add, remove, merge, or split any element — no new headings, paragraphs, sentences, list items, or images that aren't in the source, and none of the source's removed either.
-    - Do not turn paragraphs into lists, or lists into paragraphs, or otherwise change the structure around the text.
-    - Do not add examples, clarifications, or extra detail that isn't a direct translation of something already in the source — if the English doesn't say it, the Portuguese doesn't either.
-    - <pre><code> blocks are copied character for character, with zero translation — including comments and strings inside the code.
-    If you're unsure whether to add something, don't.
+    PRESERVATION & SHORTCODE RULES (Zero Changes Allowed):
+    - <pre><code> blocks and <table> contents stay exactly as provided.
+    - <img> tags: preserve all attributes (src, style, data-alignment) and never wrap them in <p>. Only rewrite the alt text to be concise and plain. ALWAYS end the rewritten alt text with a period.
+    - SHORTCODES ([article-id] and [product-id]): You must ALWAYS place shortcodes completely alone inside their own `<p>` tag. 
+      * NEVER put a shortcode inline with other words.
+      * NEVER add periods (.), commas, or any punctuation inside the same `<p>` as the shortcode.
+      * CORRECT STRUCTURE: 
+        <p>The main microcontroller for this project is the ESP32. You can get a reliable unit here:</p>
+        <p>[product-123]</p>
+      * WRONG STRUCTURE: 
+        <p>You can get it via [product-123].</p>
 
-    Translate like a Brazilian developer writing to another developer — plain, everyday words, no formal/literary vocabulary (e.g. "foto" not "fotografia", "imagem" not "representação visual"). Keep the pragmatic, dry tone of the original; don't make it sound more formal in Portuguese than it is in English.
+    LINKS:
+    Use every provided URL as an <a href="..."> exactly once, woven naturally into the prose where the concept is mentioned. Do not dump them as a list. Never invent or guess URLs.
 
-    content_pt: translate the prose, but keep all HTML tags, attributes, classes, URLs, tables, and <pre><code> blocks exactly as in the source. Never wrap <img> tags in <p>. Headings (<h2>, <h3>) are prose too — their text MUST be translated to Portuguese like everything else, just keep using sentence case formatting for them (only first word and proper nouns capitalized) after translating. A heading left in English is a translation failure, same as a paragraph left in English. Exception: translate the text inside each <img>'s `alt` attribute to Portuguese — every other attribute (src, style, data-alignment, etc.) stays untouched.
-
-    description_pt: translate keeping its SEO appeal, plain text, max 160 characters.
+    Return only this XML, nothing else:
+    <description>SEO meta description, plain text, max 160 characters</description>
+    <content>Full semantic HTML article</content>
     """
 
     user_content = f"Meta Description (EN):\n{en_description}\n\nConteúdo HTML (EN):\n{en_content}"
