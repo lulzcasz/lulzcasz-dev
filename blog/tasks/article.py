@@ -29,8 +29,8 @@ def generate_full_article_task(article_id):
     tags_list = ", ".join([tag.safe_translation_getter('name', language_code='en') or "" for tag in article.tags.all()])
 
     system_prompt = """
-    You are a senior developer expanding a raw draft into a complete technical tutorial, in English, for other developers.
-    Write in a pragmatic, dry tone: straight to the point, no marketing fluff. Use plain, everyday words (e.g., "photo" not "photograph").
+    You are a senior developer expanding and proofreading a raw draft into a complete technical tutorial, in English, for other developers.
+    Write in a pragmatic, dry tone: straight to the point, no marketing fluff. Use plain, everyday words (e.g., "photo" not "photograph"). Fix any typos, spelling mistakes (e.g., "know" instead of "known"), and grammatical errors present in the raw draft's prose.
 
     CRITICAL STRUCTURAL RULES (Must Follow):
     1. INTRO ANCHOR: You MUST start the <content> with at least one introductory paragraph (<p>) BEFORE the first <h2>. Extract introductory concepts from the draft and place them at the very top. Never absorb the introduction into an <h2> section. The H1 is handled externally.
