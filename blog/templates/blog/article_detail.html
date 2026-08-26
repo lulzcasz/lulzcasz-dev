@@ -121,10 +121,7 @@
          @click="$dispatch('open-lightbox', '{{ article.cover.url }}')">
   </div>
 
-<div x-data="sidebarManager" 
-     @toc-loaded.window="adjust()"
-     @resize.window.debounce.150ms="adjust()" 
-     class="flex flex-row mx-auto items-start">
+<div class="flex flex-row mx-auto items-start">
      
     <div class="basis-4/6 pr-2 min-w-0">
     <div class="article-content">
@@ -204,21 +201,28 @@
       {% endfor %}
     </div>
 
-    <div id="related-articles-container">
-      {% for related_article in article.get_related_articles %}
-        <a href="{% url 'article-detail' article_slug=related_article.slug %}" class="related-article-item hidden mb-6 group">
-          <picture>
-            <source srcset="{{ related_article.cover|variant:'small.avif' }}" type="image/avif">
-            <img alt="{{ related_article.title }}" src="{{ related_article.cover.url }}" width="960" height="504" loading="lazy" decoding="async" class="w-full h-auto transition-transform group-hover:opacity-80">
-          </picture>
-          <h4 class="text-brand-light">{{ related_article.title }}</h4>
-          <p class="text-sm text-brand-light">{{ related_article.description }}</p>
-          <time class="text-sm text-gray-400 block mt-1" datetime="{{ related_article.published_at|date:'Y-m-d' }}">
-            {{ related_article.published_at|date }}
-          </time>
-        </a>
-      {% endfor %}
+{% with related_list=article.get_related_articles %}
+    {% if related_list %}
+    <div class="bg-brand-gray p-4 rounded-md mb-5">
+      <p class="text-brand-light font-bold text-base mb-3 border-b border-gray-700/50 pb-2">
+        {% trans "Related Articles" %}
+      </p>
+      
+      <ul class="space-y-3 text-sm">
+        {% for related in related_list %}
+          <li class="pl-3 border-l-2 border-gray-700/30 ml-1 hover:border-brand-yellow transition-colors">
+            <a href="{% url 'article-detail' article_slug=related.slug %}" class="block group">
+              <span class="text-brand-light font-semibold group-hover:text-brand-yellow transition-colors duration-200 block">
+                {{ related.title }}
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
+    {% endif %}
+    {% endwith %}
+
   </aside>
 </div>
 
