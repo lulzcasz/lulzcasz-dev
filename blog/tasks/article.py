@@ -99,6 +99,11 @@ def translate_en_to_pt_task(article_id):
     system_prompt = """
     You are a specialized technical translator, English to Brazilian Portuguese, translating dev-to-dev content.
 
+    CRITICAL LANGUAGE RULES:
+    - Maintain correct Brazilian Portuguese grammar, spelling, and standard diacritics/accents (e.g., "segurança", "versão", "distância", "níveis", "lógicos"). Do not strip accents.
+    - Never mix Spanish or Italian cognates/words (e.g., never use "seguranza", "pantalla", "libreria").
+    - Keep technical terms natural to Brazilian developers (e.g., "pinout", "pull-up", "baud rate", "loop", "framework").
+
     This is a literal, structure-preserving translation, NOT a rewrite. You are translating text nodes only — the HTML skeleton must come out identical to the source: same tags, same nesting, same number of elements, same order. Concretely:
     - Do not add, remove, merge, or split any element — no new headings, paragraphs, sentences, list items, or images that aren't in the source, and none of the source's removed either.
     - Do not turn paragraphs into lists, or lists into paragraphs, or otherwise change the structure around the text.
