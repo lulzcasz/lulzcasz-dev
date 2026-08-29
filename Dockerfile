@@ -23,7 +23,7 @@ FROM base AS prod_dependencies
 
 RUN uv sync --frozen --no-dev --no-install-project
 
-FROM node:24.19.0-alpine3.23@sha256:244cc2b53f46f9e876304391d17682b0ddae9ac33491f4857e25e35a36ba7995 AS frontend_builder
+FROM node:24.20.0-alpine3.23@sha256:0388af2af070cd4736a1567cfed02469ba117848845b4165d87a333edb53d2ca AS frontend_builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
