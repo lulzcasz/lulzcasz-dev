@@ -42,6 +42,18 @@
       "description": "Force ALL major updates to separate into individual package branches",
       "matchUpdateTypes": ["major"],
       "groupName": null
+    },
+    {
+      "matchManagers": ["pep621"],
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "commitMessageAction": "refresh",
+      "commitMessageTopic": "uv.lock"
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "commitMessageAction": "refresh",
+      "commitMessageTopic": "package-lock.json"
     }
   ]
 }
