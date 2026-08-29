@@ -8,19 +8,19 @@
   ],
   "timezone": "America/Sao_Paulo",
   "separateMultipleMajor": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchManagers": ["pep621"],
       "rangeStrategy": "bump",
-      "matchDepNames": [
-        "!python"
-      ],
+      "matchDepTypes": ["project.dependencies", "project.optional-dependencies", "dependency-groups", "build-system.requires"],
       "groupName": "python dependencies"
     },
     {
-      "matchDepNames": ["python"],
-      "enabled": true,
-      "separateMultipleMinor": true,
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["requires-python"],
       "commitMessageAction": "update",
       "commitMessageTopic": "python",
       "commitMessageExtra": "to {{newVersion}}"
@@ -30,25 +30,18 @@
       "groupName": "docker images"
     },
     {
-      "matchManagers": ["custom.regex"],
-      "groupName": "frontend dependencies"
+      "matchManagers": ["npm"],
+      "groupName": "node dependencies"
+    },
+    {
+      "groupName": "node.js version",
+      "matchManagers": ["npm", "dockerfile", "docker-compose"],
+      "matchPackageNames": ["node"]
     },
     {
       "description": "Force ALL major updates to separate into individual package branches",
       "matchUpdateTypes": ["major"],
       "groupName": null
-    }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/(^|/)Dockerfile$/"
-      ],
-      "matchStrings": [
-        "ADD\\s+https://cdn\\.jsdelivr\\.net/npm/(?<depName>@[^/]+/[^@/]+|[^@/]+)@(?<currentValue>[^/]+)/"
-      ],
-      "datasourceTemplate": "npm"
     }
   ]
 }
