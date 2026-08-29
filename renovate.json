@@ -9,7 +9,8 @@
   "timezone": "America/Sao_Paulo",
   "separateMultipleMajor": true,
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": true,
+    "schedule": ["at any time"]
   },
   "packageRules": [
     {
