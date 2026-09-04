@@ -19,4 +19,4 @@ createsuperuser *args:
 	@{{manage}} createsuperuser {{args}}
 
 celery:
-	uv run celery -A lulzcasz_dev worker --loglevel=INFO --concurrency=2
+	uv run watchfiles "celery -A lulzcasz_dev worker --loglevel=INFO --concurrency=2"

@@ -100,14 +100,6 @@ UNFOLD = {
     },
 }
 
-INTERNAL_IPS = []
-
-try:
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS.extend([ip[:-1] + "1" for ip in ips])
-except Exception:
-    pass
-
 SITE_ID = 1
 
 TAGGIT_CASE_INSENSITIVE = True

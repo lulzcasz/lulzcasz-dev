@@ -28,4 +28,5 @@ dev = [
     "ipython==9.17.0",
     "psycopg[binary]==3.3.4",
     "rust-just==1.58.0",
+    "watchfiles==1.2.0",
 ]
