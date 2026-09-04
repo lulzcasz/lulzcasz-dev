@@ -4,7 +4,7 @@ compose := "docker compose"
 manage := "uv run manage.py"
 
 up:
-	@{{compose}} up -w
+	@{{compose}} up -d
 
 down:
 	@{{compose}} down --rmi local
@@ -17,3 +17,6 @@ migrate *args:
 
 createsuperuser *args:
 	@{{manage}} createsuperuser {{args}}
+
+celery:
+	uv run celery -A lulzcasz_dev worker --loglevel=INFO --concurrency=2
